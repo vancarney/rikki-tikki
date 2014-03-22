@@ -1,0 +1,13 @@
+{
+  "files":[
+  "src/api/rikki-tikki-api.coffee",
+  "src/api/util.coffee",
+  "src/api/classes/ConfigLoader.coffee",
+  "src/api/classes/DSNOptions.coffee",
+  "src/api/classes/DSN.coffee",
+  "src/api/classes/Connection.coffee",
+  "src/api/classes/CollectionManager.coffee",
+  "src/api/classes/CollectionMonitor.coffee",
+  "src/api/classes/Router.coffee"
+  ]
+}

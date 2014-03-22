@@ -7,7 +7,7 @@ class RikkiTikkiAPI.Connection extends EventEmitter
     if !(RikkiTikkiAPI.__connection)
       RikkiTikkiAPI.connection = mongoose.connection
       RikkiTikkiAPI.connection.on 'error', (e) => @emit 'error', e.message
-      RikkiTikkiAPI.connection.on 'open', => @emit 'open', @getConnection()
+      RikkiTikkiAPI.connection.on 'open', => @emit 'open'
     @connect args if args?
   handleClose:(evt)->
     @emit 'close', evt
@@ -17,14 +17,14 @@ class RikkiTikkiAPI.Connection extends EventEmitter
     try
       @__conn = mongoose.connect "#{string}"
     catch e
-      # console.log e.message
-      # @emit 'error', 'failed to connect'
-      return false
+      return @emit 'error', e
     @emit 'connected', @__conn
-  getConnection:-> 
-    @__conn || null
+  getConnection:->
+    @__conn.connections[0] #|| null
   getMongoDB:->
-    mongoose.connection.db
+    @getConnection().db
+  getDatabaseName:->
+    @getMongoDB().databaseName
   isConnected:-> 
     @__conn?
   close:(callback)->
