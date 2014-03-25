@@ -1,4 +1,4 @@
-class RikkiTikkiAPI.ConnectionMonitor extends EventEmitter
+class RikkiTikkiAPI.CollectionMonitor extends EventEmitter
   constructor:(@__db, opts=interval:0)->
     @__collectionNames = new ArrayCollection []
     _initialized = false

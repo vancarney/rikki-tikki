@@ -17,7 +17,7 @@ class RikkiTikkiAPI.Connection extends EventEmitter
     try
       @__conn = mongoose.connect "#{string}"
     catch e
-      return @emit 'error', e
+      return @emit e
     @emit 'connected', @__conn
   getConnection:->
     @__conn.connections[0] #|| null

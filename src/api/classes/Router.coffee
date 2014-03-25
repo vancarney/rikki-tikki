@@ -3,7 +3,7 @@ RikkiTikkiAPI.API_VERSION  = '1'
 RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 class RikkiTikkiAPI.Router extends Object
-  constructor:(@__parent, @__collections, opts)->
+  constructor:(@__parent, @__collections, @__adapter=new RikkiTikkiAPI.ExpressAdapter)->
     # @__parent = opts?.parent || null
     # @__parent = opts?.parent || null
   __routes:
@@ -64,10 +64,11 @@ class RikkiTikkiAPI.Router extends Object
             path = "#{api_path}/#{name}/:#{name}_id"
           when 'index'
             method = 'get'
-            path = "/#{if name != 'index' then name else ''}"
+            path = "#{api_path}/#{if name != 'index' then name else ''}"
           else
             throw new Error "unrecognized route: #{name}.#{key}"
         path = "#{prefix}#{path}"
-        app[method](path, @__routes[key])
+        # app[method](path, @__routes[key])
+        @__adapter.addRoute path. method, @__routes[key]
         verbose && logger.log 'debug', "#{method.toUpperCase()} #{path} -> #{key}"
       parent.use app

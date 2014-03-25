@@ -11,16 +11,16 @@ if !exports.RikkiTikki
   RikkiTikkiAPI = exports.RikkiTikkiAPI = class RikkiTikkiAPI extends EventEmitter
     constructor:(dsn=null)->
       if dsn != false
-        @connect if dsn? then dsn else (new ConfigLoader).toJSON()
+        @connect if dsn? then dsn else (new RikkiTikkiAPI.ConfigLoader).toJSON()
     connect:(dsn,opts)-> 
       dsn = (new ConfigLoader dsn).toJSON() if dsn? and dsn instanceof String and dsn.match /\.json$/
       @__db = new RikkiTikkiAPI.Connection
       @__db.on 'open', ()=>
         @collectionMon = new RikkiTikkiAPI.CollectionMonitor @__db.getMongoDB()
-        opts.open?()
-      @__db.on 'close', ()=> opts.close?()
-      @__db.on 'connect', ()=> opts.connect?()
-      @__db.on 'error', ()=> opts.error?()
+        opts?.open?()
+      @__db.on 'close', ()=> opts?.close?()
+      @__db.on 'connect', ()=> opts?.connect?()
+      @__db.on 'error', ()=> opts?.error?()
       @__db.connect dsn
     disconnect:(callback)->
       @__db.close callback
