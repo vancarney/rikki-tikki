@@ -1,4 +1,6 @@
-chai            = require('chai').should()
+fs              = require 'fs'
+path            = require 'path'
+(chai           = require 'chai').should()
 RikkiTikkiAPI   = require( '../lib/api' ).RikkiTikkiAPI
 describe 'RikkiTikkiAPI.CollectionManager Test Suite', ->
   it 'should add Collections', (done)=>

@@ -3,7 +3,8 @@ RikkiTikkiAPI.API_VERSION  = '1'
 RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 class RikkiTikkiAPI.Router extends Object
-  constructor:(@__parent, @__collections, @__adapter=new RikkiTikkiAPI.ExpressAdapter)->
+  constructor:(@__parent, @__collections, @__adapter)->
+    throw Error 'adapter must be defined' if !@__adapter
     # @__parent = opts?.parent || null
     # @__parent = opts?.parent || null
   __routes:
@@ -22,6 +23,7 @@ class RikkiTikkiAPI.Router extends Object
     index:(req,res,next)->
       console.log 'index'
   initializeApp:(parent)->
+  getAdapter:-> @__adapter
   intializeRoutes:()->
     api_path = RikkiTikkiAPI.getAPIPath()
     _.each @__collections, (name)->

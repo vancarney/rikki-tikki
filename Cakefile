@@ -1,7 +1,7 @@
 # require Node::FS
 fs = require 'fs'
 # require Node::Util
-connect = require 'connect'
+# connect = require 'connect'
 {debug, error, log, print} = require 'util'
 # import Spawn and Exec from child_process
 {spawn, exec, execFile}=require 'child_process'
@@ -89,7 +89,7 @@ test = (options=[],callback)->
 
     # add coffee directive
     options.push '--compilers'
-    options.push 'coffee:coffee-script'
+    options.push 'coffee:coffee-script/register'
     options.push '--reporter'
     options.push 'spec'
     # options.push '-g'

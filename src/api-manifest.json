@@ -8,6 +8,10 @@
   "src/api/classes/Connection.coffee",
   "src/api/classes/CollectionManager.coffee",
   "src/api/classes/CollectionMonitor.coffee",
+  "src/api/classes/adapters/AbstractAdapter.coffee",
+  "src/api/classes/adapters/ExpressAdapter.coffee",
+  "src/api/classes/adapters/HapiAdapter.coffee",
+  "src/api/classes/adapters/RoutesAdapter.coffee",
   "src/api/classes/Router.coffee"
   ]
 }
