@@ -11,7 +11,7 @@ if !global.RikkiTikki
   RikkiTikki = global.RikkiTikki =
     #### VERSION
     # > The current RikkiTikki Version Number
-    VERSION:'0.3.1-alpha'
+    VERSION:'0.1.1-alpha'
     #### APP_ID 
     # > The Parse API Application Identifier
     APP_ID:undefined
@@ -42,7 +42,7 @@ if !global.RikkiTikki
     UNDEFINED_CLASSNAME:'__UNDEFINED_CLASSNAME__'
     #### API_URI
     # > Base URI for the Parse API
-    API_URI:'https://api.parse.com/1'
+    API_URI:'http://0.0.0.0:3000/api/1'
     #### CRUD_METHODS
     # > Mappings from CRUD to REST
     CRUD_METHODS:

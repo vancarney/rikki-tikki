@@ -20,6 +20,8 @@ class RikkiTikkiAPI.CollectionMonitor extends EventEmitter
   stop:->
     clearInterval @__iVal if @__iVal?
   getNames:->
-    _.pluck @__collectionNames.__list, 'name'
+    _.pluck @getCollections(), 'name'
+  getCollections:->
+    @__collectionNames.__list
   collectionExists:(name)->
     @getNames().lastIndexOf name > -1

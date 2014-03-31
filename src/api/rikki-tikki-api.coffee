@@ -2,8 +2,8 @@
 _             = require('underscore')._
 Backbone      = require 'backbone'
 EventEmitter  = require('events').EventEmitter
-fs            = require 'fs'
-path          = require 'path'
+global.fs     = require 'fs'
+global.path   = require 'path'
 ArrayCollection = require('js-arraycollection').ArrayCollection
 if !exports.RikkiTikki
   #### global.RikkiTikki

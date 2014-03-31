@@ -12,6 +12,7 @@
   "src/api/classes/adapters/ExpressAdapter.coffee",
   "src/api/classes/adapters/HapiAdapter.coffee",
   "src/api/classes/adapters/RoutesAdapter.coffee",
+  "src/api/classes/Routes.coffee",
   "src/api/classes/Router.coffee"
   ]
 }

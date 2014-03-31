@@ -6,10 +6,10 @@ RikkiTikki.apiOPTS = ->
   dataType: 'json'
   data: null
   headers:
-    'Content-Type'            : 'application/json'
-    'X-Parse-Application-Id'  : RikkiTikki.APP_ID
-    'X-Parse-REST-API-Key'    : RikkiTikki.REST_KEY
-    'X-Parse-Session-Token'   : RikkiTikki.SESSION_TOKEN
+    'Content-Type'      : 'application/json'
+    'X-Application-Id'  : RikkiTikki.APP_ID
+    'X-REST-API-Key'    : RikkiTikki.REST_KEY
+    'X-Session-Token'   : RikkiTikki.SESSION_TOKEN
 #### RikkiTikki.regEscape(string)
 # > Returns string as RegExp string literal
 RikkiTikki.regEscape = (string) -> string.replace /([\^\/\.\-\+\*\[\]\{\}\|\(\)\?\$]+)/g,'\\$1'
@@ -17,7 +17,7 @@ RikkiTikki.regEscape = (string) -> string.replace /([\^\/\.\-\+\*\[\]\{\}\|\(\)\
 # > Validates a given route
 RikkiTikki.validateRoute = (route)->
   # throws error if route does not pass validation
-  throw "Bad route: #{route}" if !route.match new RegExp "^(#{RikkiTikki.regEscape RikkiTikki.API_URI}\/)?(batch|classes|events|files|functions|login|push|requestPasswordReset|users|jobs)+"
+  throw "Bad route: #{route}" if !route.match new RegExp "^(#{RikkiTikki.regEscape RikkiTikki.API_URI}\/)+"
   # returns true if no error thrown
   true
 #### RikkiTikki._parseDate(iso8601)

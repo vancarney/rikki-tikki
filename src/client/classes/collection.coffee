@@ -17,7 +17,7 @@ class RikkiTikki.Collection extends Backbone.Collection
   # > Overrides `Backbone.Collection.url`
   url : ->
     # returns uri encoded Query String
-    encodeURI "#{RikkiTikki.API_URI}/classes/#{@className}#{if @__method == 'read' and (p=RikkiTikki.querify @__params).length then '?'+p else ''}"
+    encodeURI "#{RikkiTikki.API_URI}/#{@className}#{if @__method == 'read' and (p=RikkiTikki.querify @__params).length then '?'+p else ''}"
   #### parse([options])
   # > Overrides `Backbone.Collection.parse`
   parse : (options)->

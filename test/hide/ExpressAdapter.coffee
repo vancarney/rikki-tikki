@@ -17,4 +17,7 @@ describe 'RikkiTikkiAPI.ExpressAdapter Test Suite', ->
     .get('/')
     .set('Accept', 'application/json')
     .expect('Content-Type', /json/)
-    .expect(200, done)
+    .expect(200, =>
+      done()
+      # super_done()
+    )

@@ -2,8 +2,8 @@
 # > Represents a single Record Association
 class RikkiTikki.Object extends Backbone.Model
   #### idAttribute
-  # > maps our Backbone.Model id attribute to Parse Api's objectId attribute
-  idAttribute: 'objectId'
+  # > maps our Backbone.Model id attribute to the Api's _id attribute
+  idAttribute: '_id'
   #### constructor(attrs, opts)
   # > Class Constructor Method
   constructor:(attrs, opts)->
@@ -18,7 +18,7 @@ class RikkiTikki.Object extends Backbone.Model
   #### url() 
   # > generates a Parse API URL for this object based on the Class name
   url : ->
-    "#{RikkiTikki.API_URI}/classes/#{@className}#{if !@isNew() then '/'+(@get 'objectId') else ''}#{if (p=RikkiTikki.querify @__op).length then '?'+p else ''}"
+    "#{RikkiTikki.API_URI}/#{@className}#{if !@isNew() then '/'+(@get 'objectId') else ''}#{if (p=RikkiTikki.querify @__op).length then '?'+p else ''}"
   #### sync(method, model, [options])
   # > Overrides `Backbone.Model.sync` to apply custom API header and data
   sync : (method, model, options={})->
