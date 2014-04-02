@@ -1,7 +1,7 @@
 RikkiTikkiAPI.Util ?= {}
 RikkiTikkiAPI.Util.queryToObject = (string)->
   o={}
-  string.replace('?','').split('&').forEach (v,k)=> o[p[0]] = p[1] if (p = v.split '=').length == 2
+  decodeURIComponent(string).replace('?','').split('&').forEach (v,k)=> o[p[0]] = p[1] if (p = v.split '=').length == 2
   o
 #### RikkiTikki.querify(object)
 # > Returns passes object as Key/Value paired string

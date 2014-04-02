@@ -36,6 +36,8 @@ class RikkiTikki.Query
   getParams:->
     (_.map _.pairs @__q, (v,k)=>v.join '=' ).join '&'
   toJSON:->
+    @__q
+  toString:->
     JSON.stringify @__q
   equalTo:(col, value)->
     @set null, col, value
@@ -81,8 +83,10 @@ class RikkiTikki.Query
     @set col, '$inQuery', where:query
   notInQuery:(col,query)->
     @set col, '$notInQuery', where:query
+    
   _or:(queries...)->
-    @__q['$or'] = _.concat (@__q['$or'] ?= []), _.map queries, (v,k) => v.__q
+    @__q['$or'] = (@__q['$or'] ?= []).concat RikkiTikki.Query.or queries
+    
   relatedTo:(object, key)->
     throw new Error 'RikkiTikki.Query.$relatedTo required object be of Type RikkiTikki.Object' if !(object instanceof RikkiTikki.Object) and object.className?
     @set null, "$relatedTo", 
@@ -105,12 +109,11 @@ class RikkiTikki.Query
     @set null, 'skip', "#{value}"
   arrayKey:(col,value)->
     @set null, col, "#{value}"
-RikkiTikki.Query.or = ->
+RikkiTikki.Query.or = (queries...)->
   className = null
-  _.each (Qs = _.toArray arguments), (q)=>
-    throw "All queries must be for the same class" if (className ?= q.className) != q.className
-  (q = new RikkiTikki.Query className)._orQuery Qs
-  q
+  _.each queries, (q)=>
+    throw "All queries must be of the same class" if (className ?= q.className) != q.className
+  _.map _.flatten(queries), (v,k)-> if v.query? then v.query() else v
 #### _quote(string)
 # > Implementation of Parse _quote to create RegExp from string value
 RikkiTikki.Query._quote = (s)-> "\\Q#{s}\\E"

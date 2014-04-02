@@ -26,45 +26,45 @@ class RikkiTikkiAPI.Router extends Object
   intializeRoutes:->
     verbose = false
     api_path = RikkiTikkiAPI.getAPIPath()
-    _.each @__collections, (name)=>
-      verbose && logger.log 'debug', "#{name}:"
-      # obj = require "./../routes/#{name}"
-      obj = {}
-      name = name.split('.').pop()
-      prefix = obj.prefix || ''
-      # before middleware support
-      if obj.before
-        path = "#{api_path}/#{name}/:#{name}_id"
-        app.all path, obj.before
-        verbose && logger?.log 'debug', "     ALL #{path} -> before" 
-        path = "#{api_path}/#{name}/:#{name}_id/*"
-        app.all path, obj.before
-        verbose && logger?.log 'debug', "     ALL #{path} -> before" 
-      # generate routes based on the exported methods
-      for operation in ['index','show','create','update','destroy']
-        # "reserved" exports
-        continue if ~['name', 'prefix', 'engine', 'before'].indexOf operation
-        # route exports
-        switch operation
-          when 'show'
-            method = 'get'
-            path = "#{api_path}/#{name}/:#{name}_id"
-          when 'update'
-            method = 'put'
-            path = "#{api_path}/#{name}/:#{name}_id"
-          when 'create'
-            method = 'post'
-            path = "#{api_path}/#{name}"
-          when 'destroy'
-            method = 'delete'
-            path = "#{api_path}/#{name}/:#{name}_id"
-          when 'index'
-            method = 'get'
-            path = "#{api_path}/#{if name != 'index' then name else ''}"
-          else
-            throw new Error "unrecognized route: #{name}.#{operation}"
-        path = "#{prefix}#{path}"
-        # app[method](path, @__routes[key])
-        @__adapter.addRoute path, method, handler if (handler = @__routes.createRoute method, path, operation)?
-        verbose && logger.log 'debug', "#{method.toUpperCase()} #{path} -> #{operation}"
+    # _.each @__collections, (name)=>
+    verbose && logger.log 'debug', "#{name}:"
+    # obj = require "./../routes/#{name}"
+    obj = {}
+    # name = name.split('.').pop()
+    prefix = obj.prefix || ''
+    # before middleware support
+    if obj.before
+      path = "#{api_path}/:collection/:id"
+      app.all path, obj.before
+      verbose && logger?.log 'debug', "     ALL #{path} -> before" 
+      path = "#{api_path}/:collection/:id/*"
+      app.all path, obj.before
+      verbose && logger?.log 'debug', "     ALL #{path} -> before" 
+    # generate routes based on the exported methods
+    for operation in ['index','show','create','update','destroy']
+      # "reserved" exports
+      continue if ~['name', 'prefix', 'engine', 'before'].indexOf operation
+      # route exports
+      switch operation
+        when 'show'
+          method = 'get'
+          path = "#{api_path}/:collection/:id"
+        when 'update'
+          method = 'put'
+          path = "#{api_path}/:collection/:id"
+        when 'create'
+          method = 'post'
+          path = "#{api_path}/:collection"
+        when 'destroy'
+          method = 'delete'
+          path = "#{api_path}/:collection/:id"
+        when 'index'
+          method = 'get'
+          path = "#{api_path}/:collection"
+        else
+          throw new Error "unrecognized REST operation type: '#{operation}'"
+      path = "#{prefix}#{path}"
+      # app[method](path, @__routes[key])
+      @__adapter.addRoute path, method, handler if (handler = @__routes.createRoute method, path, operation)?
+      verbose && logger.log 'debug', "#{method.toUpperCase()} #{path} -> #{operation}"
       # @__parent.use app

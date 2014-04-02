@@ -18,7 +18,7 @@ class RikkiTikki.Object extends Backbone.Model
   #### url() 
   # > generates a Parse API URL for this object based on the Class name
   url : ->
-    "#{RikkiTikki.API_URI}/#{@className}#{if !@isNew() then '/'+(@get 'objectId') else ''}#{if (p=RikkiTikki.querify @__op).length then '?'+p else ''}"
+    "#{RikkiTikki.API_URI}/#{@className}#{if !@isNew() then '/'+(@get @idAttribute) else ''}#{if (p=RikkiTikki.querify @__op).length then '?'+p else ''}"
   #### sync(method, model, [options])
   # > Overrides `Backbone.Model.sync` to apply custom API header and data
   sync : (method, model, options={})->

@@ -13,6 +13,8 @@ class RikkiTikkiAPI.RoutesAdapter extends RikkiTikkiAPI.AbstractAdapter
     normalPathname = global.path.normalize(pathname = (parsed = url.parse req.url).pathname).replace /\\/g, '/'
     route = @params.router.match normalPathname
     return if !route
+    req.params = route.params
+    req.query = RikkiTikkiAPI.Util.queryToObject req.url.split('?').pop()
     if (route.route? and @routes.lastIndexOf route.route) >= 0
       return route.fn[req.method] req, res
     else

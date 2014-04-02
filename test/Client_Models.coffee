@@ -40,15 +40,17 @@ describe 'RikkiTikki.Model Test Suite', ->
   it 'should have an ObjectID after saving', =>
     console.log @testModel
     (@testModel.get '_id').should.not.equal null
-  it 'should update Data to the Parse API', (done)=>
+  it 'should update Data to the API', (done)=>
     @timeout 15000
     o = 
       active:true
     h = 
       success:(m,r,o)=>
         done()
+      error:(m,r,o)=>
+        console.log arguments
     @testModel.save o, h
-  it 'should delete it\'s self from the Parse API', (done)=>
+  it 'should delete it\'s self from the API', (done)=>
     h = 
       success:(m,r,o)=>
         done()

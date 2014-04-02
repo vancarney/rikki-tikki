@@ -38,7 +38,7 @@ class RikkiTikki.Collection extends Backbone.Collection
           # deletes param from `options`
           delete options[v]
     # sets the encoded request data to request header
-    opts.data = if !@__query then JSON.stringify @.toJSON() else "where=#{@__query.toJSON()}"
+    opts.data = if !@__query then JSON.stringify @.toJSON() else "where=#{@__query}"
     console.log opts.data
     # sets internal success callback on `options`
     opts.success = (m,r,o)=>
@@ -86,6 +86,10 @@ class RikkiTikki.Collection extends Backbone.Collection
       @className = RikkiTikki.Inflection.pluralize @className
     @
   ## Query Methods
+  #### equalTo:(col, value)
+  or:(queries...)->
+    @query().or RikkiTikki.Query.or queries
+    @
   #### equalTo:(col, value)
   equalTo:(col, value)->
     (if !@__query then @query() else @__query).equalTo col, value
@@ -198,8 +202,8 @@ RikkiTikki.Collection.inQuery = (col,query)->
 RikkiTikki.Collection.notInQuery = (col,query)->
   (new @).notInQuery col, query
 #### or:(queries...)
-RikkiTikki.Collection.or = (queries...)->
-  (new @).or queries
+RikkiTikki.Collection.orQuery = (queries...)->
+  (new @).orQuery queries
 #### include(value)
 RikkiTikki.Collection.include = (value)->
   (new @).include = value
