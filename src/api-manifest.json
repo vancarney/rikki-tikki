@@ -1,6 +1,7 @@
 {
   "files":[
   "src/api/rikki-tikki-api.coffee",
+  "src/api/OperationTypes.coffee",
   "src/api/util.coffee",
   "src/api/classes/ConfigLoader.coffee",
   "src/api/classes/DSNOptions.coffee",
@@ -12,6 +13,11 @@
   "src/api/classes/adapters/ExpressAdapter.coffee",
   "src/api/classes/adapters/HapiAdapter.coffee",
   "src/api/classes/adapters/RoutesAdapter.coffee",
+  "src/api/classes/RoutesCreate.coffee",
+  "src/api/classes/RoutesDestroy.coffee",
+  "src/api/classes/RoutesIndex.coffee",
+  "src/api/classes/RoutesUpdate.coffee",
+  "src/api/classes/RoutesShow.coffee",
   "src/api/classes/Routes.coffee",
   "src/api/classes/Router.coffee"
   ]

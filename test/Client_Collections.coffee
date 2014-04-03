@@ -40,8 +40,7 @@ describe 'RikkiTikki.Collctions Test Suite', ->
     # console.log RikkiTikki.Query.or @clazz.contains('name','Computer').greaterThanOrEqualTo('price',10)
     q  = @clazz.contains('name','Computer').greaterThanOrEqualTo 'price', 10
     q2 = @clazz.contains('name','Incredible').lessThanOrEqualTo('price',10).or(q)
-    
-    console.log "q2.query: #{JSON.stringify q2.query()}"
+    # console.log "q2.query: #{JSON.stringify q2.query()}"
     @clazz.contains('name','Incredible').lessThanOrEqualTo('price',10).or(q).fetch
       success:(m,r,o)=>
         done()
