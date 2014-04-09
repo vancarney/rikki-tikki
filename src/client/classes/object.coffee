@@ -4,17 +4,28 @@ class RikkiTikki.Object extends Backbone.Model
   #### idAttribute
   # > maps our Backbone.Model id attribute to the Api's _id attribute
   idAttribute: '_id'
+  __schema:{}
   #### constructor(attrs, opts)
   # > Class Constructor Method
-  constructor:(attrs, opts)->
+  constructor:(attrs, opts={})->
     # passes `arguments` to __super__
     super attrs, opts
+    @setSchema opts.schema if opts.schema
     # writes warning to console if the Object's `className` was not detected
     if (@className ?= RikkiTikki.getConstructorName @) == RikkiTikki.UNDEFINED_CLASSNAME
       console.warn 'RikkiTikki.Object requires className to be defined'
     # pluralizes the `className`
     else
       @className = RikkiTikki.Inflection.pluralize @className
+  setSchema:(schema)->
+    @__schema = _.extend @__schema, schema
+    if (methods = @__schema.methods)?
+      _.each methods, (v,k)=> @[k] = ()=> v.apply @, arguments
+  getSchema:-> @__schema
+  get:(attr)->
+    (if _.isArray (v = @schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @
+  set:(attr, value)->
+    (if _.isArray (v = @schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @, value     
   #### url() 
   # > generates a Parse API URL for this object based on the Class name
   url : ->
@@ -62,6 +73,7 @@ class RikkiTikki.Object extends Backbone.Model
   save:(attributes, options={})->
     self = @
     RikkiTikki.Object._findUnsavedChildren @attributes, children = [], files = []
+    pre.save?() if (pre = @getSchema().pre)?
     if children.length
       RikkiTikki.Object.saveAll children,
         completed: (m,r,o) =>
@@ -76,7 +88,9 @@ class RikkiTikki.Object extends Backbone.Model
               options.completed? m,r,o
             error: -> console.log 'save failed'
           
-        success: (m,r,o) => options.success? m,r,o
+        success: (m,r,o) =>
+          post.save?() if (post = @getSchema().post)?
+          options.success? m,r,o
         error:   (m,r,o) => options.error? m,r,o
     else
       # calls `save` on __super__

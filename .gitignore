@@ -17,6 +17,11 @@ Rakefile
 ################
 node_modules/*
 
+# Scratch Dir #
+################
+_scratch
+
+
 # Environment settings #
 ########################
 *.env

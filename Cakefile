@@ -48,7 +48,7 @@ build = ()->
   
   # Enable coffee-script compiling
   #launch 'coffee', (['-j','lib/sparse.js', '-c', 'src/sparse.coffee', 'src/classes/*']), coffeeCallback
-  # console.log "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}"
+  console.log "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}"
   exec "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
   console.log "coffee --join lib/api.js --compile #{apiFiles.files.join(' ').replace(/('|\")/g, '')}"
   exec "coffee --join lib/api.js --compile #{apiFiles.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
@@ -89,11 +89,12 @@ test = (options=[],callback)->
 
     # add coffee directive
     options.push '--compilers'
-    options.push 'coffee:coffee-script/register'
+    options.push '\'coffee:coffee-script/register\''
     options.push '--reporter'
     options.push 'spec'
     # options.push '-g'
     # options.push 'Query+'
+    console.log options.join ' '
     launch 'mocha', options, callback
 
 # Begin Helpers

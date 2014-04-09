@@ -50,6 +50,13 @@ if !global.RikkiTikki
       read:   'GET'
       update: 'PUT'
       destroy:'DELETE'
+    #### __SCHEMAS__
+    #> Placeholder for Schemas
+    __SCHEMAS__:{}
+  RikkiTikki.createSchema = (name, options={})->
+    if (s = RikkiTikki.__SCHEMAS__[name])? then RikkiTikki.__SCHEMAS__[name] = _.extend s, options else RikkiTikki.__SCHEMAS__[name] = new RikkiTikki.Schema options
+  # RikkiTikki.createCollection = (name, options={})->
+    # new (RikkiTikki.Collection.extend options, className:name)
   RikkiTikki.initialize = (app_id, rest_key)->
     RikkiTikki.APP_ID   = app_id
     RikkiTikki.REST_KEY = rest_key

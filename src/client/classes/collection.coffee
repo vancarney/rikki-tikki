@@ -23,6 +23,12 @@ class RikkiTikki.Collection extends Backbone.Collection
   parse : (options)->
     # returns parsed or raw data from call to `parse` on __super__
     (data = Collection.__super__.parse.call @, options).results || data
+  #### schema
+  # > placeholder for prototype property override
+  schema : {}
+  #### __schema
+  # > Schema Object
+  __schema: null
   #### sync(method, model, [options])
   # > Override `Backbone.Collection.sync`
   sync : (@__method, model, options={})->
@@ -39,7 +45,6 @@ class RikkiTikki.Collection extends Backbone.Collection
           delete options[v]
     # sets the encoded request data to request header
     opts.data = if !@__query then JSON.stringify @.toJSON() else "where=#{@__query}"
-    console.log opts.data
     # sets internal success callback on `options`
     opts.success = (m,r,o)=>
       # resets `__params` object
@@ -53,6 +58,27 @@ class RikkiTikki.Collection extends Backbone.Collection
       options.error m, r, o if options.error
     # calls `sync` on __super__
     Collection.__super__.sync.call @, @__method, @, _.extend _.clone(options), opts, if @__query then where:@__query.toJSON() else {}
+  #### _prepareModel(attrs, options)
+  # >
+  _prepareModel:(attrs, options)->
+    options.schema = _.extend @schema || {}, options.schema || {}
+    Collection.__super__._prepareModel.call @, attrs, options
+  add:(obj,prefix)->
+    @__schema.add obj, prefix
+  get:(key)->
+    @__schema.get key
+  set:(key, value, _tags)->
+    @__schema.set key, value, _tags
+  index:(fields,opts)->
+    @__schema fields, opts
+  method:(name, fn)->
+    @__schema.method name, fn 
+  static:(name,fn)->
+    @__schema.static name, fn 
+  virtual:(name, fn)->
+    @__schema.virtuals name, fn  
+  reserved:->
+    RikkiTikki.Schema.reserved()
   #### query(query, [options])
   # > Applies `Query` to collection and fetches result
   # query : (query, options={})->
@@ -75,7 +101,7 @@ class RikkiTikki.Collection extends Backbone.Collection
         options.error m,r,o if options.error
   #### constructor(attributes, options)
   # > Class Constructor Method
-  constructor:(attrs, opts)->
+  constructor:(attrs, opts={})->
     # passes `arguments` to __super__
     super attrs, opts
     # writes warning to console if the Object's `className` was not detected
@@ -84,6 +110,8 @@ class RikkiTikki.Collection extends Backbone.Collection
     # pluralizes the `className`
     else
       @className = RikkiTikki.Inflection.pluralize @className
+    # creates new schema from Global Schemas, local schema prototype and opts.schema param
+    @__schema = new RikkiTikki.Schema _.extend RikkiTikki.__SCHEMAS__[@className], @schema, opts.schema || {}
     @
   ## Query Methods
   #### equalTo:(col, value)

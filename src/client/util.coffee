@@ -35,8 +35,11 @@ RikkiTikki.querify = (obj)->
 # > Attempts to safely determine name of the Class Constructor returns RikkiTikki.UNDEFINED_CLASSNAME as fallback
 RikkiTikki.getConstructorName = (fun)->
   fun.constructor.name || if (name = RikkiTikki.getFunctionName fun.constructor)? then name else RikkiTikki.UNDEFINED_CLASSNAME
+RikkiTikki.getTypeOf = (obj)-> Object.prototype.toString.call(obj).slice 8, -1
 RikkiTikki.getFunctionName = (fun)->
-  if (n = fun.toString().match /function+\s{1,}([A-Z]{1}[a-zA-Z]*)/)? then n[1] else null
+  if (n = fun.toString().match /function+\s{1,}([a-zA-Z]{1,}[_0-9a-zA-Z]?)/)? then n[1] else null
+RikkiTikki.isOfType = (value, kind)->
+  (@getTypeOf value) == (@getFunctionName kind) or value instanceof kind
 #### RikkiTikki._encode
 # > Attempts to JSON encode a given Object
 RikkiTikki._encode = (value, seenObjects, disallowObjects)->
