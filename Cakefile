@@ -50,8 +50,8 @@ build = ()->
   #launch 'coffee', (['-j','lib/sparse.js', '-c', 'src/sparse.coffee', 'src/classes/*']), coffeeCallback
   console.log "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}"
   exec "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
-  console.log "coffee --join lib/api.js --compile #{apiFiles.files.join(' ').replace(/('|\")/g, '')}"
-  exec "coffee --join lib/api.js --compile #{apiFiles.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
+  # console.log "coffee --join lib/api.js --compile #{apiFiles.files.join(' ').replace(/('|\")/g, '')}"
+  exec "coffee -b -c -o lib/api src/api", coffeeCallback
 # ## *watch*
 # watch project src folders and build on change
 task 'watch', 'watch project src folders and build on change', ()-> watch -> log ':)', green

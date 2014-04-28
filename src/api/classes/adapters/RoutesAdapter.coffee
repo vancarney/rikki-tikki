@@ -1,5 +1,7 @@
 url  = require 'url'
-class RikkiTikkiAPI.RoutesAdapter extends RikkiTikkiAPI.AbstractAdapter
+RikkiTikkiAPI = module.parent.exports
+AbstractAdapter = require './AbstractAdapter'
+class RoutesAdapter extends AbstractAdapter
   required:['router']
   routes: []
   addRoute:(route, method, handler)->
@@ -7,8 +9,8 @@ class RikkiTikkiAPI.RoutesAdapter extends RikkiTikkiAPI.AbstractAdapter
     fn[method.toUpperCase()] = handler
     @routes = _.union @routes, route
     @params.router.addRoute route, fn
-  setApp:(app)->
-    @params.app ?= app
+  # setApp:(app)->
+    # @params.app ?= app
   requestHandler:(req, res)=>
     normalPathname = global.path.normalize(pathname = (parsed = url.parse req.url).pathname).replace /\\/g, '/'
     route = @params.router.match normalPathname
@@ -23,3 +25,4 @@ class RikkiTikkiAPI.RoutesAdapter extends RikkiTikkiAPI.AbstractAdapter
     res.setHeader 'Content-Type', 'application/json'
     res.writeHead "#{data.status}", if data.status != 200 then "#{data.content}" else 'ok'
     res.end if data.status == 200 then JSON.stringify data.content else ""
+module.exports = RoutesAdapter
