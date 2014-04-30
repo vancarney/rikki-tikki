@@ -1,5 +1,7 @@
 url  = require 'url'
-RikkiTikkiAPI = module.parent.exports
+path  = require 'path'
+{_} = require 'underscore'
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 AbstractAdapter = require './AbstractAdapter'
 class RoutesAdapter extends AbstractAdapter
   required:['router']
@@ -12,7 +14,7 @@ class RoutesAdapter extends AbstractAdapter
   # setApp:(app)->
     # @params.app ?= app
   requestHandler:(req, res)=>
-    normalPathname = global.path.normalize(pathname = (parsed = url.parse req.url).pathname).replace /\\/g, '/'
+    normalPathname = path.normalize(pathname = (parsed = url.parse req.url).pathname).replace /\\/g, '/'
     route = @params.router.match normalPathname
     return if !route
     req.params = route.params

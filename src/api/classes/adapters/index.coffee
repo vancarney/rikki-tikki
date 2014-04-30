@@ -1,5 +1,5 @@
 {_} = require 'underscore'
-RikkiTikkiAPI = module.parent.exports
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI = module.parent.exports
 module.exports.AbstractAdapter  = require './AbstractAdapter'
 module.exports.express          = require './ExpressAdapter'
 module.exports.hapi             = require './HapiAdapter'
