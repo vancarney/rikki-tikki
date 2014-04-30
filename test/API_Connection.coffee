@@ -5,7 +5,7 @@ RikkiTikkiAPI   = require '../src/api'
 describe 'RikkiTikkiAPI.Connection Test Suite', ->
   it 'should Connect with a basic DSN String', (done)=>
     @conn1 = new RikkiTikkiAPI.Connection "0.0.0.0"
-    @conn1.on 'error', (e)-> console.log e
+    @conn1.on 'error', (e)-> #console.log arguments
     @conn1.once 'open', => done() 
   it 'should close the connection', (done)=>
     @conn1.close (e) => done() if !e

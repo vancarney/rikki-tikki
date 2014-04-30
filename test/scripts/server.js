@@ -2,13 +2,13 @@ var http            = require( 'http' );
 var Router          = require( 'routes' );
 var request         = require( 'supertest' );
 var chai            = require('chai').should();
-var RikkiTikkiAPI   = require( '../../lib/api' ).RikkiTikkiAPI;
+var RikkiTikkiAPI   = require( '../../lib/api' );
 var _               = require('underscore')._;
 var adapter 		= null;
 global.names 		= ['Products','Orders','Users'];
 
-global.connection = new RikkiTikkiAPI.Connection( "0.0.0.0/client_test" );
-connection.once( 'open', function(e) {
+global.connection = RikkiTikkiAPI.connection = new RikkiTikkiAPI.Connection( "0.0.0.0/client_test" );
+connection.once( 'open', function(e, conn) {
   global.collectionManager = new RikkiTikkiAPI.CollectionManager( connection );
   _.each( names, function(value,k) {
     collectionManager.createCollection( value, null, function(e,res) {
@@ -16,13 +16,13 @@ connection.once( 'open', function(e) {
     		throw Error(e);
    	});
  });
- (global.collections = new RikkiTikkiAPI.CollectionMonitor( connection.getMongoDB() ))
+ (global.collections = RikkiTikkiAPI.collectionMon =  new RikkiTikkiAPI.CollectionMonitor( connection ))
  .on( 'init', function() {
-	adapter = new RikkiTikkiAPI.RoutesAdapter( {router: new Router} );
-	adapter.setApp( http.createServer( adapter.requestHandler) );
-	router 	= new RikkiTikkiAPI.Router( connection, collections.getNames(), adapter );
+	adapter = new (RikkiTikkiAPI.getRoutingAdapter('routes'))( {router: new Router} );
+	router 	= new RikkiTikkiAPI.Router( connection, adapter );
 	router.intializeRoutes();
-	adapter.params.app.listen( 3000 );
+	httpServer = http.createServer(adapter.requestHandler);
+	httpServer.listen(3006);
  }); 
 });
 

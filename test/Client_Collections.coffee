@@ -1,9 +1,11 @@
 fs              = require 'fs'
+child_process   = require 'child_process'
 (chai           = require 'chai').should()
 _               = (require 'underscore')._
 Backbone        = require 'backbone'
 Backbone.$      = require( 'jQuery')
 RikkiTikki      = require('../lib/client').RikkiTikki
+proc            = child_process.spawn 'node', ['./scripts/server']
 # server          = true
 # service          = require './scripts/server'
 
@@ -15,7 +17,7 @@ RikkiTikki      = require('../lib/client').RikkiTikki
 # RikkiTikki.REST_KEY = process.env.PARSE_REST_KEY
 
 # init data to test with
-# (clazz = class Product extends (RikkiTikki.Model)).should.be.a 'function'
+clazz = class Product extends RikkiTikki.Model
 # _.each require( './data/products.json' ).Products, (v,k)=>
   # model = new clazz
   # h = 

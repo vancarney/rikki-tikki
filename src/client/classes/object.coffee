@@ -4,7 +4,7 @@ class RikkiTikki.Object extends Backbone.Model
   #### idAttribute
   # > maps our Backbone.Model id attribute to the Api's _id attribute
   idAttribute: '_id'
-  __schema:{}
+  __schema:{virtual:{}}
   #### constructor(attrs, opts)
   # > Class Constructor Method
   constructor:(attrs, opts={})->
@@ -23,9 +23,16 @@ class RikkiTikki.Object extends Backbone.Model
       _.each methods, (v,k)=> @[k] = ()=> v.apply @, arguments
   getSchema:-> @__schema
   get:(attr)->
-    (if _.isArray (v = @schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @
+    if @__schema.virtual[attr]
+      value = (if _.isArray (v = @__schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @
+    else
+      value = Object.__super__.get.call @, attr
+    value
   set:(attr, value)->
-    (if _.isArray (v = @schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @, value     
+    if @__schema.virtual[attr]
+      (if _.isArray (v = @s__chema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @, value 
+    else
+      Object.__super__.set.call @, attr, value
   #### url() 
   # > generates a Parse API URL for this object based on the Class name
   url : ->

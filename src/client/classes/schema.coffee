@@ -65,6 +65,10 @@ class RikkiTikki.Schema extends Object
     @discriminatorMapping = null
     @_indexedpaths = null
     @add obj if obj?
+  get:(key)->
+    if _.keys(RikkiTikki.Schema.reserved).indexOf key == -1 then @[key] else null
+  set:(key,val,_tags)->
+    @[key] = val if _.keys(RikkiTikki.Schema.reserved).indexOf key == -1
 ## Schema.reserved
 RikkiTikki.Schema.reserved = _.object _.map """
 on,db,set,get,init,isNew,errors,schema,options,modelName,collection,toObject,emit,_events,_pres,_posts
