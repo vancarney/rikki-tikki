@@ -8,16 +8,21 @@ class CollectionManager extends EventEmitter
     throw Error "CollectionManager arg1 must be Connection. Type was '#{typeof @__conn}'" if !Util.isOfType @__conn, Connection
     @__db = @__conn.getMongoDB() || throw Error 'Connection is broken'
   createCollection:(name, opts, callback)->
-    callback ?= opts if typeof opts == 'function'
+    if typeof opts == 'function'
+      callback ?= opts
+      opts = {}
     @__db.createCollection name, opts, (e,collection)=>
+      RikkiTikkiAPI.collectionMon.refresh()
       callback? e, collection
   dropCollection:(name, callback)->
     @getCollection name, (e,collection)=>
       collection.drop (e, res)=>
+        RikkiTikkiAPI.collectionMon.refresh()
         callback? e, collection
   renameCollection:(oldName, newName, callback)->
     @getCollection oldName, (e,collection)=> 
-      collection.rename newName, dropTarget:true, (e, res)=> 
+      collection.rename newName, dropTarget:true, (e, res)=>
+        RikkiTikkiAPI.collectionMon.refresh()
         callback? e, res
   getCollection:(name, callback)->
     @__db.collection name, (e,collection)=> callback? e, collection

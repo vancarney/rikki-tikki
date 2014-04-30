@@ -8,13 +8,16 @@ class Connection extends EventEmitter
   constructor:(args, @opts={})->
     Connector = require if (new Util.Capabilities()).mongooseSupported() and !@opts.forceNative then './MongooseConnection' else './NativeConnection'
     @__conn = new Connector args, @opts
-    @__conn.on 'open',  (evt) => @emit 'open'
+    @__conn.on 'open',  (conn) => @emit 'open', conn
     @__conn.on 'close', (evt) => @handleClose evt
-    @__conn.on 'error', (e)   => @emit 'error', "#{e}"
+    @__conn.on 'error', (e)   => 
+      console.log("error: #{e}") 
+      @emit 'error', "#{e}"
     @connect args if args?
     @
   handleClose:(evt)->
-    @emit 'close', evt
+    @__conn = null
+    @emit 'close'
   connect:(args)->
     @__conn.connect args
   getConnection:->
@@ -25,11 +28,10 @@ class Connection extends EventEmitter
     @__conn.getDatabaseName()
   isConnected:-> 
     @__conn.isConnected()
-  getCollectionNames:->
-    @__conn.getCollectionNames()
+  getCollectionNames:(callback)->
+    @__conn.getCollectionNames (e, names) => callback? e, names
   close:(callback)->
     @__conn.close (e)=>
-      @__conn = null
       callback? e
 module.exports = Connection
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI

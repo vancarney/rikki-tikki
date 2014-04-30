@@ -9,7 +9,7 @@ class MongooseConnection extends EventEmitter
     if !(RikkiTikkiAPI.connection)
       client = mongoose.connection
       client.on 'error', (e) => @emit 'error', e.message
-      client.on 'open', => @emit 'open'
+      client.on 'open', (conn)=> @emit 'open', conn
       @connect args if args?
   handleClose:(evt)->
     @emit 'close', evt

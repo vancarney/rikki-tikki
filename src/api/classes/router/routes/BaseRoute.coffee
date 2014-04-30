@@ -14,7 +14,9 @@ class BaseRoute extends Object
     RikkiTikkiAPI = module.parent.parent.exports.RikkiTikkiAPI
     CollectionManager = new RikkiTikkiAPI.CollectionManager RikkiTikkiAPI.connection
   createCollection:(name)->
-    CollectionManager.createCollection name if RikkiTikkiAPI.listCollections().indexOf name < 0
+    if 0 > RikkiTikkiAPI.listCollections().indexOf name
+      CollectionManager.createCollection name, {}, (e,res)=>
+  checkSchema:(name)->
 module.exports = BaseRoute    
 ###
     if obj.before

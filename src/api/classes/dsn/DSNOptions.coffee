@@ -12,7 +12,6 @@ class DSNOptions extends Object
       try
         @__options = @__validate options
       catch e
-        console.log "setOptions error: #{e}"
         return throw Error e
     else
       @__options = options.getOptions()

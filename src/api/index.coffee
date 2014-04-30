@@ -62,14 +62,16 @@ RikkiTikkiAPI.getEnvironment = ->
   process.env.NODE_ENV || 'development'
 RikkiTikkiAPI.API_BASEPATH = '/api'
 RikkiTikkiAPI.API_VERSION  = '1'
+RikkiTikkiAPI.API_NAMESPACE = ''
 RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 RikkiTikkiAPI.CONFIG_FILENAME = 'rikkitikki.json'
 RikkiTikkiAPI.CONFIG_PATH = 'config'
+RikkiTikkiAPI.schema  = {}
 RikkiTikkiAPI.getFullPath = ->
   path.normalize "#{process.cwd()}#{path.sep}#{RikkiTikkiAPI.CONFIG_PATH}#{path.sep}#{RikkiTikkiAPI.CONFIG_FILENAME}"
 RikkiTikkiAPI.listCollections = ->
-  if RikkiTikkiAPI.collectionMon? then RikkiTikkiAPI.collectionMon.getCollections() else null
+  if RikkiTikkiAPI.collectionMon? then RikkiTikkiAPI.collectionMon.getNames() else []
 RikkiTikkiAPI.configExists = (_path)->
   fs.existsSync if _path?.match /\.json$/ then _path else RikkiTikkiAPI.getFullPath()
 RikkiTikkiAPI.model = (name,schema={})-> 
@@ -89,8 +91,8 @@ RikkiTikkiAPI.Connection        = _connections.Connection
 _router                         = require './classes/router'
 RikkiTikkiAPI.Router            = _router.Router
 RikkiTikkiAPI.RoutingParams     = _router.RoutingParams
-RikkiTikkiAPI.ConfigLoader      = require './classes/loaders/ConfigLoader'
-RikkiTikkiAPI.SchemaLoader      = require './classes/loaders/SchemaLoader'
+RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
+RikkiTikkiAPI.SchemaLoader      = require './classes/schema/SchemaLoader'
 RikkiTikkiAPI._adapters         = require './classes/adapters'
 _collections                    = require './classes/collections'
 RikkiTikkiAPI.CollectionManager = _collections.CollectionManager

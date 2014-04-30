@@ -1,3 +1,4 @@
+{_} = require 'underscore'
 class Schema extends Object
   ## Add
   add: (obj, prefix='')->
@@ -65,7 +66,30 @@ class Schema extends Object
     @discriminatorMapping = null
     @_indexedpaths = null
     @add obj if obj?
+  toJSON:->
+    o = {}
+    _.each @, (v,k)=>
+      if (typeof v !='object')
+        o[k] = RikkiTikki.Util.getFunctionName v
+      else
+        if v.type?
+          v.type = RikkiTikki.Util.getFunctionName type = v.type
+          if v.default
+            v.default = "new #{type}.#{RikkiTikki.Util.getFunctionName v.default}"
+  toString:->
+  toSource:->
+    console.log @
+    # s = ""
+    # renderSchema = (name)=>
+      # _.template Schema.template, @
+    # _.each _.keys(@__schema), (schema) => s.concat renderSchema schema
+Schema.nativeTypes =
+  ['Object','Number','String','Boolean','Array']
 ## Schema.reserved
 Schema.reserved = _.object _.map """
 on,db,set,get,init,isNew,errors,schema,options,modelName,collection,toObject,emit,_events,_pres,_posts
 """.split(','), (v)->[v,1]
+Schema.template = """
+<%=(ns = RikkiTikkiAPI.API_NAMESPACE.concat('.')) != '.' ? ns : ''%><%=name%> =
+<%=data%>
+"""

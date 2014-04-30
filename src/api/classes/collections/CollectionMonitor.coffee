@@ -22,7 +22,8 @@ class CollectionMonitor extends EventEmitter
   refresh:(callback)->
     @__conn.getCollectionNames (e, names) =>
       if names?.length > 0
-        @__collectionNames.setSource list = _.map names, (v)-> name:v['name']
+        list = _.compact _.map names, (v)-> name:(n=v.name.split '.').pop(), db:n.shift(), options: v.options if !v['name'].match /\.indexes+$/
+        @__collectionNames.setSource list
       callback? e, list
   start:(interval=20)->
     @__iVal = setInterval (=> @refresh()), interval

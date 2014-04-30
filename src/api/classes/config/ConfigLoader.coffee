@@ -1,3 +1,4 @@
+fs = require 'fs'
 RikkiTikkiAPI = module.parent.exports
 class ConfigLoader extends Object
   __config:null

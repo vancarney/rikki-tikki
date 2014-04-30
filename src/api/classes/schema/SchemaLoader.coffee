@@ -54,8 +54,12 @@ class SchemaLoader extends Object
         @__schema = loadFile @__path
       catch e
         throw e
+  save:->
+    # fs.writeFile "#{RikkiTikkiAPI.SCHEMA_PATH}/rikkitikki/schema.js", s, (e)-> console.error 'failed to save schema' 
+  getSchema:(name)->
+    @__schema[name] || null 
   toJSON:->
     @__schema
   toString:->
-    JSON.stringify @toJSON(), null, 2 
+    JSON.stringify @toJSON(), null, 2
 module.exports = SchemaLoader

@@ -12,9 +12,8 @@ class Router extends Object
     @__db.on 'open', => @intializeRoutes()
   getAdapter:-> @__adapter
   intializeRoutes:->
-    if RikkiTikkiAPI.getEnvironment() == 'development'
-      @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
-        @__adapter.responseHandler res, { status:200, content:{Products:{name:'String', description:'String', price:'Number'}} }
+    @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
+      @__adapter.responseHandler res, { status:200, content:RikkiTikkiAPI.schemas }
     RikkiTikkiAPI.DEBUG && logger.log 'debug', "#{name}:"
     # generate routes based on the REST operations
     for operation in ['index','show','create','update','destroy']

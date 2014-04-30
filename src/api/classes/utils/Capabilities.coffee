@@ -5,18 +5,14 @@ class Capabilities extends Object
   __modules: []
   __loaded_modules: []
   constructor:->
-    # console.log require.main
     for name in ['mongoose','mongodb'] 
       @__modules.push name if _.map( _.pluck( require.cache, 'filename' ), (p)-> path.dirname(p).split(path.sep).pop()).indexOf( "#{name}" ) > -1
       @__loaded_modules.push name if Util.detectModule name
   detectedModules: ->
-    console.log @__modules
     @__modules
   loadedModules: ->
-    console.log @__loaded_modules
     @__loaded_modules
   mongooseSupported: ->
-    console.log @detectedModules().indexOf 'mongoose'
     0 <= @detectedModules().indexOf( 'mongoose' )
   mongooseLoaded: ->
     0 <= @loadedModules().indexOf 'mongoose'

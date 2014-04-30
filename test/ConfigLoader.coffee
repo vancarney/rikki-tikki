@@ -1,7 +1,7 @@
 fs              = require 'fs'
 path            = require 'path'
 (chai           = require 'chai').should()
-RikkiTikkiAPI   = require( '../lib/api' ).RikkiTikkiAPI
+RikkiTikkiAPI   = require( '../src/api' )
 describe 'RikkiTikkiAPI.ConfigLoader Test Suite', ->
   @configLoader = null 
   it 'should accept a config path as a String', =>
