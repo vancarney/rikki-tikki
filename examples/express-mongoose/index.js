@@ -1,6 +1,7 @@
 var express 		= require('express');
 var RikkiTikkiAPI	= require('../../lib/api');
-var port = 3000;
+var mongoose		= require('mongoose');
+var port 			= 3000;
 
 global.api = new RikkiTikkiAPI();
 global.app = express();
