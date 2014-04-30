@@ -16,7 +16,7 @@ class NativeConnection extends EventEmitter
   __attemptConnection:(string)->
     try
       @_client.connect "#{string}", null, (e,conn)=>
-        return @emit 'error', e.message if e?
+        return @emit 'error', e if e?
         @__conn = conn
         @emit 'open', conn
     catch e

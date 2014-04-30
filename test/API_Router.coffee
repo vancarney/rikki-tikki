@@ -4,7 +4,7 @@ path            = require 'path'
 request         = require 'supertest'
 RikkiTikkiAPI   = require '../src/api'
 describe 'RikkiTikkiAPI.Router Test Suite', ->
-  # @url      = 'http://0.0.0.0:3000'
+  # @url      = 'http://0.0.0.0:3002'
   # @api_path = "#{RikkiTikkiAPI.getAPIPath()}/index"
   # it 'should have API Index Routes', (done)=>
     # request(@url)

@@ -8,9 +8,15 @@ class Connection extends EventEmitter
   constructor:(args, @opts={})->
     Connector = require if (new Util.Capabilities()).mongooseSupported() and !@opts.forceNative then './MongooseConnection' else './NativeConnection'
     @__conn = new Connector args, @opts
-    @__conn.on 'open',  (conn) => @emit 'open', @
-    @__conn.on 'close', (evt)  => @handleClose evt
-    @__conn.on 'error', (e)    => @emit 'error', "#{e}"
+    @__conn.once 'open',  (conn)=> 
+      @emit 'open', @
+      @opts.open? @
+    @__conn.once 'close', (evt)=> 
+      @handleClose evt
+      @opts.close? evt
+    @__conn.on 'error', (e)=>
+      @emit 'error', "#{e}"
+      @opts.error? evt
     @connect args if args?
     @
   handleClose:(evt)->
