@@ -35,8 +35,8 @@ class SchemaLoader extends Object
             o
           res = require( "#{p}" )
           o = parseObj res, o
-        catch
-          throw new Error e
+        catch e
+          throw e
       o
     if @__path instanceof Object
       # tests if is Array

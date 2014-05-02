@@ -13,4 +13,4 @@ class SchemaManager extends Object
     @__loader.getSchema name
   saveSchema:->
     @__loader.save()
-
+module.exports = SchemaManager

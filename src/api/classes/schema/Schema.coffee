@@ -1,4 +1,5 @@
 {_} = require 'underscore'
+RikkiTikkiAPI = module.parent.exports
 class Schema extends Object
   ## Add
   add: (obj, prefix='')->
@@ -19,7 +20,7 @@ class Schema extends Object
       # return @paths[path] if @paths[path]
       # return @subpaths[path] if @subpaths[path]
       # return if /\.\d+\.?.*$/.test path then getPositionalPath @, path else undefined
-    # throw "'#{path}' may not be used as a schema pathname" if RikkiTikki.Schema.reserved[path]
+    # throw "'#{path}' may not be used as a schema pathname" if RikkiTikkiAPI.Schema.reserved[path]
 #    
     # last = (subpaths = path.split /\./).pop()
     # branch = @tree
@@ -29,7 +30,7 @@ class Schema extends Object
         # throw "Cannot set nested path '#{path}'. Parent path #{subpaths.slice(0, i).concat([sub]).join '.'} already set to type '#{branch[sub].name}'."
       # branch = branch[sub]
     # branch[last] = _.clone obj
-    @paths[path] = new RikkiTikki.SchemaItem path, obj #Schema.interpretAsType path, obj
+    @paths[path] = obj #new RikkiTikkiAPI.SchemaItem path, obj #Schema.interpretAsType path, obj
     @
   ## pathType
   pathType: (path)->
@@ -43,9 +44,9 @@ class Schema extends Object
     # virtuals = @virtuals
     # parts    = name.split( '.' )
     # name.split( '.' ).reduce ((mem, part, i, arr)-> console.log arguments), @tree
-    # mem[part] || mem[part] = if (i == parts.length-1) then new RikkiTikki.VirtualType options, name else {}
+    # mem[part] || mem[part] = if (i == parts.length-1) then new RikkiTikkiAPI.VirtualType options, name else {}
     @virtuals[name] = name.split( '.' ).reduce ((mem, part, i, arr)->
-      mem[part] || mem[part] = if (i == arr.length-1) then new RikkiTikki.VirtualType options, name else {}
+      mem[part] || mem[part] = if (i == arr.length-1) then new RikkiTikkiAPI.VirtualType options, name else {}
     ), @tree
   ## virtualpath
   virtualpath: (name)->
@@ -66,30 +67,10 @@ class Schema extends Object
     @discriminatorMapping = null
     @_indexedpaths = null
     @add obj if obj?
-  toJSON:->
-    o = {}
-    _.each @, (v,k)=>
-      if (typeof v !='object')
-        o[k] = RikkiTikki.Util.getFunctionName v
-      else
-        if v.type?
-          v.type = RikkiTikki.Util.getFunctionName type = v.type
-          if v.default
-            v.default = "new #{type}.#{RikkiTikki.Util.getFunctionName v.default}"
-  toString:->
-  toSource:->
-    console.log @
-    # s = ""
-    # renderSchema = (name)=>
-      # _.template Schema.template, @
-    # _.each _.keys(@__schema), (schema) => s.concat renderSchema schema
 Schema.nativeTypes =
   ['Object','Number','String','Boolean','Array']
 ## Schema.reserved
 Schema.reserved = _.object _.map """
-on,db,set,get,init,isNew,errors,schema,options,modelName,collection,toObject,emit,_events,_pres,_posts
+on,db,add,set,get,init,isNew,path,pathType,errors,schema,options,modelName,virtual,virtualpath,collection,toObject,toJSON,toString,toSource,constructor,emit,_events,_pres,_posts
 """.split(','), (v)->[v,1]
-Schema.template = """
-<%=(ns = RikkiTikkiAPI.API_NAMESPACE.concat('.')) != '.' ? ns : ''%><%=name%> =
-<%=data%>
-"""
+module.exports = Schema

@@ -74,10 +74,14 @@ RikkiTikkiAPI.listCollections = ->
   if RikkiTikkiAPI.collectionMon? then RikkiTikkiAPI.collectionMon.getNames() else []
 RikkiTikkiAPI.configExists = (_path)->
   fs.existsSync if _path?.match /\.json$/ then _path else RikkiTikkiAPI.getFullPath()
-RikkiTikkiAPI.model = (name,schema={})-> 
+RikkiTikkiAPI.model = (name,schema={})->
+  throw "name is required for model" if !name
+  throw "name expected to be String type was '#{type}'" if (type = typeof name) != 'string'
   model = `function model(name, schema) { if (!(this instanceof RikkiTikkiAPI.model)) return new RikkiTikkiAPI.model( name, schema ); }`
   model.modelName = name
-  model.schema = tree: schema.tree || schema
+  model.schema    = schema
+  model.toClientSchema = ->
+    new RikkiTikkiAPI.ClientSchema @modelName, @schema
   model
 # STATIC Class Definitions
 RikkiTikkiAPI.Util              = require './classes/utils'
@@ -92,7 +96,10 @@ _router                         = require './classes/router'
 RikkiTikkiAPI.Router            = _router.Router
 RikkiTikkiAPI.RoutingParams     = _router.RoutingParams
 RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
+RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
+RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
 RikkiTikkiAPI.SchemaLoader      = require './classes/schema/SchemaLoader'
+RikkiTikkiAPI.SchemaManager     = require './classes/schema/SchemaManager'
 RikkiTikkiAPI._adapters         = require './classes/adapters'
 _collections                    = require './classes/collections'
 RikkiTikkiAPI.CollectionManager = _collections.CollectionManager
