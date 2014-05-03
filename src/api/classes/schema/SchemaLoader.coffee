@@ -66,8 +66,8 @@ class SchemaLoader extends Object
     @__schema[name] || null 
   toJSON:->
     @__schema
-  toString:->
-    JSON.stringify @__schema, SchemaLoader.replacer
+  toString:(readable)->
+    JSON.stringify @__schema, SchemaLoader.replacer, if readable then 2 else undefined
 SchemaLoader.replacer = (key,value)->
   value = value.toClientSchema() if value?.toClientSchema?
   return if value? and (0 >= _.keys(RikkiTikkiAPI.Schema.reserved).indexOf key) then Util.Function.toString value else undefined
