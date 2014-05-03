@@ -23,5 +23,6 @@ Util.isOfType = (value, kind)->
 Util.detectModule = (name)->
   _.map( _.pluck( require.main.children, 'filename' ), (p)-> path.dirname(p).split(path.sep).pop()).indexOf( "#{name}" ) > -1
 module.exports = Util
-Util.Capabilities = require './Capabilities' 
+Util.Capabilities = require './Capabilities'
+Util.Function     = require './Function' 
 

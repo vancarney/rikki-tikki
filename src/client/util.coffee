@@ -123,3 +123,32 @@ RikkiTikki._decode = (key, value)->
   _.each value, (v, k) -> value[k] = RikkiTikki._decode k, v
   # returns the decoded object
   value
+#### RikkiTikki.Function
+# > Utils to Serialize, Deserialize and Create Functions
+RikkiTikki.Function = {}
+#### RikkiTikki.Function.construct(constructor, arguments)
+# creates new Function/Object from constructor
+RikkiTikki.Function.construct = (constructor, args)->
+  new ( constructor.bind.apply constructor, [null].concat args )
+#### RikkiTikki.Function.factory(arguments)
+# creates new unnamed Function from passed arguments
+RikkiTikki.Function.factory = RikkiTikki.Function.construct.bind null, Function
+#### RikkiTikki.Function.fromString(string)
+# deserializes and creates unnamed Function from passed string
+RikkiTikki.Function.fromString = (string)->
+  if (m = string.match /^function+\s?\(([a-z-A-Z0-9_\s\,]*)\)+\s?\{(.*)\}$/)? 
+    return RikkiTikki.Function.factory _.union m[1], m[2]
+  else 
+    return if (m = string.match new RegExp "^Native::(#{_.keys(RikkiTikki.Function.natives).join '|'})+$")? then RikkiTikki.Function.natives[m[1]] else null
+#### RikkiTikki.Function.toString(Function)
+# serializes Function to string
+RikkiTikki.Function.toString = (fun)->
+  return fun if typeof fun != 'function'
+  if ((s = fun.toString()).match /.*\[native code\].*/)? then "Native::#{RikkiTikki.getFunctionName fun}" else s
+RikkiTikki.Function.natives  = 
+  'Date':Date
+  'Number':Number
+  'String':String
+  'Boolean':Boolean
+  'Array':Array
+  'Object':Object

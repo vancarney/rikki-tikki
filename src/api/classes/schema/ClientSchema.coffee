@@ -1,5 +1,6 @@
 {_} = require 'underscore'
 RikkiTikkiAPI = module.parent.exports
+Util          = RikkiTikkiAPI.Util
 class ClientSchema extends RikkiTikkiAPI.Schema
   toJSON:->
     _.clone @
@@ -13,14 +14,7 @@ class ClientSchema extends RikkiTikkiAPI.Schema
   constructor:(@name, obj, opts)->
     ClientSchema.__super__.constructor.call @, obj, opts
 ClientSchema.replacer = (key,value)->
-  return undefined if !value or (0 <= _.keys(RikkiTikkiAPI.Schema.reserved).indexOf key)
-  if typeof value == 'function'
-    if (name = RikkiTikkiAPI.Util.getFunctionName value)? and (0 <= RikkiTikkiAPI.Schema.nativeTypes.indexOf name)
-      return "Native::#{name}"
-    else
-      return value.toString()
-  else
-    return value     
+  return if value? and (0 >= _.keys(RikkiTikkiAPI.Schema.reserved).indexOf key) then Util.Function.toString value else undefined
 ClientSchema.template = """
 (function() {
   var __hasProp = {}.hasOwnProperty,
