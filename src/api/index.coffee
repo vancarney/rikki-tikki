@@ -9,15 +9,16 @@ ArrayCollection = require('js-arraycollection').ArrayCollection
 # > Defines the `RikkiTikki` namespace in the 'global' environment
 class RikkiTikkiAPI extends EventEmitter
   __detected_adapter = null
-  constructor:(dsn=null, adapter=null)->
+  constructor:(dsn=null, @options=adapter:null)->
+    # dsn=null, adapter=null
     for name in ['express','hapi']
       if RikkiTikkiAPI.Util.detectModule name
         @__detected_adapter ?= name
         break;
     if dsn != false
       @connect if dsn? then dsn else (new RikkiTikkiAPI.ConfigLoader).toJSON()
-    @useAdapter if adapter? then adapter else 'routes'
-    # console.log (new RikkiTikkiAPI.SchemaLoader).toJSON().post.schema.valueOf()
+    @useAdapter if @options.adapter? then @options.adapter else 'routes'
+    RikkiTikkiAPI.schemas = new RikkiTikkiAPI.SchemaLoader @options.schema_path || undefined #).toJSON() #.post.schema.valueOf()
   connect:(dsn,opts)-> 
     dsn = (new RikkiTikkiAPI.ConfigLoader dsn).toJSON() if dsn? and dsn instanceof String and dsn.match /\.json$/
     @__conn = new RikkiTikkiAPI.Connection
@@ -67,7 +68,7 @@ RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 RikkiTikkiAPI.CONFIG_FILENAME = 'rikkitikki.json'
 RikkiTikkiAPI.CONFIG_PATH = 'config'
-RikkiTikkiAPI.schema  = {}
+RikkiTikkiAPI.schemas  = {sku:Number, name:String, description:String}
 RikkiTikkiAPI.getFullPath = ->
   path.normalize "#{process.cwd()}#{path.sep}#{RikkiTikkiAPI.CONFIG_PATH}#{path.sep}#{RikkiTikkiAPI.CONFIG_FILENAME}"
 RikkiTikkiAPI.listCollections = ->

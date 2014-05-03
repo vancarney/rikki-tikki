@@ -2,6 +2,7 @@
 fs            = require 'fs'
 path          = require 'path'
 RikkiTikkiAPI = module.parent.exports
+Util          = RikkiTikkiAPI.Util
 class SchemaLoader extends Object
   __schema:{}
   constructor:(@__path=RikkiTikkiAPI.SCHEMA_PATH)->
@@ -31,7 +32,12 @@ class SchemaLoader extends Object
                   _.each _.keys(res), (name) => 
                     o[name] = itm if (itm = parseObj res[name], o)?
               when 'function'
-                o[res.modelName] = res if (fName = RikkiTikkiAPI.Util.getFunctionName res) == 'model'
+                if (fName = RikkiTikkiAPI.Util.getFunctionName res) == 'model'
+                  o[res.modelName] = res
+                  # Apply toClientSchema on Mongoose Model
+                  if !(o[res.modelName].hasOwnProperty 'toClientSchema')
+                    o[res.modelName].toClientSchema = -> 
+                        RikkiTikkiAPI.model( @modelName, @schema ).toClientSchema()
             o
           res = require( "#{p}" )
           o = parseObj res, o
@@ -61,5 +67,8 @@ class SchemaLoader extends Object
   toJSON:->
     @__schema
   toString:->
-    JSON.stringify @toJSON(), null, 2
+    JSON.stringify @__schema, SchemaLoader.replacer
+SchemaLoader.replacer = (key,value)->
+  value = value.toClientSchema() if value?.toClientSchema?
+  return if value? and (0 >= _.keys(RikkiTikkiAPI.Schema.reserved).indexOf key) then Util.Function.toString value else undefined
 module.exports = SchemaLoader

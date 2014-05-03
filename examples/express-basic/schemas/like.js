@@ -8,5 +8,5 @@ var likeSchema = new Schema({
 
 var likeModel = mongoose.model('likings', likeSchema);
 
-module.exports['like'] = likeSchema;
-module.exports['likeModel'] = likeModel;
+// module.exports['like'] = likeSchema;
+module.exports = likeModel;

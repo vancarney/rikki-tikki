@@ -67,6 +67,8 @@ class Schema extends Object
     @discriminatorMapping = null
     @_indexedpaths = null
     @add obj if obj?
+  toModel: (name)->
+    RikkiTikkiAPI.model name, @
 Schema.nativeTypes =
   ['Object','Number','String','Boolean','Array']
 ## Schema.reserved
