@@ -13,7 +13,9 @@ class Router extends Object
   getAdapter:-> @__adapter
   intializeRoutes:->
     @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
-      @__adapter.responseHandler res, { status:200, content:RikkiTikkiAPI.schemas.toString(RikkiTikkiAPI.getEnvironment() == 'development') }
+      @__adapter.responseHandler res, 
+        status:200
+        content: RikkiTikkiAPI.getSchemas().toJSON RikkiTikkiAPI.getEnvironment() == 'development'
     RikkiTikkiAPI.DEBUG && logger.log 'debug', "#{name}:"
     # generate routes based on the REST operations
     for operation in ['index','show','create','update','destroy']

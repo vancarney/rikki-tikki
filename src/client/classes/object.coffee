@@ -36,7 +36,7 @@ class RikkiTikki.Object extends Backbone.Model
   #### url() 
   # > generates a Parse API URL for this object based on the Class name
   url : ->
-    "#{RikkiTikki.API_URI}/#{@className}#{if !@isNew() then '/'+(@get @idAttribute) else ''}#{if (p=RikkiTikki.querify @__op).length then '?'+p else ''}"
+    "#{RikkiTikki.getAPIUrl()}/#{@className}#{if !@isNew() then '/'+(@get @idAttribute) else ''}#{if (p=RikkiTikki.querify @__op).length then '?'+p else ''}"
   #### sync(method, model, [options])
   # > Overrides `Backbone.Model.sync` to apply custom API header and data
   sync : (method, model, options={})->
@@ -87,11 +87,10 @@ class RikkiTikki.Object extends Backbone.Model
           if m.responseText? and (rt = JSON.parse m.responseText) instanceof Array
             _.each @attributes, (v,k)=>
               if v instanceof RikkiTikki.Object and v.get?( 'objectId' ) == rt[0].success.objectId
-                console.log p = v._toPointer()
+                # console.log p = v._toPointer()
                 @attributes[k] = {__op:"AddRelation", objects:[p]} 
           Object.__super__.save.call self, attributes, 
             success: => 
-              console.log 'saved object!'
               options.completed? m,r,o
             error: -> console.log 'save failed'
           
@@ -175,7 +174,6 @@ class RikkiTikki.Object extends Backbone.Model
   #### _finishFetch(serverData, hasData)
   # > Cleans up Object properties
   _finishFetch: (serverData, hasData)->
-    console.log "_finishFetch"
     # resets `_opSetQueue`
     @_opSetQueue = [{}]
     # handles special attributes

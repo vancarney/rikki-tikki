@@ -16,7 +16,11 @@ class RikkiTikkiAPI extends EventEmitter
         @__detected_adapter ?= name
         break;
     if dsn != false
-      @connect if dsn? then dsn else (new RikkiTikkiAPI.ConfigLoader).toJSON()
+      @connect (if dsn? then dsn else (new RikkiTikkiAPI.ConfigLoader).toJSON()), {
+        open:   => @emit 'open', null, @__conn
+        error:  (e)=> @emit 'open', e, null
+        close:  => @emit 'close'
+      }
     @useAdapter if @options.adapter? then @options.adapter else 'routes'
     RikkiTikkiAPI.schemas = new RikkiTikkiAPI.SchemaLoader @options.schema_path || undefined #).toJSON() #.post.schema.valueOf()
   connect:(dsn,opts)-> 
@@ -32,6 +36,8 @@ class RikkiTikkiAPI extends EventEmitter
     @__conn.close callback
   listAdapters:->
     RikkiTikkiAPI.listRoutingAdapters()
+  getConnection:->
+    @__conn
   getAdapter:(name)->
     throw "RikkiTikkiAPI::getAdapter: Name is required" if !(name?)
     RikkiTikkiAPI.getRoutingAdapter name
@@ -68,7 +74,9 @@ RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 RikkiTikkiAPI.CONFIG_FILENAME = 'rikkitikki.json'
 RikkiTikkiAPI.CONFIG_PATH = 'config'
-RikkiTikkiAPI.schemas  = {sku:Number, name:String, description:String}
+RikkiTikkiAPI.schemas  = null #{sku:Number, name:String, description:String}
+RikkiTikkiAPI.getSchemas = ->
+  @schemas
 RikkiTikkiAPI.getFullPath = ->
   path.normalize "#{process.cwd()}#{path.sep}#{RikkiTikkiAPI.CONFIG_PATH}#{path.sep}#{RikkiTikkiAPI.CONFIG_FILENAME}"
 RikkiTikkiAPI.listCollections = ->

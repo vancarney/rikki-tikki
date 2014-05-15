@@ -2,6 +2,7 @@ express         = require 'express'
 request         = require 'supertest'
 RikkiTikkiAPI   = require '../src/api'
 {_}             = require 'underscore'
+module.exports.port = port = 3000
 describe 'RikkiTikkiAPI.ExpressAdapter API Test Suite', ->
   @timeout 10000
   it 'should GET all API Routes', (done)=>
@@ -10,7 +11,7 @@ describe 'RikkiTikkiAPI.ExpressAdapter API Test Suite', ->
     connection.on 'open', (conn) =>
       router = new RikkiTikkiAPI.Router RikkiTikkiAPI.connection = connection, adapter
       router.intializeRoutes()
-      adapter.params.app.listen 3000
+      adapter.params.app.listen port
       _.each names=['test'], (value,k)=>
         request(adapter.params.app)
         .get("#{RikkiTikkiAPI.getAPIPath()}/#{value}")
@@ -21,3 +22,4 @@ describe 'RikkiTikkiAPI.ExpressAdapter API Test Suite', ->
         )
     connection.on 'error', (e)-> console.log e
     connection.connect '0.0.0.0/test'
+

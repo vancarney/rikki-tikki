@@ -13,11 +13,13 @@ RikkiTikki.apiOPTS = ->
 #### RikkiTikki.regEscape(string)
 # > Returns string as RegExp string literal
 RikkiTikki.regEscape = (string) -> string.replace /([\^\/\.\-\+\*\[\]\{\}\|\(\)\?\$]+)/g,'\\$1'
+RikkiTikki.getAPIUrl = ->
+  "#{@PROTOCOL.toLowerCase()}://#{@HOST}#{if @PORT != 80 then ':'+@PORT else ''}/#{@BASE_PATH.replace /^\//, ''}"
 #### RikkiTikki.validateRoute(route)
 # > Validates a given route
 RikkiTikki.validateRoute = (route)->
   # throws error if route does not pass validation
-  throw "Bad route: #{route}" if !route.match new RegExp "^(#{RikkiTikki.regEscape RikkiTikki.API_URI}\/)+"
+  throw "Bad route: #{route}" if !route.match new RegExp "^(#{RikkiTikki.regEscape @getAPIUrl()}\/)+"
   # returns true if no error thrown
   true
 #### RikkiTikki._parseDate(iso8601)

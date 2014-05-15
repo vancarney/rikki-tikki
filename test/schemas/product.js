@@ -5,7 +5,9 @@ var products = new RikkiTikkiAPI.Schema({
 	description:String,
 	price:Number
 });
+
 products.virtuals.short_desc = function() {
 	return (arr = this.description.substr(0, 50).split(' ')).slice(0, arr.length-2);
 };
+
 module.exports = products;

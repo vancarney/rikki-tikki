@@ -6,9 +6,8 @@ var RikkiTikkiAPI   = require( '../../lib/api' );
 var _               = require('underscore')._;
 var adapter 		= null;
 global.names 		= ['Products','Orders','Users'];
-
-global.connection = RikkiTikkiAPI.connection = new RikkiTikkiAPI.Connection( "0.0.0.0/client_test" );
-connection.once( 'open', function(e, conn) {
+new RikkiTikkiAPI( "0.0.0.0/client_test", {schema_path:'/Users/van/Documents/workspace/rikki-tikki/test/schemas/product.js'} ).on( 'open', function(e, conn) {
+  global.connection = conn;
   global.collectionManager = new RikkiTikkiAPI.CollectionManager( connection );
   _.each( names, function(value,k) {
     collectionManager.createCollection( value, null, function(e,res) {

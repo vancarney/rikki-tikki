@@ -1,11 +1,12 @@
 fs              = require 'fs'
-child_process   = require 'child_process'
 (chai           = require 'chai').should()
 _               = (require 'underscore')._
 Backbone        = require 'backbone'
 Backbone.$      = require( 'jQuery')
 RikkiTikki      = require('../lib/client').RikkiTikki
+child_process   = require 'child_process'
 proc            = child_process.spawn 'node', ['./scripts/server']
+
 # server          = true
 # service          = require './scripts/server'
 
@@ -26,7 +27,9 @@ clazz = class Product extends RikkiTikki.Model
   # model.save v, h
   
 describe 'RikkiTikki.Collctions Test Suite', ->
+  @timeout 10000
   it 'Collection should be extensable', =>
+    RikkiTikki.PORT = 3006
     (@clazz = class Products extends (RikkiTikki.Collection)).should.be.a 'function'
   # it 'should safely get it\'s constructor.name', =>
     # (RikkiTikki.getConstructorName @testCol = new @clazz()).should.equal 'Products'
@@ -48,3 +51,14 @@ describe 'RikkiTikki.Collctions Test Suite', ->
         done()
       error:->
         console.log arguments
+# describe 'RikkiTikki.SchemaLoader Test Suite', ->
+  # @timeout 10000
+  it 'RikkiTikki should load Schemas', (done)=>
+    RikkiTikki.initialize {port:3006}, (e,res)=>
+      console.error e if e?
+      if res
+        console.log res
+        # RikkiTikki.API_URL = 'http://0.0.0.0:3006/api/1'
+        # console.log "hello: #{RikkiTikki.getSchema('product')}"
+        RikkiTikki.getSchema('product').should.be.a 'Object'
+        done()

@@ -4,6 +4,7 @@ path          = require 'path'
 RikkiTikkiAPI = module.parent.exports
 Util          = RikkiTikkiAPI.Util
 class SchemaLoader extends Object
+  __meta:{}
   __schema:{}
   constructor:(@__path=RikkiTikkiAPI.SCHEMA_PATH)->
     @load() if @__path?
@@ -64,10 +65,10 @@ class SchemaLoader extends Object
     # fs.writeFile "#{RikkiTikkiAPI.SCHEMA_PATH}/rikkitikki/schema.js", s, (e)-> console.error 'failed to save schema' 
   getSchema:(name)->
     @__schema[name] || null 
-  toJSON:->
-    @__schema
+  toJSON:(readable)->
+    JSON.parse @toString readable
   toString:(readable)->
-    JSON.stringify @__schema, SchemaLoader.replacer, if readable then 2 else undefined
+    JSON.stringify {__meta__:@__meta, __schemas__:@__schema}, SchemaLoader.replacer, if readable then 2 else undefined
 SchemaLoader.replacer = (key,value)->
   value = value.toClientSchema() if value?.toClientSchema?
   return if value? and (0 >= _.keys(RikkiTikkiAPI.Schema.reserved).indexOf key) then Util.Function.toString value else undefined
