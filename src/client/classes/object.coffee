@@ -28,7 +28,7 @@ class RikkiTikki.Object extends Backbone.Model
     if (statics = @__schema.statics)?
       _.each statics, (v,k)=> RikkiTikki.Object[k] = RikkiTikki.Function.fromString v
     if @__schema.paths?
-      _.each @__schema.paths, (v,k)=> (@defaults ?= {})[k] = v.default || v.instance
+      _.each @__schema.paths, (v,k)=> (@defaults ?= {})[k] = v.default || null
   getSchema:-> @__schema
   validate:(attrs={}, opts={})->
     if RikkiTikki.env != 'development'
@@ -39,17 +39,6 @@ class RikkiTikki.Object extends Backbone.Model
         else
           return "#{@className} has no attribute '#{k}'" if k != @idAttribute
     return
-  get:(attr)->
-    if @__schema.virtuals[attr]
-      value = (if _.isArray (v = @__schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @
-    else
-      value = Object.__super__.get.call @, attr
-    value
-  set:(attr, value)->
-    if @__schema.virtual[attr]
-      (if _.isArray (v = @s__chema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @, value 
-    else
-      Object.__super__.set.call @, attr, value
   #### url() 
   # > generates a Parse API URL for this object based on the Class name
   url : ->
@@ -77,23 +66,35 @@ class RikkiTikki.Object extends Backbone.Model
     
     # calls `sync` on __super__
     Object.__super__.sync.call @, method, model, _.extend( options, opts )
+  #### get(attribute)
+  # > Overrides `Backbone.Model.get`
+  get:(attr)->
+    if @__schema.virtuals[attr]
+      value = (if _.isArray (v = @__schema.virtuals[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @
+    else
+      value = Object.__super__.get.call @, attr
+    value
   #### set(attributes, [options])
   # > Overrides `Backbone.Model.set`
-  set: (attrs,opts)->
-    # map all RikkiTikki.Objects to Pointers
-    # _.each attrs, (v,k)=>
-      # if v.hasOwnProperty '_toPointer' and typeof v._toPointer == 'Function'
-        # v = v._toPointer() 
-        # if (oV = @get k )?.__op?
-          # (oV.objects ?= []).push v
-        # else
-          # k:{__op:"AddRelation", objects:[v]}
-    # calls `set` on __super__
+  set:(attrs, opts={})->
+    if _.isObject attrs
+      _.each attrs, (v,k)=>
+        if @__schema.virtuals[attr]
+          attr = (if _.isArray (v = @__schema.virtuals[k]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @, value 
+        else
+          if v.hasOwnProperty '_toPointer' and typeof v._toPointer == 'Function'
+            v = v._toPointer() 
+            if (oV = @get k )?.__op?
+              (oV.objects ?= []).push v
+            else
+              k:{__op:"AddRelation", objects:[v]}
     # attrs = RikkiTikki._encode attrs
     s = Object.__super__.set.call @, attrs, opts
     # sets `__isDirty` to true if attributes have changed
     @__isDirty = true if @changedAttributes()
     s
+  #### save(attributes, [options])
+  # > Overrides `Backbone.Model.save`
   save:(attributes, options={})->
     self = @
     RikkiTikki.Object._findUnsavedChildren @attributes, children = [], files = []
