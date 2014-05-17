@@ -1,8 +1,10 @@
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-Util          = RikkiTikkiAPI.Util
-Connection    = RikkiTikkiAPI.Connection
+RikkiTikkiAPI   = module.parent.exports.RikkiTikkiAPI
+Util            = RikkiTikkiAPI.Util
+Connection      = RikkiTikkiAPI.Connection
+{_}             = require 'underscore'
 {EventEmitter}  = require 'events'
 class CollectionManager extends EventEmitter
+  __cache:{}
   constructor:(@__conn)->
     throw Error 'CollectionManager requires a Connection as arg1' if !@__conn
     throw Error "CollectionManager arg1 must be Connection. Type was '#{typeof @__conn}'" if !Util.isOfType @__conn, Connection
@@ -25,5 +27,10 @@ class CollectionManager extends EventEmitter
         RikkiTikkiAPI.collectionMon.refresh()
         callback? e, res
   getCollection:(name, callback)->
-    @__db.collection name, (e,collection)=> callback? e, collection
+    if (collection = @__cache[name])? and collection instanceof Collection
+      callback? null, _.clone collection
+    else
+      @__db.collection name, (e,collection)=>
+        collection = _.clone( @__cache[name] = new Collection collection ) if collection
+        callback? e, collection
 module.exports = CollectionManager
