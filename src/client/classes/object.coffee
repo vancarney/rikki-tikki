@@ -4,26 +4,43 @@ class RikkiTikki.Object extends Backbone.Model
   #### idAttribute
   # > maps our Backbone.Model id attribute to the Api's _id attribute
   idAttribute: '_id'
-  __schema:{virtual:{}}
+  __schema:{paths:{}, virtuals:{}}
   #### constructor(attrs, opts)
   # > Class Constructor Method
   constructor:(attrs, opts={})->
     # passes `arguments` to __super__
     super attrs, opts
-    @setSchema opts.schema if opts.schema
     # writes warning to console if the Object's `className` was not detected
     if (@className ?= RikkiTikki.getConstructorName @) == RikkiTikki.UNDEFINED_CLASSNAME
       console.warn 'RikkiTikki.Object requires className to be defined'
     # pluralizes the `className`
     else
       @className = RikkiTikki.Inflection.pluralize @className
+    @setSchema _.extend RikkiTikki.getSchema( @className ) || @__schema, opts.schema || {}
   setSchema:(schema)->
     @__schema = _.extend @__schema, schema
     if (methods = @__schema.methods)?
       _.each methods, (v,k)=> @[k] = ()=> v.apply @, arguments
+    if (virtuals = @__schema.virtuals)?
+      _.each virtuals, (v,k)=> 
+        @[k] = RikkiTikki.Function.fromString v
+        console.log @[k]
+    if (statics = @__schema.statics)?
+      _.each statics, (v,k)=> RikkiTikki.Object[k] = RikkiTikki.Function.fromString v
+    if @__schema.paths?
+      _.each @__schema.paths, (v,k)=> (@defaults ?= {})[k] = v.default || v.instance
   getSchema:-> @__schema
+  validate:(attrs={}, opts={})->
+    if RikkiTikki.env != 'development'
+      for k,v of attrs
+        if (path = @getSchema().paths[ k ])?
+          for validator in path.validators || []
+            return validator[1] if (validator[0] v) == false
+        else
+          return "#{@className} has no attribute '#{k}'" if k != @idAttribute
+    return
   get:(attr)->
-    if @__schema.virtual[attr]
+    if @__schema.virtuals[attr]
       value = (if _.isArray (v = @__schema.virtual[attr]) then v else [v]).reduce (prev,curr,idx,arr)=> curr.apply @
     else
       value = Object.__super__.get.call @, attr
@@ -200,7 +217,6 @@ class RikkiTikki.Object extends Backbone.Model
               @[attr] = if !_.isDate attrs[attr] then RikkiTikki._parseDate attrs[attr] else attrs[attr]
           # deletes the attribute
           delete attrs[attr]
-          
           
   ## Atomic Operations
   # > Parse API Operation Methods

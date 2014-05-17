@@ -7,7 +7,8 @@ RikkiTikki.Types =
   String:String
   
 class RikkiTikki.SchemaItem
-  constructor:(@path, obj)->
+  constructor:(@path, obj={})->
+    # sets up accessible params
     @index = false
     @instance = undefined
     @default = null
@@ -16,19 +17,24 @@ class RikkiTikki.SchemaItem
     @setter = null
     @options = {}
     @required = false
+    # tests for native object as instance type
     for key, type of RikkiTikki.Types
       if type == obj
         @instance = obj 
         return
-    allowed = "index,default,validators,options,required".split ','
+    # clones object for processing
+    obj = _.clone obj
     @get obj.get if obj.get
     @set obj.set if obj.set
+    # tests for `type` param
     if obj.type
       @instance = obj.type
       delete obj.type
-    
-    _.each ((_.partial _.without, _.keys(obj)).apply @, allowed), (v)=> delete obj[v]
-    # console.log obj
+    _.each ((_.partial _.without, _.keys(obj)).apply @, RikkiTikki.SchemaItem.allowed), (v)=> delete obj[v]
+    # tests for validators
+    if obj.validators
+      @validators.push obj.validators
+      delete obj.validators
     _.extend @, obj
   getDefault:->
     return null if !@hasDefault()
@@ -44,4 +50,14 @@ class RikkiTikki.SchemaItem
       @setter = fun
     else
       throw "SchemaItem::set requires param to be type 'Function'. Type was #{typeof fun}"
-    
+  validate:(validator)->
+    switch typeof validator
+      when 'Function'
+        @validators.push [validator, "#{@path} was invalid"]
+      when 'Array'
+        throw "Validator for #{path} was malformed" if !validator.length
+        validator.push "#{@path} was invalid" if validator.length == 1
+        @validators.push validator
+      else
+        throw "Validator requires either Function or Array type was '#{typeof validator}'"
+RikkiTikki.SchemaItem.allowed = "index,default,validators,options,required".split ','

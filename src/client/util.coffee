@@ -14,7 +14,7 @@ RikkiTikki.apiOPTS = ->
 # > Returns string as RegExp string literal
 RikkiTikki.regEscape = (string) -> string.replace /([\^\/\.\-\+\*\[\]\{\}\|\(\)\?\$]+)/g,'\\$1'
 RikkiTikki.getAPIUrl = ->
-  "#{@PROTOCOL.toLowerCase()}://#{@HOST}#{if @PORT != 80 then ':'+@PORT else ''}/#{@BASE_PATH.replace /^\//, ''}"
+  "#{@PROTOCOL.toLowerCase()}://#{@HOST}#{if @PORT != 80 then ':'+@PORT else ''}/#{@BASE_PATH.replace /^\//, ''}/#{@API_VERSION}"
 #### RikkiTikki.validateRoute(route)
 # > Validates a given route
 RikkiTikki.validateRoute = (route)->
@@ -138,7 +138,7 @@ RikkiTikki.Function.factory = RikkiTikki.Function.construct.bind null, Function
 #### RikkiTikki.Function.fromString(string)
 # deserializes and creates unnamed Function from passed string
 RikkiTikki.Function.fromString = (string)->
-  if (m = string.match /^function+\s?\(([a-z-A-Z0-9_\s\,]*)\)+\s?\{(.*)\}$/)? 
+  if (m = string.match /^function+\s?\(([a-zA-Z0-9_\s\S\,]?)\)+\s?\{([\s\S]*)\}$/)?
     return RikkiTikki.Function.factory _.union m[1], m[2]
   else 
     return if (m = string.match new RegExp "^Native::(#{_.keys(RikkiTikki.Function.natives).join '|'})+$")? then RikkiTikki.Function.natives[m[1]] else null

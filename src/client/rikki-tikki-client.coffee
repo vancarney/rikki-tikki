@@ -1,6 +1,6 @@
 #### global
 # > References the root environment RikkiTikki is operating in
-global = exports || window
+global = exports ? window
 if typeof exports != 'undefined'
   # Includes Backbone & Underscore if the environment is NodeJS
   _         = require('underscore')._
@@ -48,7 +48,7 @@ if !global.RikkiTikki
     PROTOCOL: 'HTTP'
     HOST:'0.0.0.0'
     PORT: 80
-    BASE_PATH:'/api/1'
+    BASE_PATH:'/api'
     #### CRUD_METHODS
     # > Mappings from CRUD to REST
     CRUD_METHODS:
@@ -59,10 +59,12 @@ if !global.RikkiTikki
     #### __SCHEMAS__
     #> Placeholder for Schemas
     __SCHEMAS__:{}
+  RikkiTikki.createNameSpace = (ns)->
+    (if typeof window != 'undefined' then window else global)[ns] = _.extend {}, RikkiTikki
   RikkiTikki.getSchema = (name)->
     if (s = RikkiTikki.__SCHEMAS__[name])? then s else null
   RikkiTikki.createSchema = (name, options={})->
-    if (s = RikkiTikki.getSchema name)? then RikkiTikki.__SCHEMAS__[name] = _.extend s, options else RikkiTikki.__SCHEMAS__[name] = new RikkiTikki.Schema options
+    if (s = RikkiTikki.getSchema name)? then _.extend s, options else RikkiTikki.__SCHEMAS__[name] = new RikkiTikki.Schema options
   # RikkiTikki.createCollection = (name, options={})->
     # new (RikkiTikki.Collection.extend options, className:name)
   RikkiTikki.initialize = (opts={}, callback)->
@@ -77,4 +79,3 @@ if !global.RikkiTikki
     .fetch 
       success:  => callback? null, 'ready'
       error:    => callback? 'failed', null
-    

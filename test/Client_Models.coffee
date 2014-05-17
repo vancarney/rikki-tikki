@@ -6,7 +6,23 @@ Backbone        = require 'backbone'
 Backbone.$      = require( 'jQuery')
 RikkiTikki      = require('../lib/client').RikkiTikki
 proc            = child_process.spawn 'node', ['./scripts/server']
-  
+RikkiTikki.env  = 'development'
+fun = (value)->
+  typeof value == 'number'
+schema = {
+  name:String, 
+  description:String,
+  price:{
+    type:Number, 
+    validators:[fun, 'must be a number']
+  }
+}
+
+RikkiTikki.createSchema 'Products', _.clone schema
+
+myNS = RikkiTikki.createNameSpace 'myNS'
+# console.log new myNS.Schema schema
+
 describe 'RikkiTikki.Model Test Suite', ->
   it 'RikkiTikki.Model.saveAll should be STATIC', =>
     RikkiTikki.Model.saveAll.should.be.a 'function'
@@ -14,15 +30,15 @@ describe 'RikkiTikki.Model Test Suite', ->
     (@clazz = class Product extends (RikkiTikki.Model)).should.be.a 'function'
   it 'should safely get it\'s constructor.name', =>
     (RikkiTikki.getConstructorName @testModel = new @clazz()).should.equal 'Product'
+    # console.log @testModel.getSchema()
   it 'should have a pluralized Class Name', =>
     (@testModel).className.should.equal 'Products'
   it 'should save Data to the API', (done)=>
-    @timeout 15000
     # RikkiTikki.API_URI = 'http://0.0.0.0:3000/api/1/'
     o = 
       name:"Fantastic Rubber Shirt"
       description:"embrace cutting-edge deliverables"
-      price:'10.75'
+      price:10.75
     h = 
       success:(m,r,o)=>
         done()

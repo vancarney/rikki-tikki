@@ -26,7 +26,7 @@ clazz = class Product extends RikkiTikki.Model
       # console.log 'error'
   # model.save v, h
   
-describe 'RikkiTikki.Collctions Test Suite', ->
+describe 'RikkiTikki.Collections Test Suite', ->
   @timeout 10000
   it 'Collection should be extensable', =>
     RikkiTikki.PORT = 3006
@@ -57,8 +57,6 @@ describe 'RikkiTikki.Collctions Test Suite', ->
     RikkiTikki.initialize {port:3006}, (e,res)=>
       console.error e if e?
       if res
-        console.log res
-        # RikkiTikki.API_URL = 'http://0.0.0.0:3006/api/1'
-        # console.log "hello: #{RikkiTikki.getSchema('product')}"
         RikkiTikki.getSchema('product').should.be.a 'Object'
+        #console.log RikkiTikki.getSchema('product') #.virtuals #.short_desc.should.be.a 'Function'
         done()

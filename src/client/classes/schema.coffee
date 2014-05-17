@@ -5,9 +5,13 @@ class RikkiTikki.Schema extends Object
       pK = "#{prefix}#{key}"
       throw "Invalid value for Schema Path #{pK}" if key is null
       if _.isObject( value = obj[key] ) && (value.constructor || value.constructor.name == 'Object') && !value.type
-        if _.keys(value).length
-          @nested[pK] = true
-          @add value, "#{pK}."
+        if (subKeys = _.keys(value)).length 
+          _.each subKeys, (subValue, subKey)=>
+            if 0 <= RikkiTikki.SchemaItem.allowed.indexOf subKey
+              @nested[pK] = true
+              @add value, "#{pK}."
+            else
+              @path pK, subValue
         else
           @path pK, value
       else
@@ -51,24 +55,34 @@ class RikkiTikki.Schema extends Object
     @virtuals[name]
   constructor: (obj, @options={})->
     # @options = @defaultOptions options
+    # _requiredpaths = null
+    # discriminatorMapping = null
+    # _indexedpaths = null
     @paths = {}
     @subpaths = {}
-    @virtuals = {}
     @nested = {}
-    @inherits = {}
-    @_indexes = []
-    @methods = {}
+    @virtuals = {}
     @statics = {}
+    @subpaths = {}
     @tree = {}
-    @options ={}
-    @_requiredpaths = null
-    @discriminatorMapping = null
-    @_indexedpaths = null
-    @add obj if obj?
+    @options = {}
+    @methods = {}
+    @inherits = {}
+    if (o = _.clone obj)?
+      _.each ['subpaths', 'virtuals', 'nested', 'inherits', '_indexes', 'methods', 'statics', 'tree', 'options'], (key)->
+        if o.hasOwnProperty key
+          @[key] = o[key]
+          delete o[key]
+      @add o
   get:(key)->
-    if _.keys(RikkiTikki.Schema.reserved).indexOf key == -1 then @[key] else null
+    if 0 > _.keys(RikkiTikki.Schema.reserved).indexOf key then @[key] else null
   set:(key,val,_tags)->
     @[key] = val if _.keys(RikkiTikki.Schema.reserved).indexOf key == -1
+  validate:(path, validator)->
+    if (p = @paths[ path ])?
+      p.validate validator
+    else
+      throw "Schema path '#{path}' does not exist"
 ## Schema.reserved
 RikkiTikki.Schema.reserved = _.object _.map """
 on,db,set,get,init,isNew,errors,schema,options,modelName,collection,toObject,emit,_events,_pres,_posts
