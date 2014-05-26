@@ -12,12 +12,12 @@ class BaseRoute extends Object
     @after.push fn
   constructor:->
     RikkiTikkiAPI = module.parent.parent.exports.RikkiTikkiAPI
-    CollectionManager = new RikkiTikkiAPI.CollectionManager RikkiTikkiAPI.connection
+    CollectionManager = RikkiTikkiAPI.CollectionManager.getInstance()
   createCollection:(name)->
-    if 0 > RikkiTikkiAPI.listCollections().indexOf name
+    if RikkiTikkiAPI.isDevelopment() and 0 > RikkiTikkiAPI.listCollections().indexOf name
       CollectionManager.createCollection name, {}, (e,res)=>
   checkSchema:(name)->
-module.exports = BaseRoute    
+module.exports = BaseRoute   
 ###
     if obj.before
       path = "#{@__api_path}/:collection/:id"

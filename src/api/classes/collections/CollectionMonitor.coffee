@@ -35,4 +35,7 @@ class CollectionMonitor extends EventEmitter
     @__collectionNames.__list
   collectionExists:(name)->
     @getNames().lastIndexOf name > -1
+CollectionMonitor.getInstance = (opts)->
+  throw 'database is not connected' if !(conn = RikkiTikkiAPI.getConnection())
+  @__instance ?= new CollectionMonitor conn, opts
 module.exports = CollectionMonitor

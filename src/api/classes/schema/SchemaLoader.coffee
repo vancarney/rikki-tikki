@@ -40,7 +40,7 @@ class SchemaLoader extends Object
                     o[res.modelName].toClientSchema = -> 
                         RikkiTikkiAPI.model( @modelName, @schema ).toClientSchema()
             o
-          res = require( "#{p}" )
+          res = require "#{p}"
           o = parseObj res, o
         catch e
           throw e
@@ -61,8 +61,15 @@ class SchemaLoader extends Object
         @__schema = loadFile @__path
       catch e
         throw e
-  save:->
-    # fs.writeFile "#{RikkiTikkiAPI.SCHEMA_PATH}/rikkitikki/schema.js", s, (e)-> console.error 'failed to save schema' 
+  saveAll:->
+    _.each @__schema, (schema, name)=> @saveSchema schema, name
+  saveSchema:(name)->
+      if (schema = @getSchema name)?
+        fs.writeFile "#{RikkiTikkiAPI.SCHEMA_PATH}/#{name}.js", schema, (e)-> 
+          console.error "Failed to save schema '#{name}' to file #{#{RikkiTikkiAPI.SCHEMA_PATH}/#{name}.js}'\nError: #{e}" if e
+  addSchema:(name, schema)->
+    throw 'schema must be an instance of RikkiTikkiAPI.Schema' if !schema or !Util.isOfType schema, RikkiTikkiAPI.Schema
+    @__schema[key] = schema 
   getSchema:(name)->
     @__schema[name] || null 
   toJSON:(readable)->

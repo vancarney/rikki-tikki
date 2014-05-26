@@ -1,5 +1,7 @@
 {_} = require 'underscore'
 RikkiTikkiAPI = module.parent.exports
+SchemaItem = require './SchemaItem'
+Util       = RikkiTikkiAPI.Util
 class Schema extends Object
   ## Add
   add: (obj, prefix='')->
@@ -30,7 +32,7 @@ class Schema extends Object
         # throw "Cannot set nested path '#{path}'. Parent path #{subpaths.slice(0, i).concat([sub]).join '.'} already set to type '#{branch[sub].name}'."
       # branch = branch[sub]
     # branch[last] = _.clone obj
-    @paths[path] = obj #new RikkiTikkiAPI.SchemaItem path, obj #Schema.interpretAsType path, obj
+    @paths[path] = new SchemaItem path, obj #Schema.interpretAsType path, obj
     @
   ## pathType
   pathType: (path)->
@@ -66,13 +68,21 @@ class Schema extends Object
     @_requiredpaths = null
     @discriminatorMapping = null
     @_indexedpaths = null
-    @add obj if obj?
+    @add obj if obj? and !Util.isOfType obj, Schema
   toModel: (name)->
     RikkiTikkiAPI.model name, @
 Schema.nativeTypes =
   ['Object','Number','String','Boolean','Array']
 ## Schema.reserved
 Schema.reserved = _.object _.map """
-on,db,add,set,get,init,isNew,path,pathType,errors,schema,options,modelName,virtual,virtualpath,collection,toObject,toJSON,toString,toSource,constructor,emit,_events,_pres,_posts
+on,db,add,set,get,init,isNew,path,pathType,errors,schema,options,modelName,__template,virtual,virtualpath,collection,toObject,toJSON,toString,toSource,constructor,emit,_events,_pres,_posts
 """.split(','), (v)->[v,1]
+Schema.replacer = (key,value)->
+  value = value.toClientSchema() if value?.toClientSchema?
+  return if value? and (0 >= _.keys( @reserved ).indexOf key) then Util.Function.toString value else undefined
+Schema.reviver = (key,value)->
+  # removes reserved element names from schema params
+  return undefined if 0 <= _.keys( @reserved ).indexOf key
+  # attempts to convert string to `Function` or `Object` and returns value
+  if typeof value == 'string' and (fun = Util.Function.fromString value)? then fun else value
 module.exports = Schema

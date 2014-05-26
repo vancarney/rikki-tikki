@@ -1,6 +1,7 @@
 RikkiTikkiAPI   = module.parent.exports.RikkiTikkiAPI
 Util            = RikkiTikkiAPI.Util
 Connection      = RikkiTikkiAPI.Connection
+Collection      = module.parent.exports.Collection
 {_}             = require 'underscore'
 {EventEmitter}  = require 'events'
 class CollectionManager extends EventEmitter
@@ -33,4 +34,7 @@ class CollectionManager extends EventEmitter
       @__db.collection name, (e,collection)=>
         collection = _.clone( @__cache[name] = new Collection collection ) if collection
         callback? e, collection
+CollectionManager.getInstance = ->
+  throw 'database is not connected' if !(conn = RikkiTikkiAPI.getConnection())
+  @__instance ?= new CollectionManager conn
 module.exports = CollectionManager

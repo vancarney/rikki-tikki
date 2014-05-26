@@ -22,6 +22,8 @@ Util.isOfType = (value, kind)->
   (@getTypeOf value) == (@getFunctionName kind) or value instanceof kind
 Util.detectModule = (name)->
   _.map( _.pluck( require.main.children, 'filename' ), (p)-> path.dirname(p).split(path.sep).pop()).indexOf( "#{name}" ) > -1
+Util.stripNull = (string)->
+  string.replace /\0/g, ''
 module.exports = Util
 Util.Capabilities = require './Capabilities'
 Util.Function     = require './Function' 
