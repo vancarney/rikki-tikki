@@ -23,7 +23,7 @@ class SchemaTree extends AbstractLoader
     if @pathExists @__path
       SchemaTree.__super__.load.call @, (e) =>
         return callback? e if e?
-        @_data = JSON.parse JSON.stringify( @__data, @replacer ), @reviver
+        @_data = JSON.parse @__data, @reviver
         callback? null, @__data
     else
       @__data = {}

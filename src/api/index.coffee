@@ -22,7 +22,7 @@ class RikkiTikkiAPI extends EventEmitter
         close:  => @emit 'close'
       }
     @useAdapter if @options.adapter? then @options.adapter else 'routes'
-    RikkiTikkiAPI.schemas = new RikkiTikkiAPI.SchemaLoader @options.schema_path || undefined #).toJSON() #.post.schema.valueOf()
+    RikkiTikkiAPI.schemas = RikkiTikkiAPI.SchemaManager.getInstance()
   connect:(dsn,opts)-> 
     dsn = (new RikkiTikkiAPI.ConfigLoader dsn).toJSON() if dsn? and dsn instanceof String and dsn.match /\.json$/
     @__conn = new RikkiTikkiAPI.Connection
@@ -83,7 +83,7 @@ RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 RikkiTikkiAPI.schemas  = null #{sku:Number, name:String, description:String}
 RikkiTikkiAPI.getSchemas = ->
-  @schemas
+  RikkiTikkiAPI.SchemaManager.getInstance()
 RikkiTikkiAPI.getFullPath = ->
   path.normalize "#{process.cwd()}#{path.sep}#{RikkiTikkiAPI.CONFIG_PATH}#{path.sep}#{RikkiTikkiAPI.CONFIG_FILENAME}"
 RikkiTikkiAPI.listCollections = ->
@@ -116,7 +116,7 @@ RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
 RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
-RikkiTikkiAPI.SchemaLoader      = require './classes/schema/SchemaLoader'
+# RikkiTikkiAPI.SchemaLoader      = require './classes/schema/SchemaLoader'
 RikkiTikkiAPI.SchemaManager     = require './classes/schema/SchemaManager'
 RikkiTikkiAPI.SchemaTreeManager = require './classes/schema_tree/SchemaTreeManager'
 RikkiTikkiAPI._adapters         = require './classes/adapters'

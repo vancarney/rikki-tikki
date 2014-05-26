@@ -26,5 +26,6 @@ Util.stripNull = (string)->
   string.replace /\0/g, ''
 module.exports = Util
 Util.Capabilities = require './Capabilities'
-Util.Function     = require './Function' 
+Util.Function     = require './Function'
+Util.File         = require './File'
 
