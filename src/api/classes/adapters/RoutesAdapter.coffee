@@ -1,9 +1,8 @@
 url  = require 'url'
 path  = require 'path'
 {_} = require 'underscore'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-AbstractAdapter = require './AbstractAdapter'
-class RoutesAdapter extends AbstractAdapter
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI = module.parent.parent.exports
+class RoutesAdapter extends RikkiTikkiAPI.base_classes.AbstractAdapter
   required:['router']
   routes: []
   addRoute:(route, method, handler)->

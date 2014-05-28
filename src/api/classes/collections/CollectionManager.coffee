@@ -3,10 +3,10 @@ Util            = RikkiTikkiAPI.Util
 Connection      = RikkiTikkiAPI.Connection
 Collection      = module.parent.exports.Collection
 {_}             = require 'underscore'
-{EventEmitter}  = require 'events'
-class CollectionManager extends EventEmitter
+class CollectionManager extends RikkiTikkiAPI.base_classes.SingletonEmitter
   __cache:{}
-  constructor:(@__conn)->
+  constructor:->
+    @__conn = RikkiTikkiAPI.getConnection()
     throw Error 'CollectionManager requires a Connection as arg1' if !@__conn
     throw Error "CollectionManager arg1 must be Connection. Type was '#{typeof @__conn}'" if !Util.isOfType @__conn, Connection
     @__db = @__conn.getMongoDB() || throw Error 'Connection is broken'

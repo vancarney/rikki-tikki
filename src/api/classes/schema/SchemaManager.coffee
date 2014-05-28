@@ -5,7 +5,7 @@ RikkiTikkiAPI = module.parent.exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 Util          = RikkiTikkiAPI.Util
 SchemaLoader  = require './SchemaLoader'
-class SchemaManager
+class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   @__schemas:{}
   constructor:->
     @__path = "#{RikkiTikkiAPI.SCHEMA_PATH}"

@@ -1,5 +1,5 @@
-AbstractAdapter = require './AbstractAdapter'
-class ExpressAdapter extends AbstractAdapter
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI = module.parent.parent.exports
+class ExpressAdapter extends RikkiTikkiAPI.base_classes.AbstractAdapter
   required:['app']
   addRoute:(route, method, handler)->
     @params.app[method]? route, handler || @responseHandler

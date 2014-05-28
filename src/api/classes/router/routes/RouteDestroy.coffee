@@ -1,6 +1,7 @@
-BaseRoute = require './BaseRoute'
-class RouteDestroy extends BaseRoute
-  constructor:(@__db, callback)->
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+class RouteDestroy extends RikkiTikkiAPI.base_classes.BaseRoute
+  constructor:(callback)->
+    RouteDestroy.__super__.constructor.call @
     return (req,res)=>
       req.on 'data', (data)=> 
         d =  JSON.parse data

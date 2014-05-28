@@ -4,8 +4,7 @@ path          = require 'path'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 Util          = RikkiTikkiAPI.Util
-AbstractLoader = require '../loaders/AbstractLoader'
-class SchemaLoader extends AbstractLoader
+class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
   __data:{}
   constructor:(path)->
     @replacer = RikkiTikkiAPI.Schema.replacer

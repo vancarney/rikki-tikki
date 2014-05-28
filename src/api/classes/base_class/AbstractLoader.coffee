@@ -6,6 +6,8 @@ Util          = RikkiTikkiAPI.Util
 class AbstractLoader extends Object
   __data:null
   constructor:(@__path)->
+    if (RikkiTikkiAPI.Util.getFunctionName arguments.callee.caller.__super__.constructor ) != 'AbstractLoader'
+      return throw "AbstractAdapter can not be directly instatiated. Use a subclass instead."
     @load() if @__path?
   pathExists: (_path)->
     if _path?.match /\.(json|js)+$/ then fs.existsSync _path else false

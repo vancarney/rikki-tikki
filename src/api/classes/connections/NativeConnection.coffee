@@ -14,9 +14,11 @@ class NativeConnection extends EventEmitter
   connect:(args)->
     @__attemptConnection @__dsn = new DSN args
   __attemptConnection:(string)->
+    return if @__conn?
     try
       @_client.connect "#{string}", null, (e,conn)=>
         return @emit 'error', e if e?
+        console.log "conn: #{conn}"
         @__conn = conn
         @emit 'open', conn
     catch e
@@ -29,6 +31,7 @@ class NativeConnection extends EventEmitter
   getDatabaseName:->
     @getMongoDB().databaseName
   getCollectionNames:(callback)->
+    console.log "collectionNames conn: #{@__conn}"
     @__conn.collectionNames (e,res) => callback? e, res
   isConnected:-> 
     @__conn?

@@ -21,7 +21,7 @@ class RikkiTikkiAPI extends EventEmitter
         error:  (e)=> @emit 'open', e, null
         close:  => @emit 'close'
       }
-    @useAdapter if @options.adapter? then @options.adapter else 'routes'
+    # RikkiTikkiAPI.useAdapter if @options.adapter? then @options.adapter else 'routes'
     RikkiTikkiAPI.schemas = RikkiTikkiAPI.SchemaManager.getInstance()
   connect:(dsn,opts)-> 
     dsn = (new RikkiTikkiAPI.ConfigLoader dsn).toJSON() if dsn? and dsn instanceof String and dsn.match /\.json$/
@@ -36,33 +36,13 @@ class RikkiTikkiAPI extends EventEmitter
     @__conn.connect dsn
   disconnect:(callback)->
     @__conn.close callback
-  listAdapters:->
-    RikkiTikkiAPI.listRoutingAdapters()
-  # getConnection:->
-    # @__conn
-  getAdapter:(name)->
-    throw "RikkiTikkiAPI::getAdapter: Name is required" if !(name?)
-    RikkiTikkiAPI.getRoutingAdapter name
-  addAdapter:(name, adapter)->
-    RikkiTikkiAPI.addRoutingAdapter name adapter
-  useAdapter:(adapter)->
-    if !(adapter?)
-      throw 'param \'adapter\' is required'
-    else
-      if typeof adapter == 'string'
-        if @listAdapters().indexOf( adapter ) >= 0
-          @__adapter = @getAdapter adapter
-        else
-          throw "Routing Adapter '#{adapter}' was undefined"
-      else
-        if adapter instanceof RikkiTikkiAPI._adapters.AbstractAdapter
-          @__adapter = adapter
-        else
-          throw "Routing Adapter must inherit from 'RikkiTikkiAPI.AbstractAdapter'"
+  # useAdapter:(adapter)->
+  # getAdapter:->
+    # @__adapter
   registerApp:(@__parent, adapter)->
-    @useAdapter adapter || @__detected_adapter
-    @__adapter = new @__adapter app:@__parent if typeof @__adapter == 'function'
-    @router = new RikkiTikkiAPI.Router @__conn, @__adapter || null
+    # @useAdapter adapter || @__detected_adapter
+    # @__adapter = new @__adapter app:@__parent if typeof @__adapter == 'function'
+    @router = new RikkiTikkiAPI.Router
 module.exports = RikkiTikkiAPI
 # Begin STATIC definitions
 RikkiTikkiAPI.DEBUG = false
@@ -82,26 +62,47 @@ RikkiTikkiAPI.isDevelopment = ->
 RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 RikkiTikkiAPI.schemas  = null #{sku:Number, name:String, description:String}
-RikkiTikkiAPI.getSchemas = ->
+RikkiTikkiAPI.useAdapter = (adapter, options)->
+  if adapter
+    if typeof adapter == 'string'
+      if 0 <= RikkiTikkiAPI.Adapters.listAdapters().indexOf adapter
+        @__adapter = new (RikkiTikkiAPI.Adapters.getAdapterClass adapter) options
+      else
+        throw "Routing Adapter '#{adapter}' was not registered. Use RikkiTikkiAPI.Adapters.registerAdapter(name, class)"
+    else
+      if adapter instanceof RikkiTikkiAPI.base_classes.AbstractAdapter
+        @__adapter = new adapter options
+      else
+        throw "Routing Adapter must inherit from 'RikkiTikkiAPI.base_classes.AbstractAdapter'"
+  else
+    throw 'param \'adapter\' is required'
+RikkiTikkiAPI.getAdapter = -> @__adapter
+RikkiTikkiAPI.getSchemaManager = ->
   RikkiTikkiAPI.SchemaManager.getInstance()
+RikkiTikkiAPI.getCollectionManager = ->
+  RikkiTikkiAPI.CollectionManager.getInstance()
+RikkiTikkiAPI.getCollectionManitor = ->
+  RikkiTikkiAPI.CollectionMonitor.getInstance()
 RikkiTikkiAPI.getFullPath = ->
   path.normalize "#{process.cwd()}#{path.sep}#{RikkiTikkiAPI.CONFIG_PATH}#{path.sep}#{RikkiTikkiAPI.CONFIG_FILENAME}"
 RikkiTikkiAPI.listCollections = ->
   if RikkiTikkiAPI.collectionMon? then RikkiTikkiAPI.collectionMon.getNames() else []
 RikkiTikkiAPI.configExists = (_path)->
   fs.existsSync if _path?.match /\.json$/ then _path else RikkiTikkiAPI.getFullPath()
-# RikkiTikkiAPI.model = (name,schema={})->
-  # throw "name is required for model" if !name
-  # throw "name expected to be String type was '#{type}'" if (type = typeof name) != 'string'
-  # model = `function model(name, schema) { if (!(this instanceof RikkiTikkiAPI.model)) return new RikkiTikkiAPI.model( name, schema ); }`
-  # model.modelName = name
-  # model.schema    = schema
-  # model.toClientSchema = ->
-    # new RikkiTikkiAPI.ClientSchema @modelName, @schema
-  # model
-# RikkiTikkiAPI.model::__proto__ 
-# STATIC Class Definitions
+RikkiTikkiAPI.model = (name,schema={})->
+  throw "name is required for model" if !name
+  throw "name expected to be String type was '#{type}'" if (type = typeof name) != 'string'
+  model = `function model(data, opts) { if (!(this instanceof RikkiTikkiAPI.model)) return _.extend(arguments.callee, new RikkiTikkiAPI.Document( data, opts )); }`
+  model.modelName = name
+  model.schema    = schema
+  model.toClientSchema = ->
+    new RikkiTikkiAPI.ClientSchema @modelName, @schema
+  model.toAPISchema = ->
+    new RikkiTikkiAPI.APISchema @modelName, @schema
+  model
+# Begin Included Class Registry
 RikkiTikkiAPI.Util              = require './classes/utils'
+RikkiTikkiAPI.base_classes      = require './classes/base_class'
 _types                          = require './classes/types'
 RikkiTikkiAPI.OperationTypes    = _types.OperationTypes
 _dsn                            = require './classes/dsn'
@@ -116,7 +117,6 @@ RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
 RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
-# RikkiTikkiAPI.SchemaLoader      = require './classes/schema/SchemaLoader'
 RikkiTikkiAPI.SchemaManager     = require './classes/schema/SchemaManager'
 RikkiTikkiAPI.SchemaTreeManager = require './classes/schema_tree/SchemaTreeManager'
 RikkiTikkiAPI._adapters         = require './classes/adapters'
@@ -125,14 +125,3 @@ RikkiTikkiAPI.CollectionManager = _collections.CollectionManager
 RikkiTikkiAPI.CollectionMonitor = _collections.CollectionMonitor
 RikkiTikkiAPI.Document          = _collections.Document
 RikkiTikkiAPI.Model             = _collections.Model
-RikkiTikkiAPI.model = (name,schema={})->
-  throw "name is required for model" if !name
-  throw "name expected to be String type was '#{type}'" if (type = typeof name) != 'string'
-  model = `function model(data, opts) { if (!(this instanceof RikkiTikkiAPI.model)) return _.extend(arguments.callee, new RikkiTikkiAPI.Document( data, opts )); }`
-  model.modelName = name
-  model.schema    = schema
-  model.toClientSchema = ->
-    new RikkiTikkiAPI.ClientSchema @modelName, @schema
-  model.toAPISchema = ->
-    new RikkiTikkiAPI.APISchema @modelName, @schema
-  model

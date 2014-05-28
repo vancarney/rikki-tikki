@@ -1,12 +1,11 @@
 http            = require 'http'
 Hapi            = require 'hapi'
 request         = require 'supertest'
-RikkiTikkiAPI   = require '../lib/api' 
-adapter         = new (RikkiTikkiAPI.getRoutingAdapter 'hapi') app:(server = new Hapi.Server '0.0.0.0', 3001)
+(RikkiTikkiAPI   = require '../lib/api').useAdapter 'hapi', app:(server = new Hapi.Server '0.0.0.0', 3001)
 
 describe 'RikkiTikkiAPI.HapiAdapter Test Suite', ->
   it 'should start Hapi', (done)=>
-    adapter.addRoute('/', 'get', (req,reply)->
+    (adapter = RikkiTikkiAPI.getAdapter()).addRoute('/', 'get', (req,reply)->
       reply name: 'tobias funke'
     )
     server.start => done()

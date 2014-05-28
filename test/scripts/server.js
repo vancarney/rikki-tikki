@@ -18,10 +18,10 @@ new RikkiTikkiAPI( "0.0.0.0/client_test", {schema_path:'/Users/van/Documents/wor
  });
  (global.collections = RikkiTikkiAPI.collectionMon =  new RikkiTikkiAPI.CollectionMonitor( connection ))
  .on( 'init', function() {
-	adapter = new (RikkiTikkiAPI.getRoutingAdapter('routes'))( {router: new Router} );
-	router 	= new RikkiTikkiAPI.Router( connection, adapter );
+	RikkiTikkiAPI.useAdapter( 'routes', {router: new Router()} );
+	router 	= RikkiTikkiAPI.Router.getInstance();
 	router.intializeRoutes();
-	httpServer = http.createServer(adapter.requestHandler);
+	httpServer = http.createServer(RikkiTikkiAPI.getAdapter().requestHandler);
 	httpServer.listen(3006);
  }); 
 });

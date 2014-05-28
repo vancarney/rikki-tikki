@@ -1,9 +1,8 @@
 http            = require 'http'
 Router          = require 'routes'
 request         = require 'supertest'
-RikkiTikkiAPI   = require '../src/api' 
-adapter    = new (RikkiTikkiAPI.getRoutingAdapter 'routes') router:new Router
-httpServer = http.createServer adapter.requestHandler
+(RikkiTikkiAPI   = require '../src/api').useAdapter 'routes', router:new Router
+httpServer = http.createServer (adapter = RikkiTikkiAPI.getAdapter()).requestHandler
 httpServer.listen 3002
 describe 'RikkiTikkiAPI.RouterAdapter Test Suite', ->
   it 'should add a route', =>

@@ -1,10 +1,8 @@
 {_}       = require 'underscore'
-RikkiTikkiAPI = {}
-BaseRoute = require './BaseRoute'
-class RouteIndex extends BaseRoute
-  constructor:(@db, callback)->
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+class RouteIndex extends RikkiTikkiAPI.base_classes.BaseRoute
+  constructor:(callback)->
     RouteIndex.__super__.constructor.call @
-    RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
     sanitize = (query)->
       filter  = null
       filtered = []
@@ -19,8 +17,8 @@ class RouteIndex extends BaseRoute
         delete query[v] if restricted.indexOf v >= 0
       query
     return (req,res)=>
-      @createCollection req.params.collection if RikkiTikkiAPI.getEnvironment() == 'development'
-      @db.getMongoDB().collection req.params.collection, (e,collection)=>
+      @createCollection req.params.collection if RikkiTikkiAPI.isDevelopment()
+      @__db.getMongoDB().collection req.params.collection, (e,collection)=>
         collection.find sanitize( JSON.parse req.query.where || "{}" ), (e,results)=>
           return callback? res, {status:500, content: 'failed to execute query'} if e?
           return callback? res, {status:200, content: results}

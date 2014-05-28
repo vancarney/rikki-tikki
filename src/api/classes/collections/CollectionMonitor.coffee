@@ -1,14 +1,16 @@
-{_}             = require 'underscore'
+{_}               = require 'underscore'
+{ArrayCollection} = require 'js-arraycollection'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 Util          = RikkiTikkiAPI.Util
 Connection    = RikkiTikkiAPI.Connection
-EventEmitter    = require('events').EventEmitter
-ArrayCollection = require('js-arraycollection').ArrayCollection
-class CollectionMonitor extends EventEmitter
-  constructor:(@__conn, opts=interval:0)->
-    throw Error 'CollectionMonitor requires a Connection as arg1' if !@__conn
-    throw Error "CollectionMonitor arg1 must be Connection. Type was '#{typeof @__conn}'" if !Util.isOfType @__conn, Connection
-    @__db = @__conn.getMongoDB()
+class CollectionMonitor extends RikkiTikkiAPI.base_classes.SingletonEmitter
+  __polling_interval:10000
+  constructor:->
+    # throw Error "CollectionMonitor requires a Connection as arg1. Type was '#{typeof @__conn}'" if !@__conn or !Util.isOfType @__conn, Connection
+    if (@__conn = RikkiTikkiAPI.getConnection())?
+      @__db = @__conn.getMongoDB()
+    else
+      return throw 'database is not connected'
     @__collectionNames = new ArrayCollection []
     _initialized = false
     @__collectionNames.on 'collectionChanged', (data) =>
@@ -18,16 +20,17 @@ class CollectionMonitor extends EventEmitter
         type = 'init'
       @emit type, data
     @refresh()
-    @start opts.interval if opts.interval? and opts.interval > 0
+    @startPolling() if RikkiTikkiAPI.isDevelopment()
   refresh:(callback)->
     @__conn.getCollectionNames (e, names) =>
       if names?.length > 0
         list = _.compact _.map names, (v)-> name:(n=v.name.split '.').pop(), db:n.shift(), options: v.options if !v['name'].match /\.indexes+$/
         @__collectionNames.setSource list
       callback? e, list
-  start:(interval=20)->
-    @__iVal = setInterval (=> @refresh()), interval
-  stop:->
+  startPolling:(interval)->
+    __polling_interval = interval if interval?
+    @__iVal = setInterval (=> @refresh()), @__polling_interval
+  stopPolling:->
     clearInterval @__iVal if @__iVal?
   getNames:->
     _.pluck @getCollections(), 'name'
@@ -35,7 +38,6 @@ class CollectionMonitor extends EventEmitter
     @__collectionNames.__list
   collectionExists:(name)->
     @getNames().lastIndexOf name > -1
-CollectionMonitor.getInstance = (opts)->
-  throw 'database is not connected' if !(conn = RikkiTikkiAPI.getConnection())
-  @__instance ?= new CollectionMonitor conn, opts
+CollectionMonitor.getInstance =->
+  @__instance ?= new CollectionMonitor
 module.exports = CollectionMonitor

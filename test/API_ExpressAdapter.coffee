@@ -6,10 +6,10 @@ module.exports.port = port = 3000
 describe 'RikkiTikkiAPI.ExpressAdapter API Test Suite', ->
   @timeout 10000
   it 'should GET all API Routes', (done)=>
-    adapter    = new (RikkiTikkiAPI.getRoutingAdapter 'express') app:express()
+    RikkiTikkiAPI.useAdapter 'express', app:express()
     connection = new RikkiTikkiAPI.Connection
     connection.on 'open', (conn) =>
-      router = new RikkiTikkiAPI.Router RikkiTikkiAPI.connection = connection, adapter
+      router = new RikkiTikkiAPI.Router RikkiTikkiAPI.connection = connection, (adapter = RikkiTikkiAPI.getAdapter())
       router.intializeRoutes()
       adapter.params.app.listen port
       _.each names=['test'], (value,k)=>

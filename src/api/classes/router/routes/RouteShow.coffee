@@ -1,6 +1,7 @@
-BaseRoute = require './BaseRoute'
-class RouteShow extends BaseRoute
-  constructor:(@__db, callback)->
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+class RouteShow extends RikkiTikkiAPI.base_classes.BaseRoute
+  constructor:(callback)->
+    RouteShow.__super__.constructor.call @
     return (req,res)=>
       req.on 'data', (data)=>
         _.each @before, (before,k)=> before req,res,data

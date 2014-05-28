@@ -1,26 +1,30 @@
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 RouteIndex    = require './RouteIndex'
 RouteShow     = require './RouteShow'
 RouteCreate   = require './RouteCreate'
 RouteUpdate   = require './RouteUpdate'
 RouteDestroy  = require './RouteDestroy'
 class Routes extends Object
-  constructor: (@__db, @__adapter)->
+  constructor:->
+    if !(@__adapter = RikkiTikkiAPI.getAdapter())
+      throw "Routing Adapter not defined."
   createRoute:(method, path, operation)->
-    @__adapter.addRoute path, method, Routes[operation]?( @__db, @__adapter.responseHandler )
+    if (@__adapter)
+      @__adapter.addRoute path, method, Routes[operation]?  @__adapter.responseHandler
 
-Routes.show = (@__db, callback)->
-  return new RouteShow @__db, callback
+Routes.show = (callback)->
+  return new RouteShow callback
 
-Routes.update = (@__db, callback)->
-  return new RouteUpdate @__db, callback
+Routes.update = (callback)->
+  return new RouteUpdate callback
 
-Routes.create = (@__db, callback)->
-  return new RouteCreate @__db, callback
+Routes.create = (callback)->
+  return new RouteCreate callback
 
-Routes.destroy  = (@__db, callback)->
-  return new RouteDestroy @__db, callback
+Routes.destroy = (callback)->
+  return new RouteDestroy callback
 
-Routes.index = (@__db, callback)->
-  return new RouteIndex @__db, callback
+Routes.index = (callback)->
+  return new RouteIndex callback
 module.exports = Routes
-module.exports.RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI

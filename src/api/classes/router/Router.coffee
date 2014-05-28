@@ -1,25 +1,25 @@
 {_}           = require 'underscore'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 Routes        = require './routes'
 RoutingParams = require './RoutingParams'
-class Router extends Object
-  constructor:(@__db, @__adapter)->
-    throw 'adapter must be defined' if !@__adapter
-    # @__adapter = new @__adapter() if typeof @__adapter == 'function'
+class Router extends RikkiTikkiAPI.base_classes.Singleton
+  constructor:->
+    throw "Routing Adapter not defined." if !(@__adapter = RikkiTikkiAPI.getAdapter())
     @__api_path = RikkiTikkiAPI.getAPIPath()
-    # console.log @__db
-    @__routes = new Routes @__db, @__adapter
-    @__db.on 'open', => @intializeRoutes()
+    @__routes = new Routes
+    (@__db = RikkiTikkiAPI.getConnection()).on 'open', => @intializeRoutes()
   getAdapter:-> @__adapter
   intializeRoutes:->
+    console.log 'initialize routes'
     @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
       @__adapter.responseHandler res, 
         status:200
-        content: RikkiTikkiAPI.getSchemas().toJSON RikkiTikkiAPI.getEnvironment() == 'development'
+        content: RikkiTikkiAPI.getSchemaManager().toJSON RikkiTikkiAPI.getEnvironment() == 'development'
     RikkiTikkiAPI.DEBUG && logger.log 'debug', "#{name}:"
     # generate routes based on the REST operations
     for operation in ['index','show','create','update','destroy']
-      collections = if RikkiTikkiAPI.getEnvironment() == 'development' then [':collection'] else ['Test']
+      collections = if RikkiTikkiAPI.getEnvironment() == 'development' then [':collection'] else RikkiTikkiAPI.getSchemaManager().listSchemas()
       _.each collections, (collection)=>
         switch operation
           when 'show'
@@ -41,4 +41,6 @@ class Router extends Object
     params = new RoutingParams params.path, params.operation if !RikkiTikkiAPI.Util.isOfType params, RoutingParams
     # throw "Handler was invalid" if !params.handler or typeof handler != 'function'
     @__adapter.addRoute params.path, params.method, handler if (handler = @__routes.createRoute params.method, params.path, params.operation)?
+Router.getInstance = ->
+  @__instance ?= new Router
 module.exports = Router

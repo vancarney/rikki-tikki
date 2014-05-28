@@ -3,8 +3,7 @@ fs            = require 'fs'
 path          = require 'path'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 Util          = RikkiTikkiAPI.Util
-AbstractLoader = require '../loaders/AbstractLoader'
-class SchemaTree extends AbstractLoader
+class SchemaTree extends RikkiTikkiAPI.base_classes.AbstractLoader
   __data:{}
   constructor:(path)->
     @replacer = RikkiTikkiAPI.Schema.replacer

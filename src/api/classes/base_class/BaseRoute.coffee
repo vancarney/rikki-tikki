@@ -1,6 +1,5 @@
-RikkiTikkiAPI = {}
+RikkiTikkiAPI     = module.parent.exports.RikkiTikkiAPI
 CollectionManager = {}
-BaseRoute = require './BaseRoute'
 class BaseRoute extends Object
   addBeforeHandler:(fn)->
     throw "Param must be of type 'function' param was #{typeof fn}" if typeof fn == false
@@ -11,7 +10,7 @@ class BaseRoute extends Object
     @after ?= []
     @after.push fn
   constructor:->
-    RikkiTikkiAPI = module.parent.parent.exports.RikkiTikkiAPI
+    @__db = RikkiTikkiAPI.getConnection()
     CollectionManager = RikkiTikkiAPI.CollectionManager.getInstance()
   createCollection:(name)->
     if RikkiTikkiAPI.isDevelopment() and 0 > RikkiTikkiAPI.listCollections().indexOf name
