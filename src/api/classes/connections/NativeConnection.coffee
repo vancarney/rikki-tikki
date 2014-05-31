@@ -6,7 +6,6 @@ EventEmitter  = require('events').EventEmitter
 # > Establshes Mongo DB with Mongoose
 class NativeConnection extends EventEmitter
   constructor:(args)->
-    # if !(RikkiTikkiAPI.connection)
     @_client = mongodb.MongoClient
     @connect args if args?
   handleClose:(evt)->
@@ -18,7 +17,6 @@ class NativeConnection extends EventEmitter
     try
       @_client.connect "#{string}", null, (e,conn)=>
         return @emit 'error', e if e?
-        console.log "conn: #{conn}"
         @__conn = conn
         @emit 'open', conn
     catch e
@@ -31,7 +29,6 @@ class NativeConnection extends EventEmitter
   getDatabaseName:->
     @getMongoDB().databaseName
   getCollectionNames:(callback)->
-    console.log "collectionNames conn: #{@__conn}"
     @__conn.collectionNames (e,res) => callback? e, res
   isConnected:-> 
     @__conn?

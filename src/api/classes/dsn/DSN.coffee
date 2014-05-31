@@ -69,7 +69,7 @@ class DSN extends Object
       replicas:
         type:Array
         required:false
-      database:
+      db:
         type:String
         required:false
       options:

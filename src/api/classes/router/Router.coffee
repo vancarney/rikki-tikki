@@ -11,7 +11,6 @@ class Router extends RikkiTikkiAPI.base_classes.Singleton
     (@__db = RikkiTikkiAPI.getConnection()).on 'open', => @intializeRoutes()
   getAdapter:-> @__adapter
   intializeRoutes:->
-    console.log 'initialize routes'
     @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
       @__adapter.responseHandler res, 
         status:200

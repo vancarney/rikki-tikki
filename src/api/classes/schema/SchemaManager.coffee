@@ -8,7 +8,7 @@ SchemaLoader  = require './SchemaLoader'
 class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   @__schemas:{}
   constructor:->
-    @__path = "#{RikkiTikkiAPI.SCHEMA_PATH}"
+    @__path = "#{RikkiTikkiAPI.getOptions().schema_path}"
     @load()
   load:->
     try

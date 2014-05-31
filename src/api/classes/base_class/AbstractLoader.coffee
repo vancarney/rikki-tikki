@@ -12,25 +12,21 @@ class AbstractLoader extends Object
   pathExists: (_path)->
     if _path?.match /\.(json|js)+$/ then fs.existsSync _path else false
   load:(callback)->
-    throw "No load path defined" if !@__path
-    throw "path '#{@__path}' does not exist or is of incorrect type" if !@pathExists @__path
+    return callback? "No load path defined" if !@__path
+    return callback? "path '#{@__path}' does not exist or is of incorrect type" if !@pathExists @__path
     try
       if @__path.match /\.js+$/
-        @__data = require @__path
+        callback? null, @__data = require @__path
       else
         Util.File.readFile @__path, (e, @__data) => callback? e, @__data
     catch e
-      console.error "could load file '#{@__path}"
-    callback? e || null, @__data
+      callback? "could load file '#{@__path}", null
   get:(attr)-> @__data[attr]
   set:(data)->
     @__data = data
   save:(callback)->
     if @__path? 
       Util.File.writeFile @__path, "#{@toString true}", null, callback
-      # fs.writeFile @__path, "#{@toString true}", (e)=> 
-        # console.error "Failed to save file #{#{RikkiTikkiAPI.SCHEMA_PATH}/#{name}.js}'\nError: #{e}" if e
-        # callback? e || null
     else
       callback? "path was not defined"
   destroy:(callback)->

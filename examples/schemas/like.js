@@ -6,7 +6,6 @@ var likeSchema = new Schema({
   user_ids: []
 });
 
-var likeModel = mongoose.model('likings', likeSchema);
-
-// module.exports['like'] = likeSchema;
-module.exports = likeModel;
+module.exports = likeSchema;
+//var likeModel = mongoose.model('likings', likeSchema);
+//module.exports = likeModel;

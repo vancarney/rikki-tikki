@@ -14,4 +14,4 @@ var postSchema = new Schema({
   }
 });
 
-module.exports = RikkiTikkiAPI.model( 'post', postSchema );
+module.exports = postSchema //RikkiTikkiAPI.model( 'post', postSchema );
