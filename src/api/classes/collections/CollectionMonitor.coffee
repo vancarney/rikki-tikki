@@ -20,7 +20,7 @@ class CollectionMonitor extends RikkiTikkiAPI.base_classes.SingletonEmitter
         type = 'init'
       @emit type, data
     @refresh()
-    @startPolling() if RikkiTikkiAPI.isDevelopment()
+    @startPolling() if RikkiTikkiAPI.Util.Env.isDevelopment()
   refresh:(callback)->
     @__conn.getCollectionNames (e, names) =>
       if names?.length > 0

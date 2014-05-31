@@ -17,7 +17,8 @@ class RouteIndex extends RikkiTikkiAPI.base_classes.BaseRoute
         delete query[v] if restricted.indexOf v >= 0
       query
     return (req,res)=>
-      @createCollection req.params.collection if RikkiTikkiAPI.isDevelopment()
+      console.log "isDevelopment: #{RikkiTikkiAPI.Util.Env.isDevelopment()}"
+      @createCollection req.params.collection if RikkiTikkiAPI.Util.Env.isDevelopment()
       @__db.getMongoDB().collection req.params.collection, (e,collection)=>
         collection.find sanitize( JSON.parse req.query.where || "{}" ), (e,results)=>
           return callback? res, {status:500, content: 'failed to execute query'} if e?

@@ -14,11 +14,11 @@ class Router extends RikkiTikkiAPI.base_classes.Singleton
     @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
       @__adapter.responseHandler res, 
         status:200
-        content: RikkiTikkiAPI.getSchemaManager().toJSON RikkiTikkiAPI.getEnvironment() == 'development'
+        content: RikkiTikkiAPI.getSchemaManager().toJSON RikkiTikkiAPI.Util.Env.isDevelopment()
     RikkiTikkiAPI.DEBUG && logger.log 'debug', "#{name}:"
     # generate routes based on the REST operations
     for operation in ['index','show','create','update','destroy']
-      collections = if RikkiTikkiAPI.getEnvironment() == 'development' then [':collection'] else RikkiTikkiAPI.getSchemaManager().listSchemas()
+      collections = if RikkiTikkiAPI.Util.Env.isDevelopment() then [':collection'] else RikkiTikkiAPI.getSchemaManager().listSchemas()
       _.each collections, (collection)=>
         switch operation
           when 'show'

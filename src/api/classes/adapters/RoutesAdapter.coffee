@@ -10,14 +10,12 @@ class RoutesAdapter extends RikkiTikkiAPI.base_classes.AbstractAdapter
     fn[method.toUpperCase()] = handler
     @routes = _.union @routes, route
     @params.router.addRoute route, fn
-  # setApp:(app)->
-    # @params.app ?= app
   requestHandler:(req, res)=>
     normalPathname = path.normalize(pathname = (parsed = url.parse req.url).pathname).replace /\\/g, '/'
     route = @params.router.match normalPathname
     return if !route
-    req.params = route.params
-    req.query = RikkiTikkiAPI.Util.queryToObject req.url.split('?').pop()
+    req.params  = route.params
+    req.query   = RikkiTikkiAPI.Util.queryToObject req.url.split('?').pop()
     if (route.route? and @routes.lastIndexOf route.route) >= 0
       return route.fn[req.method] req, res
     else

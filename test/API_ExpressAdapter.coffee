@@ -19,7 +19,7 @@ describe 'RikkiTikkiAPI.ExpressAdapter API Test Suite', ->
       
       _.each names=['products'], (value,k)=>
         request(@app)
-        .get("#{RikkiTikkiAPI.getAPIPath()}/#{value}")
+        .get("api/1/#{value}")
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200, =>

@@ -13,7 +13,7 @@ class BaseRoute extends Object
     @__db = RikkiTikkiAPI.getConnection()
     CollectionManager = RikkiTikkiAPI.CollectionManager.getInstance()
   createCollection:(name)->
-    if RikkiTikkiAPI.isDevelopment() and 0 > RikkiTikkiAPI.listCollections().indexOf name
+    if RikkiTikkiAPI.Util.Env.isDevelopment() and 0 > RikkiTikkiAPI.listCollections().indexOf name
       CollectionManager.createCollection name, {}, (e,res)=>
   checkSchema:(name)->
 module.exports = BaseRoute   

@@ -39,7 +39,7 @@ class RikkiTikkiAPI extends EventEmitter
     RikkiTikkiAPI.useAdapter adapter if (adapter = __options.get 'adapter')?
     (@__config = new RikkiTikkiAPI.ConfigLoader __options ).load (e, data)=>
       return callback? e if e?
-      @connect (@__config.getEnvironment RikkiTikkiAPI.getEnvironment()), {
+      @connect (@__config.getEnvironment RikkiTikkiAPI.Util.Env.getEnvironment()), {
         open: =>
           RikkiTikkiAPI.useAdapter __options.adapter if __options.adapter?
           @emit 'open', null, @__conn
@@ -64,15 +64,11 @@ class RikkiTikkiAPI extends EventEmitter
   # > Manually closes connection to Mongo Database Server
   disconnect:(callback)->
     @__conn.close callback
-  registerApp:(@__parent, adapter)->
-    # @useAdapter adapter || @__detected_adapter
-    # @__adapter = new @__adapter app:@__parent if typeof @__adapter == 'function'
-    @router = new RikkiTikkiAPI.Router
 module.exports = RikkiTikkiAPI
 # Begin STATIC definitions
 RikkiTikkiAPI.DEBUG = false
 RikkiTikkiAPI.ADAPTER  = null
-RikkiTikkiAPI.API_BASEPATH = 'api'
+RikkiTikkiAPI.API_BASEPATH = '/api'
 RikkiTikkiAPI.API_VERSION  = '1'
 RikkiTikkiAPI.API_NAMESPACE = ''
 RikkiTikkiAPI.CONFIG_PATH = "#{process.cwd()}#{path.sep}configs"
@@ -82,10 +78,7 @@ RikkiTikkiAPI.SCHEMA_TREES_FILE = 'schema.json'
 
 RikkiTikkiAPI.getConnection = ->
   @connection
-RikkiTikkiAPI.getEnvironment = ->
-  process.env.NODE_ENV || 'development'
-RikkiTikkiAPI.isDevelopment = ->
-  @getEnvironment() == 'development'
+
 RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
 RikkiTikkiAPI.createAdapter = (name,options)->
