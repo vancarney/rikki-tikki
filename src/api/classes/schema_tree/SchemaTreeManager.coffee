@@ -7,7 +7,7 @@ SchemaTree    = require './SchemaTree'
 class SchemaTreeManager extends Object
   constructor:->
     @__trees  = {}
-    @__path   = "#{RikkiTikkiAPI.CONFIG_PATH}/schema_trees"
+    @__path = "#{RikkiTikkiAPI.getOptions().config_path}/schema_trees"
     (@load = =>
       try
         # attempt to get stats on the file

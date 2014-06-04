@@ -3,8 +3,8 @@ var Router          = require( 'routes' );
 var RikkiTikkiAPI   = require( '../../lib/api' );
 
 new RikkiTikkiAPI({
-	config_path:'/Users/van/Documents/workspace/rikki-tikki/test/configs',
-	schema_path:'/Users/van/Documents/workspace/rikki-tikki/test/schemas',
+	config_path:'/Users/van/Documents/workspace/rikki-tikki/test/scripts/configs',
+	schema_path:'/Users/van/Documents/workspace/rikki-tikki/test/scripts/schemas',
 	adapter: RikkiTikkiAPI.createAdapter( 'routes', {router: new Router()} )
 }, function (e,results) {
 	if (e == null) {

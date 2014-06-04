@@ -7,8 +7,8 @@ class DSNOptions extends Object
     @setOptions options if options
   setOptions:(options)->
     throw new Error 'options was undefined' if !options
-    options = Util.queryToObject options if Util.isOfType options, String
-    if !Util.isOfType options, DSNOptions
+    options = Util.Query.queryToObject options if Util.Object.isOfType options, String
+    if !Util.Object.isOfType options, DSNOptions
       try
         @__options = @__validate options
       catch e
@@ -92,13 +92,13 @@ class DSNOptions extends Object
         restrict: /^(standard+)|(csharpLegacy+)|(javaLegacy+)|(pythonLegacy+)$/
     _.each object, (value, key)=>
       throw new Error "#{key} is not a valid Connection Option" if !opts[key]
-      if (Util.isOfType opts[key].type, Array) and opts[key].type.length
+      if (Util.Object.isOfType opts[key].type, Array) and opts[key].type.length
         found = false
         _.each opts[key].type, (v)=> 
-          found = true if Util.isOfType value, v
+          found = true if Util.Object.isOfType value, v
         throw new TypeError "#{key} is expected to be #{opts[key].type.join ' or '}. Was '#{typeof value}'" if !found
       else
-        if !Util.isOfType value = opts[key].type(value), opts[key].type
+        if !Util.Object.isOfType value = opts[key].type(value), opts[key].type
           throw new TypeError "#{key} is expected to be #{opts[key].type}. Was #{typeof value}"
         # reset object[key] as properly typed value which has passed validation
         object[key] = value.valueOf()
@@ -107,5 +107,5 @@ class DSNOptions extends Object
   toJSON:->
     @__options
   toString:->
-    Util.objectToQuery @__options
+    Util.Query.objectToQuery @__options
 module.exports = DSNOptions

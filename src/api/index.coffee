@@ -10,7 +10,7 @@ ArrayCollection = require('js-arraycollection').ArrayCollection
 class RikkiTikkiAPI extends EventEmitter
   __adapter:null
   constructor:(__options=new RikkiTikkiAPI.APIOptions, callback)->
-    __options = new RikkiTikkiAPI.APIOptions __options if !(RikkiTikkiAPI.Util.isOfType __options, RikkiTikkiAPI.APIOptions)
+    __options = new RikkiTikkiAPI.APIOptions __options if !(RikkiTikkiAPI.Util.Object.isOfType __options, RikkiTikkiAPI.APIOptions)
     for name in ['express','hapi']
       if RikkiTikkiAPI.Util.detectModule name
         @__detected_adapter ?= name
@@ -42,6 +42,7 @@ class RikkiTikkiAPI extends EventEmitter
       @connect (@__config.getEnvironment RikkiTikkiAPI.Util.Env.getEnvironment()), {
         open: =>
           RikkiTikkiAPI.useAdapter __options.adapter if __options.adapter?
+          SchemaService.getInstance() if RikkiTikkiAPI.Util.Env.isDevelopment()
           @emit 'open', null, @__conn
         error: (e)=> @emit 'open', e, null
         close: => @emit 'close'
@@ -50,12 +51,10 @@ class RikkiTikkiAPI extends EventEmitter
     callback? null, true
   ## connect(dsn, options)
   # > Manually create connection to Mongo Database Server
-  connect:(dsn,opts)-> 
+  connect:(dsn,opts)->
     @__conn = new RikkiTikkiAPI.Connection
     @__conn.on 'open', (evt)=>
-      RikkiTikkiAPI.connection = @__conn
-      RikkiTikkiAPI.collectionMon = new RikkiTikkiAPI.CollectionMonitor @__conn
-      RikkiTikkiAPI.collections   = new RikkiTikkiAPI.CollectionManager.getInstance()
+      RikkiTikkiAPI.getConnection = => @__conn
       opts?.open? evt
     @__conn.on 'close', (evt) => opts?.close? evt
     @__conn.on 'error', (e)   => opts?.error? e
@@ -86,13 +85,15 @@ RikkiTikkiAPI.createAdapter = (name,options)->
     return throw "param '#{param}' is not defined" if typeof param == 'undefined' or param == null
   RikkiTikkiAPI.Adapters.createAdapter name, options
 RikkiTikkiAPI.getSchemaManager = ->
-  RikkiTikkiAPI.SchemaManager.getInstance()
+  SchemaManager.getInstance()
+RikkiTikkiAPI.getSchemaTreeManager = ->
+  SchemaTreeManager.getInstance()
 RikkiTikkiAPI.getCollectionManager = ->
-  RikkiTikkiAPI.CollectionManager.getInstance()
+  CollectionManager.getInstance()
 RikkiTikkiAPI.getCollectionManitor = ->
-  RikkiTikkiAPI.CollectionMonitor.getInstance()
+  CollectionMonitor.getInstance()
 RikkiTikkiAPI.listCollections = ->
-  if RikkiTikkiAPI.collectionMon? then RikkiTikkiAPI.collectionMon.getNames() else []
+  @getCollectionManitor().getNames()
 # RikkiTikkiAPI.getFullPath = ->
   # path.normalize "#{process.cwd()}#{path.sep}#{RikkiTikkiAPI.CONFIG_PATH}#{path.sep}#{RikkiTikkiAPI.CONFIG_FILENAME}"
 # RikkiTikkiAPI.configExists = (_path)->
@@ -126,11 +127,13 @@ RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
 RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
-RikkiTikkiAPI.SchemaManager     = require './classes/schema/SchemaManager'
-RikkiTikkiAPI.SchemaTreeManager = require './classes/schema_tree/SchemaTreeManager'
+SchemaManager                   = require './classes/schema/SchemaManager'
+SchemaTreeManager               = require './classes/schema_tree/SchemaTreeManager'
+SchemaService                   = require './classes/services/SchemaService'
 RikkiTikkiAPI._adapters         = require './classes/adapters'
 _collections                    = require './classes/collections'
-RikkiTikkiAPI.CollectionManager = _collections.CollectionManager
-RikkiTikkiAPI.CollectionMonitor = _collections.CollectionMonitor
+CollectionManager               = _collections.CollectionManager
+CollectionMonitor               = _collections.CollectionMonitor
+RikkiTikkiAPI.Collection        = _collections.Collection
 RikkiTikkiAPI.Document          = _collections.Document
-RikkiTikkiAPI.Model             = _collections.Model
+Model             = _collections.Model

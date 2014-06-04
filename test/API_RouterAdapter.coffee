@@ -19,7 +19,7 @@ new RikkiTikkiAPI {
       )
       adapter.params.router.match('/').should.be.a 'Object'
       adapter.params.router.match('/').fn.GET.should.be.a 'Function'
-    it 'should perform a basic GET', (done)=>
+    it 'should respond to a basic GET', (done)=>
       request(httpServer)
       .get('/')
       .set('Accept', 'application/json')

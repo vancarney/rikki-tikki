@@ -25,8 +25,8 @@ clazz = class Product extends RikkiTikki.Model
     # error:(m,r,o)->
       # console.log 'error'
   # model.save v, h
-  
-describe 'RikkiTikki.Collections Test Suite', ->
+
+describe 'RikkiTikki.Collections Client Test Suite', ->
   @timeout 10000
   it 'Collection should be extensable', =>
     RikkiTikki.PORT = 3006

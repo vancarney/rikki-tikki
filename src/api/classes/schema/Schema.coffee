@@ -68,7 +68,7 @@ class Schema extends Object
     @_requiredpaths = null
     @discriminatorMapping = null
     @_indexedpaths = null
-    @add obj if obj? and !Util.isOfType obj, Schema
+    @add obj if obj? and !Util.Object.isOfType obj, Schema
   toModel: (name)->
     RikkiTikkiAPI.model name, @
 Schema.nativeTypes =

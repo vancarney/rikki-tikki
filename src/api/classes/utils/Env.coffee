@@ -2,5 +2,5 @@ Env  = {}
 Env.getEnvironment = ->
   process.env.NODE_ENV || 'development'
 Env.isDevelopment = ->
-  Env.getEnvironment() == 'development'
+  @getEnvironment() == 'development'
 module.exports = Env

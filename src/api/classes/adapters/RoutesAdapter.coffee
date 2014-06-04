@@ -15,7 +15,7 @@ class RoutesAdapter extends RikkiTikkiAPI.base_classes.AbstractAdapter
     route = @params.router.match normalPathname
     return if !route
     req.params  = route.params
-    req.query   = RikkiTikkiAPI.Util.queryToObject req.url.split('?').pop()
+    req.query   = RikkiTikkiAPI.Util.Query.queryToObject req.url.split('?').pop()
     if (route.route? and @routes.lastIndexOf route.route) >= 0
       return route.fn[req.method] req, res
     else

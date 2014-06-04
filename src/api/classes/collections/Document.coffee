@@ -26,4 +26,13 @@ class Document extends Object
     @toJSON()
   toJSON:->
     if @isValid() then @__data else null
+  serialize:(maxDepth)->
+    branch = {}
+    serialize = (document, parentKey, maxDepth)->
+      for key in document
+        continue if !(document.hasOwnProperty key) 
+        branch[subKey = "#{parentKey}#{key}"] = value = document[key]
+        serialize value, "#{subKey}.", maxDepth - 1 if (Util.Object.isHash value) and (maxDepth > 0)
+    serialize @__data, '', maxDepth
+    branch
 module.exports = Document

@@ -11,7 +11,7 @@ class AdapterManager extends RikkiTikkiAPI.base_classes.Singleton
   createAdapter:(name, options)->
     if typeof name == 'string'
       return new adapter( options ) if (adapter = @getAdapter name)?
-    else if RikkiTikki.Util.isOfType name, RikkiTikkiAPI.base_classes.AbstractAdapter
+    else if RikkiTikki.Util.Object.isOfType name, RikkiTikkiAPI.base_classes.AbstractAdapter
       return new name options
   unregisterAdapter: (name)->
     delete @__adapters[name]

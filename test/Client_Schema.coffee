@@ -8,7 +8,7 @@ RikkiTikki      = require('../lib/client').RikkiTikki
 
 # myNS.createSchema 'Products', name:String, description:String, price:Number
 
-describe 'RikkiTikki.Schema Test Suite', ->
+describe 'RikkiTikki.Schema Client Test Suite', ->
   myNS = RikkiTikki.createNameSpace 'myNS' #_.extend {}, RikkiTikki || {}
   @schema = new myNS.Schema name:String, description:String, price:Number, foo:{type:Date, default:Date.now, illegal:true, validators:[((value)-> typeof value == 'string'), 'must be string']}
   # console.log @schema #.paths.foo #.validators

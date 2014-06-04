@@ -35,8 +35,8 @@ class DSN extends Object
   getOptions:->
     @__dsn?.options || null
   setDSN:(dsn)->
-    dsn = @parseDSNString dsn if Util.isOfType dsn, String
-    # dsn.options = new DSNOptions dsn.options if dsn?.options and !Util.isOfType dsn.options, DSNOptions
+    dsn = @parseDSNString dsn if Util.Object.isOfType dsn, String
+    # dsn.options = new DSNOptions dsn.options if dsn?.options and !Util.Object.isOfType dsn.options, DSNOptions
     try
       @__dsn = dsn if @validate dsn
     catch e
@@ -69,7 +69,7 @@ class DSN extends Object
       replicas:
         type:Array
         required:false
-      db:
+      database:
         type:String
         required:false
       options:
@@ -81,7 +81,7 @@ class DSN extends Object
         if !value.type
           throw Error "Validator for DSN::'#{key}' was missing type param"
         # tests for proper type
-        if !(Util.isOfType dsn[key], value.type)
+        if !(Util.Object.isOfType dsn[key], value.type)
           throw Error "#{key} was expected to be #{Util.getFunctionName value.type}. Type was '#{typeof dsn[key]}'"
         # tests for string restriction
         if value.restrict and !("#{dsn[key]}".match value.restrict)

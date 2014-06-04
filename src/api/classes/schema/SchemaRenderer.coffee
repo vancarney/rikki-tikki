@@ -12,7 +12,7 @@ class SchemaRenderer extends RikkiTikkiAPI.Schema
     delete schema.name
     _.template @__template, {name:RikkiTikkiAPI.Util.capitalize(@name), schema:schema, ns:ns}
   constructor:(@name, obj, opts)->
-    if Util.isOfType obj, RikkiTikkiAPI.Schema
+    if Util.Object.isOfType obj, RikkiTikkiAPI.Schema
       _.extend @, obj
     else
       SchemaRenderer.__super__.constructor.call @, obj, opts

@@ -19,7 +19,7 @@ schema = {
 }
 
 RikkiTikki.createSchema 'Products', _.clone schema
-
+RikkiTikki.PORT = 3006
 myNS = RikkiTikki.createNameSpace 'myNS'
 # console.log new myNS.Schema schema
 
@@ -34,7 +34,6 @@ describe 'RikkiTikki.Model Test Suite', ->
   it 'should have a pluralized Class Name', =>
     (@testModel).className.should.equal 'Products'
   it 'should save Data to the API', (done)=>
-    # RikkiTikki.API_URI = 'http://0.0.0.0:3000/api/1/'
     o = 
       name:"Fantastic Rubber Shirt"
       description:"embrace cutting-edge deliverables"

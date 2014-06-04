@@ -3,11 +3,12 @@ fs              = require 'fs'
 path            = require 'path'
 (chai           = require 'chai').should()
 RikkiTikkiAPI   = require '../src/api'
+SchemaTreeManager = require '../src/api/classes/schema_tree/SchemaTreeManager'
 RikkiTikkiAPI.CONFIG_PATH = './test/configs'
 RikkiTikkiAPI.SCHEMA_PATH = './test/schemas'
 describe 'RikkiTikkiAPI.SchemaTree Test Suite', ->
   it 'should get a SchemaTreeManager Instance', ()=>
-    (@sm = RikkiTikkiAPI.SchemaTreeManager.getInstance()).should.be.a 'Object'
+    (@sm = SchemaTreeManager.getInstance()).should.be.a 'Object'
   it 'should create a new SchemaTree item', (done)=>
     @sm.createTree 'TestOne', null, (e)=>
       if e?

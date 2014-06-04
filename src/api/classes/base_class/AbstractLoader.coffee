@@ -6,7 +6,7 @@ Util          = RikkiTikkiAPI.Util
 class AbstractLoader extends Object
   __data:null
   constructor:(@__path)->
-    if (RikkiTikkiAPI.Util.getFunctionName arguments.callee.caller.__super__.constructor ) != 'AbstractLoader'
+    if (RikkiTikkiAPI.Util.Function.getFunctionName arguments.callee.caller.__super__.constructor ) != 'AbstractLoader'
       return throw "AbstractAdapter can not be directly instatiated. Use a subclass instead."
     @load() if @__path?
   pathExists: (_path)->
@@ -18,9 +18,10 @@ class AbstractLoader extends Object
       if @__path.match /\.js+$/
         callback? null, @__data = require @__path
       else
-        Util.File.readFile @__path, (e, @__data) => callback? e, @__data
+        Util.File.readFile @__path, 'utf-8', (e, data) =>
+          callback? e, data
     catch e
-      callback? "could load file '#{@__path}", null
+      callback? "could not load file '#{@__path}", null
   get:(attr)-> @__data[attr]
   set:(data)->
     @__data = data

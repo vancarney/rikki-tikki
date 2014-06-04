@@ -11,11 +11,18 @@ class BaseRoute extends Object
     @after.push fn
   constructor:->
     @__db = RikkiTikkiAPI.getConnection()
-    CollectionManager = RikkiTikkiAPI.CollectionManager.getInstance()
-  createCollection:(name)->
-    if RikkiTikkiAPI.Util.Env.isDevelopment() and 0 > RikkiTikkiAPI.listCollections().indexOf name
+    CollectionManager = RikkiTikkiAPI.getCollectionManager()
+  createCollection:(name, callback)->
+    if BaseRoute.isDevelopment() and !BaseRoute.collectionExists name
       CollectionManager.createCollection name, {}, (e,res)=>
+        RikkiTikkiAPI.getSchemaManager().createSchema name, {}, (e,res)=>
+          RikkiTikkiAPI.getSchemaTreeManager().createTree name, {}, (e,res)=>
+            callback? e, res
   checkSchema:(name)->
+BaseRoute.isDevelopment = ->
+  RikkiTikkiAPI.Util.Env.isDevelopment()
+BaseRoute.collectionExists = (name)->
+  0 <= RikkiTikkiAPI.listCollections().indexOf name
 module.exports = BaseRoute   
 ###
     if obj.before

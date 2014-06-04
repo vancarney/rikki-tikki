@@ -7,8 +7,7 @@ class Router extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     throw "Routing Adapter not defined." if !(@__adapter = RikkiTikkiAPI.getAdapter())
     @__api_path = RikkiTikkiAPI.getAPIPath()
-    @__routes = new Routes
-    (@__db = RikkiTikkiAPI.getConnection()).on 'open', => @intializeRoutes()
+    @__routes   = new Routes
   getAdapter:-> @__adapter
   intializeRoutes:->
     @__adapter.addRoute "#{@__api_path}/__schema__", 'get', (req,res)=>
@@ -37,7 +36,7 @@ class Router extends RikkiTikkiAPI.base_classes.Singleton
         RikkiTikkiAPI.DEBUG && logger.log 'debug', "#{route.method.toUpperCase()} #{route.path} -> #{route.operation}"
   addRoute:(params={})->
     # ensure params is cast to RikkiTikkiAPI.RoutingParams
-    params = new RoutingParams params.path, params.operation if !RikkiTikkiAPI.Util.isOfType params, RoutingParams
+    params = new RoutingParams params.path, params.operation if !RikkiTikkiAPI.Util.Object.isOfType params, RoutingParams
     # throw "Handler was invalid" if !params.handler or typeof handler != 'function'
     @__adapter.addRoute params.path, params.method, handler if (handler = @__routes.createRoute params.method, params.path, params.operation)?
 Router.getInstance = ->
