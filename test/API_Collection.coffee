@@ -23,7 +23,36 @@ describe 'RikkiTikkiAPI.Collection Class Test Suite', ->
     @col.find {name:"record 1"}, null, (e, res)=>
       throw e if e?
       done()
-  it 'should remove the record from the Collection', (done)=>
+  it 'should derive a Tree from the Collection', (done)=>
+    @col.save [
+      {name:"record 2", value:false},
+      {name:"record 3", value:false},
+      {name:"record 4", value:false},
+      {name:"record 5", value:false}
+      ], null, (e, res)=>
+      throw e if e?
+      @col.getTree (e, tree)=>
+        throw e if e?
+        tree._id.should.equal 'ObjectID'
+        tree.name.should.equal 'String'
+        tree.value.should.equal 'Mixed'
+        done()
+  it 'should rederive a Tree from the Collection', (done)=>
+    @col.save [
+      {name:"record 6", value:false},
+      {name:"record 7", value:false},
+      {name:"record 8", value:false},
+      {name:"record 9", value:false},
+      {name:"record 10", value:false}
+      ], null, (e, res)=>
+      throw e if e?
+      @col.getTree (e, tree)=>
+        throw e if e?
+        tree._id.should.equal 'ObjectID'
+        tree.name.should.equal 'String'
+        tree.value.should.equal 'Boolean'
+        done()
+  it 'should remove a record from the Collection', (done)=>
     @col.remove {name:"record 1"}, null, (e, res)=>
       throw e if e?
       done()

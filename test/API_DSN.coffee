@@ -2,7 +2,6 @@ fs              = require 'fs'
 (chai           = require 'chai').should()
 RikkiTikkiAPI   = require '../src/api'
 describe 'RikkiTikkiAPI.DSN Test Suite', ->
-  @timeout 10000
   @dsn = new RikkiTikkiAPI.DSN
   it 'should accept a new DSN String', =>
     @dsn.setDSN '0.0.0.0'

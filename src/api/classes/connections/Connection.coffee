@@ -6,7 +6,7 @@ Connector     = null
 # > Wrapper for Mongoose or MongoDB Clients
 class Connection extends EventEmitter
   constructor:(args, @opts={})->
-    Connector = require if (new Util.Capabilities()).mongooseSupported() and !@opts.forceNative then './MongooseConnection' else './NativeConnection'
+    Connector = require if Util.Capabilities.mongooseSupported() and !@opts.forceNative then './MongooseConnection' else './NativeConnection'
     @__conn = new Connector args, @opts
     @__conn.once 'open',  (conn)=> 
       @emit 'open', @

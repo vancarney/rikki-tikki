@@ -4,7 +4,6 @@ request         = require 'supertest'
 RikkiTikkiAPI  = require '../lib/api'
 RikkiTikkiAPI.SCHEMA_PATH = './test/schemas'
 adapter = RikkiTikkiAPI.createAdapter 'hapi', {app:(server = new Hapi.Server '0.0.0.0', 3001)}
-# useAdapter 'hapi', app:(server = new Hapi.Server '0.0.0.0', 3001)
 new RikkiTikkiAPI {
   adapter: adapter
 }

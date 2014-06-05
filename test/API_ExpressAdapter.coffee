@@ -7,7 +7,6 @@ module.exports.port = port = 3000
 describe 'RikkiTikkiAPI.ExpressAdapter API Test Suite', ->
   @app     = express()
   @adapter = RikkiTikkiAPI.createAdapter 'express', app:@app
-  @timeout 10000
   it 'should GET all API Routes', (done)=>
     new RikkiTikkiAPI {
       config_path: './test/configs'

@@ -22,9 +22,9 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
         (@__schemas ?= {})[Util.File.name file] = new SchemaLoader "#{fs.realpathSync @__path}#{path.sep}#{file}"
   createSchema:(name, data={}, callback)->
     if !@__schemas[name]
-      (@__schemas[name] = new SchemaLoader).create "#{@__path}#{path.sep}#{name}.json", data, callback
+      (@__schemas[name] = new SchemaLoader).create "#{@__path}#{path.sep}#{name}.js", data, callback
     else
-      throw "Schema '#{name}' already exists"
+      @getSchema name, callback
   getSchema:(name, callback)->  
     callback? null, if (schema = @__schemas[name])? then schema else null
   listSchemas:(callback)->

@@ -1,7 +1,7 @@
 RikkiTikkiAPI   = module.parent.exports.RikkiTikkiAPI
 Util            = RikkiTikkiAPI.Util
 Connection      = RikkiTikkiAPI.Connection
-Collection      = module.parent.exports.Collection
+Collection      = require './Collection'
 {_}             = require 'underscore'
 class CollectionManager extends RikkiTikkiAPI.base_classes.SingletonEmitter
   __cache:{}
@@ -31,7 +31,7 @@ class CollectionManager extends RikkiTikkiAPI.base_classes.SingletonEmitter
       callback? null, _.clone collection
     else
       try
-        (col = new Collection name)?.getCollection (e,col)=>
+        if (col = new Collection name)?
           callback? e, if e? then null else @__cache[name] = col
       catch e
         callback? e, null

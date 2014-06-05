@@ -20,9 +20,9 @@ class SchemaTree extends RikkiTikkiAPI.base_classes.AbstractLoader
     @save callback
   load:(callback)->
     if @pathExists @__path
-      SchemaTree.__super__.load.call @, (e) =>
+      SchemaTree.__super__.load.call @, (e, data) =>
         return callback? e if e?
-        @_data = JSON.parse @__data, @reviver
+        @_data = JSON.parse data, @reviver
         callback? null, @__data
     else
       @__data = {}

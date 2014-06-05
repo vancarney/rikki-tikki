@@ -9,7 +9,7 @@ class Document extends Object
     @setData data if data
   setData:(data)->
     _.each data, (v,k)=> 
-      v = Util.stripNull v if typeof v == 'string'
+      v = Util.String.stripNull v if typeof v == 'string'
     @__data = data
   validate:->
     if process.env != 'development'
@@ -28,10 +28,9 @@ class Document extends Object
     if @isValid() then @__data else null
   serialize:(maxDepth)->
     branch = {}
-    serialize = (document, parentKey, maxDepth)->
-      for key in document
-        continue if !(document.hasOwnProperty key) 
-        branch[subKey = "#{parentKey}#{key}"] = value = document[key]
+    serialize = (doc, parentKey, maxDepth)=>
+      for key,value of doc
+        branch[subKey = "#{parentKey}#{key}"] = Util.Object.getMongoType value
         serialize value, "#{subKey}.", maxDepth - 1 if (Util.Object.isHash value) and (maxDepth > 0)
     serialize @__data, '', maxDepth
     branch

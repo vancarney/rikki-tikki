@@ -28,7 +28,7 @@ class Capabilities extends Object
     0 <= @detectedModules().indexOf 'hapi'
   hapiLoaded: ->
     0 <= @loadedModules().indexOf 'hapi'
-module.exports = Capabilities
+module.exports = new Capabilities
 # capabilities = new Capabilities
 # exports.detectedModules   = capabilities.detectedModules
 # exports.loadedModules     = capabilities.loadedModules
