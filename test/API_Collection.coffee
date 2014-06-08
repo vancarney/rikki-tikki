@@ -1,10 +1,12 @@
 (chai           = require 'chai').should()
 http            = require 'http'
 Router          = require 'routes'
+fs              = require 'fs'
 RikkiTikkiAPI   = require '../src/api'
 describe 'RikkiTikkiAPI.Collection Class Test Suite', ->
   it 'should setup our test collection', (done)=>
     new RikkiTikkiAPI( {
+      destructive: true
       config_path: './test/configs'
       adapter: RikkiTikkiAPI.createAdapter 'routes', router:new Router
     }).on 'open', =>
@@ -57,6 +59,9 @@ describe 'RikkiTikkiAPI.Collection Class Test Suite', ->
       throw e if e?
       done()
   it 'should tear down our test collection', (done)=>
-    RikkiTikkiAPI.getCollectionManager().dropCollection 'Test', (e,col)=>
+    @col.drop (e,col)=>
       throw e if e?
+      throw 'Collection was not destroyed' if !col
+      fs.unlinkSync './test/schemas/Test.js'
+      fs.unlinkSync './test/configs/schema_trees/Test.json'
       done()

@@ -27,4 +27,6 @@ class SchemaTree extends RikkiTikkiAPI.base_classes.AbstractLoader
     else
       @__data = {}
       callback? null, @__data
+  create:(path, data={}, callback)->
+    SchemaTree.__super__.create.call @, path, JSON.stringify(data, @replacer), callback
 module.exports = SchemaTree

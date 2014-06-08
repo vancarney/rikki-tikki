@@ -8,7 +8,7 @@ global.api = new RikkiTikkiAPI({
 	adapter:adapter
 }, function (e, ok) { 
 	if (e != null) 
-		return console.error("Could not start service\n"+e);
+		return console.error("Could not start API service\n"+e);
 });
 
 httpServer = http.createServer( adapter.requestHandler );

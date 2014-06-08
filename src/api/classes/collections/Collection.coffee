@@ -113,5 +113,5 @@ class Collection extends Object
             else
               type = tPair[0][0]
             tree[field] = type
-          return callback? null, tree       
+          return callback? null, tree
 module.exports = Collection

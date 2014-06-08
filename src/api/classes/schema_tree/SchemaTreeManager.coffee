@@ -22,7 +22,7 @@ class SchemaTreeManager extends Object
     )()
   createTree:(name, data={}, callback)->
     if !@__trees[name]
-      (@__trees[name] = new SchemaTree).create "#{@__path}#{path.sep}#{name}.json", JSON.stringify(data), callback
+      (@__trees[name] = new SchemaTree).create "#{@__path}#{path.sep}#{name}.json", data, callback
     else
       callback? new Error "SchemaTree '#{name}' already exists"
   destroyTree:(name, callback)->

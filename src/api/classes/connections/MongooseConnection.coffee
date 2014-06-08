@@ -6,7 +6,7 @@ EventEmitter  = require('events').EventEmitter
 # > Establshes Mongo DB with Mongoose
 class MongooseConnection extends EventEmitter
   constructor:(args)->
-    if !(RikkiTikkiAPI.getConnection())
+    if !(@__conn = RikkiTikkiAPI.getConnection())
       client = mongoose.connection
       client.on 'error', (e) => @emit 'error', e.message
       client.on 'open', (conn)=> @emit 'open', conn
