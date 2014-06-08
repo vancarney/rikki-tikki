@@ -1,8 +1,7 @@
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-class RouteDestroy extends RikkiTikkiAPI.base_classes.BaseRoute
-  constructor:(callback)->
-    RouteDestroy.__super__.constructor.call @
-    return (req,res)=>
+class RouteDestroy extends RikkiTikkiAPI.base_classes.AbstractRoute
+  handler:(callback)->   
+    (req,res)=>
       req.on 'data', (data)=> 
         d =  JSON.parse data
         @__db.getMongoDB().collection req.params.collection, (e,collection)=> 

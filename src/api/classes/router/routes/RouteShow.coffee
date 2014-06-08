@@ -1,8 +1,7 @@
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-class RouteShow extends RikkiTikkiAPI.base_classes.BaseRoute
-  constructor:(callback)->
-    RouteShow.__super__.constructor.call @
-    return (req,res)=>
+class RouteShow extends RikkiTikkiAPI.base_classes.AbstractRoute
+  handler:(callback)->   
+    (req,res)=>
       req.on 'data', (data)=>
         _.each @before, (before,k)=> before req,res,data
         d =  JSON.parse data
