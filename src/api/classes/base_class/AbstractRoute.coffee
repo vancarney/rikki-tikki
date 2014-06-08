@@ -22,7 +22,7 @@ class AbstractRoute extends Object
       @handler(callback) req, res
       # @__after
   handler:(req,res)->
-    throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.hassh(req,res) is not implemented" 
+    throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.handler(req,res) is not implemented" 
   sanitize: (query)->
     filter  = null
     filtered = []
