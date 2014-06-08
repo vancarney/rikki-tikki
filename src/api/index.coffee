@@ -160,6 +160,10 @@ RikkiTikkiAPI.createAdapter = (type,options)->
 #> Returns the SchemaManager
 RikkiTikkiAPI.getSchemaManager = ->
   SchemaManager.getInstance()
+## getSchemaTreeManager(type,options)
+#> Returns the SchemaTreeManager
+RikkiTikkiAPI.getSchemaTreeManager = ->
+  SchemaTreeManager.getInstance()
 ## getCollectionManager()
 #> Returns the CollectionManager
 RikkiTikkiAPI.getCollectionManager = ->
@@ -220,6 +224,7 @@ RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
 SchemaManager                   = require './classes/schema/SchemaManager'
+SchemaTree                      = require './classes/schema_tree/SchemaTree'
 SchemaTreeManager               = require './classes/schema_tree/SchemaTreeManager'
 SyncService                     = require './classes/services/SyncService'
 RikkiTikkiAPI._adapters         = require './classes/adapters'

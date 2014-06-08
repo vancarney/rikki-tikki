@@ -1,7 +1,7 @@
 {_}           = require 'underscore'
 fs            = require 'fs'
 path          = require 'path'
-RikkiTikkiAPI = module.parent.exports
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 SchemaTree    = require './SchemaTree'
 class SchemaTreeManager extends Object

@@ -4,6 +4,7 @@ request         = require 'supertest'
 RikkiTikkiAPI   = require '../src/api'
 adapter = RikkiTikkiAPI.createAdapter 'routes', router:new Router
 new RikkiTikkiAPI {
+  destructive: true
   config_path: './test/configs'
   adapter: adapter
 }, (e,r)=>
@@ -25,3 +26,26 @@ new RikkiTikkiAPI {
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200, done)
+    it 'should add an API ROUTE with a GET', (done)=>
+      request(httpServer)
+      .get('/api/1/RouteCollection')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end (e, res)=>
+        return done e if e?
+        res.status.should.equal 200
+        res.text.should.equal '{}'
+        done()
+    it 'should insert an new record with a POST', (done)=>
+      request(httpServer)
+      .post('/api/1/RouteCollection')
+      .set('Accept', 'application/json')
+      .send( {name: 'Yadayada', value:"foobar"} )
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end (e, res)=>
+        return done e if e?
+        res.status.should.equal 200
+        res.body._id.should.be.a 'string'
+        done()

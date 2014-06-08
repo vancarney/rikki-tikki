@@ -1,6 +1,7 @@
-{_}       = require 'underscore'
-RikkiTikkiAPI     = module.parent.exports.RikkiTikkiAPI
-CollectionManager = {}
+{_}                           = require 'underscore'
+RikkiTikkiAPI                 = module.parent.exports.RikkiTikkiAPI || module.parent.exports
+# module.exports.RikkiTikkiAPI  = RikkiTikkiAPI
+# SchemaTreeManager             = require '../schema_tree/SchemaTreeManager'
 class AbstractRoute extends Object
   __before: null
   __after: null
@@ -21,8 +22,8 @@ class AbstractRoute extends Object
       # @__before
       @handler(callback) req, res
       # @__after
-  handler:(req,res)->
-    throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.handler(req,res) is not implemented" 
+  handler:(callback)->
+    throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.handler(callback) is not implemented" 
   sanitize: (query)->
     filter  = null
     filtered = []

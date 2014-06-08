@@ -8,7 +8,7 @@ class Singleton extends EventEmitter
     _caller       = arguments.callee.caller.caller
     # references the caller's sub-classee
     _caller_super = arguments.callee.caller
-    # back references the caller chain until it find the origin
+    # back references the caller chain until it finds the origin
     while typeof _caller.__super__ != 'undefined'
       _caller_super = _caller
       _caller       = _caller.caller

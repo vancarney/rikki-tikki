@@ -1,6 +1,7 @@
 {_}           = require 'underscore'
 RikkiTikkiAPI = module.parent.exports
 Util          = RikkiTikkiAPI.Util
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 SchemaTreeManager = require '../schema_tree/SchemaTreeManager'
 class SyncService extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->

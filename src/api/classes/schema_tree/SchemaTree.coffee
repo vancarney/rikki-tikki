@@ -1,7 +1,7 @@
 {_}           = require 'underscore'
 fs            = require 'fs'
 path          = require 'path'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 Util          = RikkiTikkiAPI.Util
 class SchemaTree extends RikkiTikkiAPI.base_classes.AbstractLoader
   __data:{}
