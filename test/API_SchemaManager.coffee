@@ -2,7 +2,7 @@
 fs              = require 'fs'
 path            = require 'path'
 (chai           = require 'chai').should()
-RikkiTikkiAPI   = require '../src/api'
+RikkiTikkiAPI   = require '../src'
 RikkiTikkiAPI.SCHEMA_PATH = './test/schemas'
 describe 'RikkiTikkiAPI.SchemaManager Test Suite', ->
   it 'should Load an existing schema', (done)=>

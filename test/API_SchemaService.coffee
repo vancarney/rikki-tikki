@@ -1,7 +1,7 @@
 (chai           = require 'chai').should()
 http            = require 'http'
 Router          = require 'routes'
-RikkiTikkiAPI   = require '../src/api'
+RikkiTikkiAPI   = require '../src'
 fs              = require 'fs'
 name            = 'NewCollection'
 
@@ -9,8 +9,9 @@ name            = 'NewCollection'
 # SyncService   = require '../src/api/classes/services/SyncService'
 describe 'RikkiTikkiAPI.SyncService Class Test Suite', ->
   @timeout 15000
+  console.log 'RikkiTikkiAPI.getCollectionManager().__instance'
   it 'should setup our testing environment', (done)=>
-    new RikkiTikkiAPI( {
+    @api = new RikkiTikkiAPI( {
       config_path: './test/configs'
       adapter: RikkiTikkiAPI.createAdapter 'routes', router:new Router
     }).on 'open', =>
@@ -29,4 +30,8 @@ describe 'RikkiTikkiAPI.SyncService Class Test Suite', ->
   it 'should tear down our testing env', (done)=>
     @collections.dropCollection name, (e,col)=>
       throw e if e?
+      done()
+  it 'should teardown', (done)=>
+    @api.disconnect =>
+      delete @api
       done()

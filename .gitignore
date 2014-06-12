@@ -13,6 +13,12 @@ README.html
 ############
 Rakefile
 
+# Ignoring Hapi Adapter classes and tests
+###########
+HapiAdapter.*
+API_HapiAdapter.coffee
+
+
 # Node Modules #
 ################
 node_modules/*

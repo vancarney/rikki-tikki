@@ -3,13 +3,13 @@ fs              = require 'fs'
 path            = require 'path'
 (chai           = require 'chai').should()
 Router          = require 'routes'
-RikkiTikkiAPI   = require '../src/api'
+RikkiTikkiAPI   = require '../src'
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
-SchemaLoader    = require '../src/api/classes/schema/SchemaLoader'
+SchemaLoader    = require '../src/classes/schema/SchemaLoader'
 RikkiTikkiAPI.SCHEMA_PATH = './test/schemas'
 describe 'RikkiTikkiAPI.SchemaLoader Test Suite', ->
   it 'should setup our testing environment', (done)=>
-    new RikkiTikkiAPI( {
+    @api = new RikkiTikkiAPI( {
       config_path: './test/configs'
       adapter: RikkiTikkiAPI.createAdapter 'routes', router:new Router
     }).on 'open', =>
@@ -33,4 +33,8 @@ describe 'RikkiTikkiAPI.SchemaLoader Test Suite', ->
   it 'should teardown our test by deleting the hidden schema file', (done)=>
     fs.unlink "#{RikkiTikkiAPI.SCHEMA_PATH}/_TestSchema.js", (e)=>
       throw e if e?
+      done()
+  it 'should teardown', (done)=>
+    @api.disconnect =>
+      delete @api
       done()

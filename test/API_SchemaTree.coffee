@@ -2,8 +2,8 @@
 fs              = require 'fs'
 path            = require 'path'
 (chai           = require 'chai').should()
-RikkiTikkiAPI   = require '../src/api'
-SchemaTreeManager = require '../src/api/classes/schema_tree/SchemaTreeManager'
+RikkiTikkiAPI   = require '../src'
+SchemaTreeManager = require '../src/classes/schema_tree/SchemaTreeManager'
 RikkiTikkiAPI.CONFIG_PATH = './test/configs'
 RikkiTikkiAPI.SCHEMA_PATH = './test/schemas'
 describe 'RikkiTikkiAPI.SchemaTree Test Suite', ->

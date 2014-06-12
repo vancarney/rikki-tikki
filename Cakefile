@@ -5,8 +5,7 @@ fs = require 'fs'
 {debug, error, log, print} = require 'util'
 # import Spawn and Exec from child_process
 {spawn, exec, execFile}=require 'child_process'
-apiFiles = require './src/api-manifest.json'
-clientFiles = require './src/client-manifest.json'
+
 
 # colors
 red   = "\u001b[0;31m"
@@ -48,10 +47,9 @@ build = ()->
   
   # Enable coffee-script compiling
   #launch 'coffee', (['-j','lib/sparse.js', '-c', 'src/sparse.coffee', 'src/classes/*']), coffeeCallback
-  console.log "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}"
-  exec "coffee --join lib/client.js --compile #{clientFiles.files.join(' ').replace(/('|\")/g, '')}", coffeeCallback
+
   # console.log "coffee --join lib/api.js --compile #{apiFiles.files.join(' ').replace(/('|\")/g, '')}"
-  exec "coffee -b -c -o lib/api src/api", coffeeCallback
+  exec "coffee -b -c -o lib src", coffeeCallback
 # ## *watch*
 # watch project src folders and build on change
 task 'watch', 'watch project src folders and build on change', ()-> watch -> log ':)', green
