@@ -20,8 +20,14 @@ class RoutesAdapter extends RikkiTikkiAPI.base_classes.AbstractAdapter
       return route.fn[req.method] req, res
     else
       return route.fn req, res
-  responseHandler:(res, data)->
-    res.setHeader 'Content-Type', 'application/json'
+  responseHandler:(res, data, headers)->
+    if !headers
+      res.setHeader 'Content-Type', 'application/json'
+    else
+      for header,value of headers
+        console.log "#{header}: #{value}"
+        res.setHeader header, value
     res.writeHead "#{data.status}", if data.status != 200 then "#{data.content}" else 'ok'
-    res.end if data.status == 200 then JSON.stringify data.content else ""
+    console.log data.content
+    res.end if data.status == 200 then (if typeof data.content is 'object' then JSON.stringify data.content else data.content) else ""
 module.exports = RoutesAdapter

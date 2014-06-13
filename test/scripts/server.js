@@ -1,6 +1,6 @@
 var http            = require( 'http' );
 var Router          = require( 'routes' );
-var RikkiTikkiAPI   = require( '../../lib/api' );
+var RikkiTikkiAPI   = require( '../../lib' );
 
 new RikkiTikkiAPI({
 	config_path:'/Users/van/Documents/workspace/rikki-tikki/test/scripts/configs',

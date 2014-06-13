@@ -224,6 +224,7 @@ RikkiTikkiAPI.OperationTypes    = _types.OperationTypes
 _dsn                            = require './classes/dsn'
 RikkiTikkiAPI.DSNOptions        = _dsn.DSNOptions
 RikkiTikkiAPI.DSN               = _dsn.DSN
+ClientLoader                    = require './classes/client/ClientLoader'
 _connections                    = require './classes/connections'
 RikkiTikkiAPI.Connection        = _connections.Connection
 _router                         = require './classes/router'
