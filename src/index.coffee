@@ -5,9 +5,6 @@
 {EventEmitter}  = require 'events'
 #> requires: path
 path            = require 'path'
-#> requires: js-arraycollection
-ArrayCollection = require('js-arraycollection').ArrayCollection
-
 # > Defines the `RikkiTikki` namespace in the 'global' environment
 class RikkiTikkiAPI extends EventEmitter
   # holder for the Routing Adapter
@@ -52,7 +49,8 @@ class RikkiTikkiAPI extends EventEmitter
         # tests for active DB Connection
         if RikkiTikkiAPI.getConnection()?
           # initializes routes if both `__adapter` and `router` are defined
-          router.intializeRoutes() if @__adapter? and (router = new RikkiTikkiAPI.Router)?
+          if @__adapter? and (router = new RikkiTikkiAPI.Router)?
+            router.intializeRoutes()
         else
           # declares listener for open event
           @once 'open', =>
@@ -139,6 +137,7 @@ RikkiTikkiAPI.API_BASEPATH        = '/api'
 #> API_VERSION: Declarative version of the API appends to API_BASEPATH. Default: 1
 RikkiTikkiAPI.API_VERSION         = '1'
 RikkiTikkiAPI.API_NAMESPACE       = ''
+RikkiTikkiAPI.AUTH_CONFIG_PATH    = "#{process.cwd()}#{path.sep}configs#{path.sep}auth"
 #> CONFIG_PATH: Filesystem path to the Config File. Default: ./configs
 RikkiTikkiAPI.CONFIG_PATH         = "#{process.cwd()}#{path.sep}configs"
 #> CONFIG_FILENAME: Name for the Config File. Default: db.json
@@ -166,6 +165,11 @@ RikkiTikkiAPI.createAdapter = (type,options)->
   for param in ['type','options']
     return throw "param '#{param}' is not defined" if typeof param == 'undefined' or param == null
   RikkiTikkiAPI.Adapters.createAdapter type, options
+RikkiTikkiAPI.addRoute = (path, operation, handler)=>
+  if (_adapter = RikkiTikkiAPI.getAdapter())?
+    _adapter.addRoute path, operation, handler
+  else
+    throw new Error 'Adapter is not defined'
 ## getSchemaManager(type,options)
 #> Returns the SchemaManager
 RikkiTikkiAPI.getSchemaManager = ->
@@ -234,11 +238,11 @@ RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
 RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
+AdapterManager                  = require './classes/request_adapters/AdapterManager'
 SchemaManager                   = require './classes/schema/SchemaManager'
 SchemaTree                      = require './classes/schema_tree/SchemaTree'
 SchemaTreeManager               = require './classes/schema_tree/SchemaTreeManager'
 SyncService                     = require './classes/services/SyncService'
-RikkiTikkiAPI._adapters         = require './classes/adapters'
 _collections                    = require './classes/collections'
 CollectionManager               = _collections.CollectionManager
 CollectionMonitor               = _collections.CollectionMonitor

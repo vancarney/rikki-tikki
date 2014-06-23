@@ -5,6 +5,7 @@ var RikkiTikkiAPI   = require( '../../lib' );
 new RikkiTikkiAPI({
 	config_path:'/Users/van/Documents/workspace/rikki-tikki/test/scripts/configs',
 	schema_path:'/Users/van/Documents/workspace/rikki-tikki/test/scripts/schemas',
+	auth_config_path:'/Users/van/Documents/workspace/rikki-tikki/test/scripts/configs/auth',
 	adapter: RikkiTikkiAPI.createAdapter( 'routes', {router: new Router()} )
 }, function (e,results) {
 	if (e == null) {

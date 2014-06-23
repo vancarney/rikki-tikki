@@ -1,0 +1,12 @@
+{
+  "name":"[Native::String]",
+  "email":"[Native::String]",
+  "nickname":"[Native::String]",
+  "first_name":"[Native::String]",
+  "last_name":"[Native::String]",
+  "location":"[Native::String]",
+  "description":"[Native::String]",
+  "image":"[Native::String]",
+  "phone":"[Native::String]",
+  "urls":{}
+}

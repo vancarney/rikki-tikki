@@ -1,0 +1,7 @@
+{
+	"authorizationURL": "https://accounts.google.com/o/oauth2/auth",
+	"tokenURL": "https://accounts.google.com/o/oauth2/token",
+	"clientID": "621918473195-a8rbdp1lguet5mrsbukn7pqij1d4mfeg.apps.googleusercontent.com",
+	"clientSecret": "yjPK3ILsLTG9I3BXS65FMftv",
+	"callbackURL": "http://localhost:3000/auth/google/callback"
+}

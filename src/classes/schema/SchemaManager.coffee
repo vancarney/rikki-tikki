@@ -16,7 +16,7 @@ SchemaLoader  = require './SchemaLoader'
 # defines `SchemaManager` as sub-class of `Singleton`
 class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   # holder for `schemas`
-  @__schemas:{}
+  __schemas:{}
   ## `class` constructor
   constructor:->
     # defines `__path`

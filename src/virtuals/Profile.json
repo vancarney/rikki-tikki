@@ -1,0 +1,26 @@
+{
+  collections:['Users'],
+  mappings:
+  {
+    "uid":"User._id",
+    "info":{
+      "name":"User.name",
+      "email":"User.email",
+      "nickname":"User.nickname",
+      "first_name":"User.first_name",
+      "last_name":"User.last_name",
+      "location":"User.location",
+      "description":"User.description",
+      "image":"User.image",
+      "phone":"User.phone",
+      "urls":"User.urls",
+    },
+    "credentials":{
+      "token":"User.token",
+      "secret":"User.secret"
+    },
+    "extra":{
+      "raw_info":{}
+    }
+  }
+}
