@@ -23,7 +23,7 @@ class Routes extends Object
       throw "Routing Adapter not defined."
   createRoute:(method, path, operation)->
     if (@__adapter)
-      @__routes[path][method] = Routes[operation]?  @__adapter.responseHandler
+      (@__routes[path] ?= {})[method] = Routes[operation]?  @__adapter.responseHandler
       @__adapter.addRoute path, method, @__routes[path][method]
 
 Routes.show = (callback)->
