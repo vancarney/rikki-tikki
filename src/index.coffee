@@ -220,6 +220,13 @@ RikkiTikkiAPI.model = (name,schema={})->
 
 #### Included Classes
 
+try
+  # puts the client lib into the cache
+  require 'rikki-tikki-client'
+catch e
+  # throws error if client lib was not found
+  throw new Error "rikki-tikki-client was not found. Try 'npm install rikki-tikki-client'"
+
 RikkiTikkiAPI.Util              = require './classes/utils'
 RikkiTikkiAPI.base_classes      = require './classes/base_class'
 RikkiTikkiAPI.APIOptions        = require './classes/config/APIOptions'

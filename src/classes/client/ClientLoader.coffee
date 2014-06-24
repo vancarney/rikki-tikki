@@ -5,13 +5,6 @@
 # derives objects from module parent
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI ||  module.parent.exports
 Util          = RikkiTikkiAPI.Util
-
-try
-  # puts the client lib into the cache
-  require 'rikki-tikki-client'
-catch e
-  # throws error if client lib was not found
-  throw new Error "rikki-tikki-client was not found. Try 'npm install rikki-tikki-client'"
       
 # defines `SchemaLoader` as sub-class of `AbstractLoader`
 class ClientLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
