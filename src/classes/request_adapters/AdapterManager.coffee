@@ -1,5 +1,5 @@
 {_}         = require 'underscore'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 class AdapterManager extends RikkiTikkiAPI.base_classes.Singleton
   __adapters:{}
   registerAdapter: (name, adapterClass)->
