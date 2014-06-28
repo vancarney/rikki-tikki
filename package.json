@@ -16,19 +16,19 @@
     "url": "github.com/vancarney/rikki-tikki.git"
   },
   "dependencies": {
-    "underscore": "~1.6.0",
-    "mongodb":"1.4.2",
+    "underscore": ">=1.6.0",
+    "mongodb":">=1.4.2",
     "rikki-tikki-client":"git+https://github.com/vancarney/rikki-tikki-client.git",
     "js-arraycollection":"git+https://github.com/vancarney/js-arraycollection.git"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3",
-    "mongoose":"3.8.8",
-    "mocha": "~1.12.0",
-    "chai": "~1.7.2",
-    "docco": "~0.6.2",
-    "supertest":"0.9.2",
-    "winston":"0.7.2"
+    "coffee-script": ">=1.7.1",
+    "mongoose":">=3.8.8",
+    "mocha": ">=1.12.0",
+    "chai": ">=1.7.2",
+    "docco": ">=0.6.2",
+    "supertest":">=0.9.2",
+    "winston":">=0.7.2"
   },
   "homepage": "http://vancarney.github.io/rikki-tikki",
   "scripts": {
