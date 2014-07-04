@@ -22,7 +22,7 @@ API_HapiAdapter.coffee
 # Node Modules #
 ################
 node_modules/*
-
+examples/node_modules/*
 # Scratch Dir #
 ################
 _scratch
