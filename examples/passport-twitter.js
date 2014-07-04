@@ -1,5 +1,6 @@
-var rikkitikki		= require('../lib')
-  , express_adapter = require('rikki-tikki-express')
+var rikkitikki		= require('../lib');
+module.exports.RikkiTikkiAPI = rikkitikki;
+var express_adapter = require('rikki-tikki-express')
   , express 		= require('express')
   , passport 		= require('passport')
   , util 			= require('util')
@@ -61,7 +62,6 @@ passport.use(new TwitterStrategy({
 var app = express();
 var router = express.Router();
 var adapter = express_adapter.use( router );
-
 var api = new rikkitikki({
 	adapter:adapter
 });
@@ -128,7 +128,7 @@ app.listen(port, host, function(e,ok) {
 	console.log("server is listening at http://"+host+":"+port);
 });
 
-api.getRouter()
+//api.getRouter();
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If

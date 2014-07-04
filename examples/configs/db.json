@@ -2,16 +2,16 @@
   "development":
   {
     "host":"0.0.0.0",
-    "db":"testing"
+    "db":"examples"
   },
   "testing":
   {
     "host":"0.0.0.0",
-    "db":"testing"
+    "db":"examples"
   },
   "production":
   {
     "host":"0.0.0.0",
-    "db":"testing"
+    "db":"examples"
   }
 }

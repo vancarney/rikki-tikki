@@ -1,4 +1,4 @@
-var RikkiTikkiAPI	= require('../../../lib/api');
+var RikkiTikkiAPI	= require('../../lib');
 var Schema 			= Object;
 
 var postSchema = new Schema({

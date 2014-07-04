@@ -1,7 +1,7 @@
 var http			= require( 'http' );
 var _ 				= require('underscore')._;
 var Router			= require( 'routes' );
-var RikkiTikkiAPI	= require('../lib/api');
+var RikkiTikkiAPI	= require('../lib');
 var port 			= 3000;
 var adapter			= RikkiTikkiAPI.createAdapter('routes', {router: new Router});
 global.api = new RikkiTikkiAPI({

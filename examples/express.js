@@ -1,11 +1,12 @@
 var express 		= require('express');
-var RikkiTikkiAPI	= require('../lib/api');
+var RikkiTikkiAPI	= require('../lib');
+var Adapter			= require('express-adapter');
 var port = 3000;
 
 global.app = express();
 
 global.api = new RikkiTikkiAPI({
-	adapter: RikkiTikkiAPI.createAdapter('express', {app:app}) 
+	adapter: new Adapter( {app:app} ) 
 });
 
 app.get('/', function (req,res,next) {

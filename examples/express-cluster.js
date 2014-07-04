@@ -1,7 +1,7 @@
 var express 		= require('express');
 var cluster 		= require('cluster');
 var cpus			= require('os').cpus;
-var RikkiTikkiAPI	= require('../lib/api');
+var RikkiTikkiAPI	= require('../lib');
 var port = 3000;
 
 if (cluster.isMaster) {

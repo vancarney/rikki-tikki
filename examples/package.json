@@ -25,7 +25,13 @@
     "passport":"0.2.0",
     "passport-oauth":"1.0.0",
     "passport-twitter":"1.0.2",
-    "rikki-tikki-express":"git+https://github.com/vancarney/rikki-tikki-express.git"
+    "rikki-tikki-express":"git+https://github.com/vancarney/rikki-tikki-express.git",
+    "strictly-hash":">=0.0.1",
+    "js-arraycollection":">=0.0.1",
+    "fun-utils":">=0.0.2",
+    "obj-utils":">=0.0.2",
+    "strictly-hash":">=0.0.2",
+    "mongo-dsn":">=0.0.3"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
