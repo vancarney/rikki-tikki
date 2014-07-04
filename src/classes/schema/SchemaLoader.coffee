@@ -5,7 +5,8 @@
 #> requires: path
 path          = require 'path'
 # derives objects from module parent
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
+module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 Util          = RikkiTikkiAPI.Util
 # defines `SchemaLoader` as sub-class of `AbstractLoader`
 class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
@@ -15,7 +16,10 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
     _path = null
     _path = SchemaLoader.createPath( @name ) if @name
     # invokes `AbstractLoader` with path if passed
-    SchemaLoader.__super__.constructor.call @, _path
+    try
+      SchemaLoader.__super__.constructor.call @, _path
+    catch e
+      @emit.apply @, ['error',e]
   # set(tree, opts, callback)
   #> adds 'tree' to loaded schema data
   set:(tree, opts, callback)->
@@ -78,14 +82,15 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
   # renameSchema(name, newName, callback)
   #> renames Schema file on filesystem
   rename:(newName, callback)->
-    SchemaLoader.__super__.rename.call @, SchemaLoader.createPath(newName), (e,s)=>
+    # invokes rename on __super__
+    SchemaLoader.__super__.rename.call @, SchemaLoader.createPath(@name = newName), (e,s)=>
       # invokes callback if defined
-      callback? (if e? then "Could not rename Schema #{name}\r\t#{e}" else null),s
+      callback? (if e? then "Could not rename Schema #{@name}\r\t#{e}" else null),s
   # create(callback)
   #> destroys Schema and associated files 
   destroy:(callback)->
     # tests for destructiveness
-    if RikkiTikkiAPI.getOptions().destructive != true
+    if !RikkiTikkiAPI.getOptions().get 'destructive'
       # attempts to rename file instead of deleting it. FileName.js becomes _FileName.js
       @rename "_#{@name}", (e,s) =>
         # invokes callback if present
@@ -97,7 +102,7 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
         # invokes callback if defined
         callback? (if e? then "Schema.destroy failed\r\t#{e}" else null),s
 SchemaLoader.createPath = (name)->
-  "#{RikkiTikkiAPI.getOptions().schema_path}#{path.sep}#{name}.js" 
+  "#{RikkiTikkiAPI.getOptions().get 'schema_path'}#{path.sep}#{name}.js" 
 # declares exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 module.exports = SchemaLoader

@@ -7,4 +7,4 @@ module.exports.AbstractRoute    = require './AbstractRoute'
 module.exports.Singleton        = require './Singleton'
 module.exports.SingletonEmitter = _.extend EventEmitter, module.exports.Singleton
 module.exports.AbstractMonitor  = require './AbstractMonitor'
-module.exports.Hash             = require './Hash'
+module.exports.Hash             = require 'strictly-hash'

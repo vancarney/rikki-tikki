@@ -13,8 +13,7 @@ class CollectionManager extends RikkiTikkiAPI.base_classes.SingletonEmitter
     if typeof opts == 'function'
       callback ?= opts
       opts = {}
-    @__db.createCollection name, opts, (e,collection)=>
-      RikkiTikkiAPI.getCollectionManitor().refresh()
+    Collection.create name, opts, (e,collection)=>
       callback? e, collection
   dropCollection:(name, callback)->
     @getCollection name, (e,collection)=>

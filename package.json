@@ -19,7 +19,12 @@
     "underscore": ">=1.6.0",
     "mongodb":">=1.4.2",
     "rikki-tikki-client":"git+https://github.com/vancarney/rikki-tikki-client.git",
-    "js-arraycollection":"git+https://github.com/vancarney/js-arraycollection.git"
+    "strictly-hash":">=0.0.1",
+    "js-arraycollection":">=0.0.1",
+    "fun-utils":">=0.0.2",
+    "obj-utils":">=0.0.2",
+    "strictly-hash":">=0.0.2",
+    "mongo-dsn":">=0.0.3"
   },
   "devDependencies": {
     "coffee-script": ">=1.7.1",

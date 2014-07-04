@@ -20,7 +20,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   ## `class` constructor
   constructor:->
     # defines `__path`
-    @__path = "#{RikkiTikkiAPI.getOptions().schema_path}"
+    @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
     # invokes `load`
     @load()
   ## load()
@@ -30,7 +30,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
       # attempts to get stats on the file
       stat = fs.statSync @__path
     catch e
-      throw new Error e
+      @emit.apply @, ['error', e]
     # tests for directory
     if stat?.isDirectory()
       # walk this directory
@@ -38,7 +38,9 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
         # skip files that are declared as hidden
         continue if file.match /^(_|\.)+/
         # creates new SchemaLoader and assign to __schemas hash
-        (@__schemas ?= {})[n = Util.File.name file] = new SchemaLoader n
+        (@__schemas[n = Util.File.name file] = new SchemaLoader n)
+        .on 'error', (e)=>
+          @emit 'error', e
   ## createSchema(name, [data], callback)
   #> retrieves loaded schema by name if exists
   createSchema:(name, data={}, callback)->
@@ -49,11 +51,15 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
       # defines data as empty object
       data = {}
     # attempts to get existing schema
-    @getSchema name, (e,s)=>
-      # creates new schema if schema not found
-      return (@__schemas[name] = new SchemaLoader).create name, data, callback if e?
-      # invokes callback if schema found
-      callback? e,s  
+    @getSchema name, (e,schema)=>
+      # tests if schema was not found
+      if e?
+        # attempts to create a new schema
+        (schema = @__schemas[name] = new SchemaLoader)
+        .create "#{name}", data, callback
+      else
+        # invokes callback if schema was found
+        callback? null,schema
   ## getSchema(name, callback)
   #> retrieves loaded schema by name if exists
   getSchema:(name, callback)->
@@ -87,13 +93,11 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
       # invokes callback if schema not found
       return callback? e, null if e?
       # creates copy of schema at new hash key
-      @__schemas[newName] = _.clone schema
+      (@__schemas[newName] = schema).name = newName
       # deletes schema from hash
       delete @__schemas[name]
       # attempts to rename schema
-      schema.rename name, newName, (e,r)=>
-        # invokes callback if defined
-        callback? e,r
+      schema.rename newName, callback
   ## saveSchema(name, callback)
   #> saves all loaded schemas to files
   saveAll:(callback)->
@@ -112,10 +116,10 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
     @getSchema name, (e,schema)=>
       # attempts to invoke callback if error is defined
       return callback? e, null if e?
-      # delete schema from hash
-      delete @__schemas[name]
       # attemps to destroy the schema file
       schema.destroy (e,s)=>
+        # delete schema from hash
+        delete @__schemas[name] if @__schemas[name]?
         # invokes callback if defined
         callback e,s
   ## toJSON(readable)

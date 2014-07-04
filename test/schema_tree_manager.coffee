@@ -4,9 +4,10 @@ path            = require 'path'
 (chai           = require 'chai').should()
 RikkiTikkiAPI   = require '../src'
 SchemaTreeManager = require '../src/classes/schema_tree/SchemaTreeManager'
-RikkiTikkiAPI.CONFIG_PATH = './test/configs'
-RikkiTikkiAPI.SCHEMA_PATH = './test/schemas'
-describe 'RikkiTikkiAPI.SchemaTree Test Suite', ->
+RikkiTikkiAPI.CONFIG_PATH = "#{__dirname}/configs"
+RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
+RikkiTikkiAPI.TREE_PATH   = "#{RikkiTikkiAPI.CONFIG_PATH}/schema_trees"
+describe 'SchemaTreeManager Test Suite', ->
   it 'should get a SchemaTreeManager Instance', ()=>
     (@sm = SchemaTreeManager.getInstance()).should.be.a 'Object'
   it 'should create a new SchemaTree item', (done)=>

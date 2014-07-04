@@ -12,7 +12,6 @@ Util.getCapabilities = =>
   new Capabilities
 Util.Env          = require './Env'
 Util.File         = require './File'
-Util.Function     = require './Function'
+Util.Function     = require 'fun-utils'
 Util.String       = require './String'
 Util.Object       = require './Object'
-Util.Query        = require './Query'

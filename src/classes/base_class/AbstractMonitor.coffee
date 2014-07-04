@@ -7,19 +7,21 @@ class AbstractMonitor extends Singleton
   __exclude:[]
   __iVal:null
   constructor:->
-    # arguments.callee.caller = arguments.callee.caller.caller
     AbstractMonitor.__super__.constructor.call @
     @__collection = new ArrayCollection []
     _initialized = false
     @__collection.on 'collectionChanged', (data) =>
       type = 'changed'
       if !_initialized
-        _initialized = true
+        # _initialized = true
         type = 'init'
       @emit type, data
-    @refresh (e,list) => 
-      _initialized = true if !list.length
-    @startPolling() if RikkiTikkiAPI.Util.Env.isDevelopment()
+    if RikkiTikkiAPI.Util.Env.isDevelopment()
+      setTimeout (=>
+        @refresh (e,list) => 
+          _initialized = true
+          @startPolling @__iVal
+      ), 3
   filter:(value)->
     if (type = typeof value) != 'string'
       throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.filter exptected value to be a string. Type was <#{type}>"
@@ -31,7 +33,8 @@ class AbstractMonitor extends Singleton
     throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.refresh(callback) is not implemented"
   startPolling:(interval)->
     @__polling_interval = interval if interval?
-    @__iVal = setInterval (=> @refresh()), @__polling_interval
+    @stopPolling()
+    @__iVal = setInterval (=> @refresh()), @__polling_interval if @__polling_interval?
   stopPolling:->
     clearInterval @__iVal if @__iVal?
   getNames:->

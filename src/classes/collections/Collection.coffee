@@ -8,7 +8,8 @@ class Collection extends Object
     Object.freeze @
   getCollection: (callback)=>
     if (_db = RikkiTikkiAPI.getConnection())?
-      _db.getMongoDB().collection @name, (e,collection)=> callback? e, collection
+      _db.getMongoDB().collection @name, (e,collection)=>
+        callback? e, collection
     else
       callback? 'Database is not connected', null
   drop:(callback)->
@@ -114,4 +115,13 @@ class Collection extends Object
               type = tPair[0][0]
             tree[field] = type
           return callback? null, tree
+Collection.create = (name, opts, callback)->
+  if (_db = RikkiTikkiAPI.getConnection())?
+    _db.getMongoDB().createCollection name, opts, (e,collection)=>
+      RikkiTikkiAPI.getCollectionManitor().refresh()
+      if collection
+        new @( name ).getCollection (e,collection)=>
+          callback? e, collection
+  else
+    callback? 'Database is not connected', null  
 module.exports = Collection

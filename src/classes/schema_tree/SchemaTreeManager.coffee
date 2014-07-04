@@ -4,10 +4,10 @@ path          = require 'path'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 SchemaTree    = require './SchemaTree'
-class SchemaTreeManager extends Object
+class SchemaTreeManager extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     @__trees  = {}
-    @__path = "#{RikkiTikkiAPI.getOptions().config_path}/schema_trees"
+    @__path = "#{RikkiTikkiAPI.getOptions().get 'config_path'}/schema_trees"
     (@load = =>
       try
         # attempt to get stats on the file
@@ -38,6 +38,4 @@ class SchemaTreeManager extends Object
     _.each @__trees, (v,k)-> 
       v.save (e)=> eOut.push e if e
    callback? if eOut.length  then eOut else null
-SchemaTreeManager.getInstance = ->
-  @__instance ?= new SchemaTreeManager()
 module.exports = SchemaTreeManager

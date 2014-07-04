@@ -87,7 +87,7 @@ test = (options=[],callback)->
 
     # add coffee directive
     options.push '--compilers'
-    options.push '\'coffee:coffee-script/register\''
+    options.push 'coffee:coffee-script/register'
     options.push '--reporter'
     options.push 'spec'
     # options.push '-g'
