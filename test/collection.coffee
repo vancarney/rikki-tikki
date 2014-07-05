@@ -8,7 +8,7 @@ RikkiTikkiAPI.CONFIG_PATH = "#{__dirname}/configs"
 RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
 Connection      = RikkiTikkiAPI.Connection
 describe 'Collection Class Test Suite', ->
-  it 'should setup our test conection', (done)=>
+  it 'should setup our test connection', (done)=>
     DSN.loadConfig "#{RikkiTikkiAPI.CONFIG_PATH}/db.json", (e,dsn)=>
       (@conn = new Connection dsn.toJSON()
       ).on 'open', =>

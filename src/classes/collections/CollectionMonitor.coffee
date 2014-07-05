@@ -20,6 +20,4 @@ class CollectionMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
           @__collection.removeItemAt @getNames().indexOf item
         @__collection.setSource list if (list = _.difference list, ex).length
       callback? e, list
-CollectionMonitor.getInstance =->
-  @__instance ?= new CollectionMonitor()
 module.exports = CollectionMonitor

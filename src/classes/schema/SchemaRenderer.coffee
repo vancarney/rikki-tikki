@@ -16,7 +16,7 @@ class SchemaRenderer extends RikkiTikkiAPI.Schema
       _.extend @, obj
     else
       SchemaRenderer.__super__.constructor.call @, obj, opts
-SchemaRenderer::__template = "//template was undefined"
+SchemaRenderer::__template = "// template was undefined"
 SchemaRenderer.replacer = (key,value)->
   return if value? and (0 >= _.keys(RikkiTikkiAPI.Schema.reserved).indexOf key) then Util.Function.toString value else undefined
 module.exports = SchemaRenderer

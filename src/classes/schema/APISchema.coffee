@@ -8,7 +8,7 @@ SchemaRenderer  = require './SchemaRenderer'
 class APISchema extends SchemaRenderer
   constructor:->
     @wrap_schema    = RikkiTikkiAPI.getOptions().wrap_schema_exports
-    @model_export   = "module.exports = #{if Capabilities.mongooseLoaded() then 'mongoose' else 'RikkiTikkiAPI'}.model('<%=name%>', <%=name%>);"
+    @model_export   = "module.exports = #{if Capabilities.mongooseLoaded() then 'mongoose' else 'API'}.model('<%=name%>', <%=name%>);"
     @schema_export  = "module.exports[<%=name%>] = <%=name%>;"
     @__template = """
     /*
@@ -18,7 +18,7 @@ class APISchema extends SchemaRenderer
      */
     var API = require('rikki-tikki');
     #{if Capabilities.mongooseLoaded() then "var mongoose = require('mongoose');" else ""}
-    var <%=name%> = new #{if Capabilities.mongooseLoaded() then 'mongoose.Schema' else 'RikkiTikkiAPI.Schema'}(
+    var <%=name%> = new #{if Capabilities.mongooseLoaded() then 'mongoose.Schema' else 'API.Schema'}(
       API.extend(API.getSchemaTree('<%=name%>'),
       {
         // place custom Schema Type overrides here

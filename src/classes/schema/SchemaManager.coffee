@@ -20,7 +20,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   ## `class` constructor
   constructor:->
     # defines `__path`
-    @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
+    @__path = "#{RikkiTikkiAPI.getOptions().schema_path}"
     # invokes `load`
     @load()
   ## load()

@@ -39,13 +39,8 @@ class RikkiTikkiAPI extends EventEmitter
             # throws error if Routing Adapter was not found in lookup attempt
             throw "Routing Adapter '#{adapter}' was not registered. Use RikkiTikkiAPI.Adapters.registerAdapter(name, class)"
         else
-          # tests if <adapter> is instanceof `AbstractAdapter`
-          if adapter instanceof RikkiTikkiAPI.base_classes.AbstractAdapter
-            # sets adapter with Routing Adapter
-            @__adapter = adapter
-          else
-            # throws error if Adapter was not a sub-class of `AbstractAdapter`
-            throw "Routing Adapter must inherit from 'RikkiTikkiAPI.base_classes.AbstractAdapter'"
+          # sets adapter with Routing Adapter
+          @__adapter = adapter
         # tests for active DB Connection
         if RikkiTikkiAPI.getConnection()?
           # initializes routes if both `__adapter` and `router` are defined
@@ -113,9 +108,7 @@ class RikkiTikkiAPI extends EventEmitter
       delete SchemaManager.__instance
       delete SchemaTreeManager.__instance
       delete CollectionManager.__instance
-      console.log "SyncService.__instance: #{SyncService.__instance}"
       delete SyncService.__instance
-      console.log "SyncService.__instance [post delete]: #{SyncService.__instance}"
       delete @__conn
       callback? e,s
     

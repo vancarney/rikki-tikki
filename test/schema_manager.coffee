@@ -15,10 +15,10 @@ describe 'RikkiTikkiAPI.SchemaManager Test Suite', ->
     ).on( 'error', (e)->
       throw e
     ).on 'success', (schemas)=>
-    @sm.listSchemas (e, list)=>
-      throw e if e?
-      list.length.should.equal 1
-      done()
+      @sm.listSchemas (e, list)=>
+        throw e if e?
+        list.length.should.equal 1
+        done()
   it 'should Create a new schema', (done)=>
     @sm.createSchema 'CreatedSchema', (e,s)=>
       throw e if e?

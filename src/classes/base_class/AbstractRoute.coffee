@@ -22,9 +22,8 @@ class AbstractRoute extends Object
     _db               = RikkiTikkiAPI.getConnection()
     _collections      = RikkiTikkiAPI.getCollectionManager()
     _createCollection = (name, callback)->
-      if Env.isDevelopment()
-        _collections.createCollection name, {}, (e,collection)=>
-          callback? e, collection
+      _collections.createCollection name, {}, (e,collection)=>
+        callback? e, collection
     ## Handler Object
     return (req,res)=>
       # references the colleciton name from the request params
@@ -58,9 +57,7 @@ class AbstractRoute extends Object
               # attempts to create collection <name>
               _createCollection name, (e,res)=>
                 # invokes callback and returns if error is set
-                return callback? {status:400, reason:e}, null if e?
-                # invokes itself to attempt find again
-                @handler.find where, _callback callback
+                return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}] 
             else
               # we should not ever get here, so invoke an error callback and return
               return callback? {status:400, reason:"Bad Request"}, null

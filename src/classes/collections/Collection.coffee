@@ -120,8 +120,8 @@ Collection.create = (name, opts, callback)->
     _db.getMongoDB().createCollection name, opts, (e,collection)=>
       RikkiTikkiAPI.getCollectionManitor().refresh()
       if collection
-        new @( name ).getCollection (e,collection)=>
-          callback? e, collection
+        callback? e, new Collection( name ) #.getCollection (e,collection)=>
+          # callback? e, collection
   else
     callback? 'Database is not connected', null  
 module.exports = Collection

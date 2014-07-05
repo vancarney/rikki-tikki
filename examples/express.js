@@ -1,16 +1,22 @@
 var express 		= require('express');
 var RikkiTikkiAPI	= require('../lib');
-var Adapter			= require('express-adapter');
-var port = 3000;
+var Adapter			= require('rikki-tikki-express');
+var host			= "0.0.0.0";
+var port			= 3000;
 
-global.app = express();
+global.app 		= express();
+global.router	= express.Router();
 
 global.api = new RikkiTikkiAPI({
-	adapter: new Adapter( {app:app} ) 
+	adapter: Adapter.use( router ) 
 });
 
-app.get('/', function (req,res,next) {
+router.get('/', function (req,res,next) {
 	res.send("<h1>Hello</h1>");
 });
 
-app.listen( port );
+app.use( '/', router );
+
+app.listen( port, host, function() {
+	console.log("server now listening at http://"+host+":"+port);
+} );
