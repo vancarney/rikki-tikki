@@ -3,14 +3,15 @@ RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 Routes        = require './routes'
 RoutingParams = require './RoutingParams'
-ClientLoader  = require '../client/ClientLoader'
+ClientRenderer  = require '../client/ClientRenderer'
 class Router extends Object #RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     throw "Routing Adapter not defined." if !(@__adapter = RikkiTikkiAPI.getAdapter())
     @__api_path = RikkiTikkiAPI.getAPIPath()
-    new ClientLoader().load (e,s)=>
-      throw new Error e if e?
-      @__client = s
+    client = new ClientRenderer
+    setTimeout (=>
+      @__client = client.toSource()
+    ), 50
     @__routes   = new Routes
   getAdapter:-> @__adapter
   intializeRoutes:->

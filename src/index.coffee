@@ -141,6 +141,17 @@ RikkiTikkiAPI.SCHEMA_TREES_FILE   = 'schema.json'
 #> WRAP_SCHEMA_EXPORTS: Wrap Generated Schemas with a `model`. Default: true
 RikkiTikkiAPI.WRAP_SCHEMA_EXPORTS = true
 
+## Client Params
+RikkiTikkiAPI.CLIENT_HOST                 = "0.0.0.0"
+RikkiTikkiAPI.CLIENT_PORT                 = 80
+RikkiTikkiAPI.CLIENT_API_VERSION          = RikkiTikkiAPI.API_VERSION
+RikkiTikkiAPI.CLIENT_APP_ID               = null
+RikkiTikkiAPI.CLIENT_APP_ID_PARAM_NAME    = null
+RikkiTikkiAPI.CLIENT_API_NAMESPACE        = RikkiTikkiAPI.API_NAMESPACE
+RikkiTikkiAPI.CLIENT_REST_KEY             = null
+RikkiTikkiAPI.CLIENT_REST_KEY_PARAM_NAME  = null
+RikkiTikkiAPI.CLIENT_PROTOCOL             = 'HTTP'
+
 
 #### Static API Methods
 
