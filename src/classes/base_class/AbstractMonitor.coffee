@@ -1,5 +1,5 @@
 {_}               = require 'underscore'
-{ArrayCollection} = require 'js-arraycollection'
+ArrayCollection   = require 'js-arraycollection'
 RikkiTikkiAPI     = module.parent.exports.RikkiTikkiAPI
 Util              = RikkiTikkiAPI.Util
 Singleton         = module.parent.exports.Singleton
