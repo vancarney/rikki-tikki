@@ -28,4 +28,10 @@ describe 'SyncService Class Test Suite', ->
   it 'should tear down our testing env', (done)=>
     @collections.dropCollection name, (e,col)=>
       throw e if e?
-      done()
+      setTimeout (=>
+        f = "#{RikkiTikkiAPI.getSchemaManager().__path}/_#{name}.js"
+        unless fs.existsSync f
+          throw "Collection Schema was not destroyed (non-destructively) by SyncManager"
+        fs.unlinkSync f
+        done()
+      ), 50

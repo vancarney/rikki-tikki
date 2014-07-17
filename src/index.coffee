@@ -81,7 +81,7 @@ class RikkiTikkiAPI extends EventEmitter
         close: => @emit 'close'
       }
     # defines RikkiTikkiAPI.getOptions
-    RikkiTikkiAPI.getOptions = => __options.valueOf()
+    RikkiTikkiAPI.getOptions = => __options#.valueOf()
     # invokes callback if defined
     callback? null, true
   ## connect(dsn, options)
@@ -183,6 +183,8 @@ RikkiTikkiAPI.getCollectionMonitor = ->
 #> retrieves SchemaTree if exists
 RikkiTikkiAPI.getSchemaTree = (name)->
   if (tree = SchemaTreeManager.getInstance().__trees[name]) then tree else {}
+RikkiTikkiAPI.getOptions = ->
+  new RikkiTikkiAPI.APIOptions
 ## listCollections()
 #> Returns list of all collection names currently in Database
 RikkiTikkiAPI.listCollections = ->

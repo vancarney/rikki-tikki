@@ -2,6 +2,7 @@
 fs              = require 'fs'
 path            = require 'path'
 (chai           = require 'chai').should()
+expect          = chai.expect
 RikkiTikkiAPI   = require '../src'
 RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
 RikkiTikkiAPI.getOptions = ->
@@ -34,6 +35,8 @@ describe 'SchemaManager Test Suite', ->
     @sm.saveSchema 'foo', (e,s)=>
       e.should.equal 'Schema \'foo\' was not found'
       done()
+  it 'should provide a schema map', =>
+    expect(@sm.toJSON().__schemas__['CreatedSchema']).to.exist
   it 'should Rename a schema', (done)=>
     @sm.renameSchema 'CreatedSchema', 'RenamedSchema', (e,s)=>
       throw e if e?
@@ -43,7 +46,7 @@ describe 'SchemaManager Test Suite', ->
       throw e if e?
       unless fs.existsSync "#{RikkiTikkiAPI.SCHEMA_PATH}/_RenamedSchema.js"
         throw 'error: SchemaManager was destructive in non-detructve mode'
-        fs.unlinkSync "#{RikkiTikkiAPI.SCHEMA_PATH}/_RenamedSchema.js"
+      fs.unlinkSync "#{RikkiTikkiAPI.SCHEMA_PATH}/_RenamedSchema.js"
       done()
   it 'should destructively Destroy a schema', (done)=>
     @sm = RikkiTikkiAPI.getSchemaManager()
@@ -58,6 +61,9 @@ describe 'SchemaManager Test Suite', ->
             fs.unlinkSync "#{RikkiTikkiAPI.SCHEMA_PATH}/_DeleteMe.js"
           done()
     ), 200
+    
+    
+    
       # console.log sm.fetchSchema( schema ).toAPISchema().toSource()
       # Foo = (new RikkiTikkiAPI.model schema, sm.__loader.__schema[schema])
       # console.log (new Foo {name:'Foo'}).toClientSchema().toString()

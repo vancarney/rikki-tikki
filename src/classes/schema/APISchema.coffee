@@ -9,7 +9,7 @@ class APISchema extends SchemaRenderer
   constructor:->
     @wrap_schema    = RikkiTikkiAPI.getOptions().wrap_schema_exports
     @model_export   = "module.exports = #{if Capabilities.mongooseLoaded() then 'mongoose' else 'API'}.model('<%=name%>', <%=name%>);"
-    @schema_export  = "module.exports[<%=name%>] = <%=name%>;"
+    @schema_export  = "module.exports.<%=name%> = <%=name%>;"
     @__template = """
     /*
      * <%=name%>.js

@@ -13,8 +13,10 @@ Util          = RikkiTikkiAPI.Util
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 # requires: SchemaLoader
 SchemaLoader  = require './SchemaLoader'
+SchemaRenderer = require './SchemaRenderer'
 # defines `SchemaManager` as sub-class of `Singleton`
 class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
+  __meta:{}
   # holder for `schemas`
   __schemas:{}
   ## `class` constructor
@@ -61,7 +63,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
         .create "#{name}", data, callback
       else
         # invokes callback if schema was found
-        callback? null,schema
+        callback? null, schema
   ## getSchema(name, callback)
   #> retrieves loaded schema by name if exists
   getSchema:(name, callback)->
@@ -85,6 +87,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
     @getSchema name, (e,schema)=>
       # invokes callback and returns if schema does not exist
       return callback? e, null if e?
+      return callback? "Schema '#{name} was not found", null unless schema
       # attempts to save schema
       schema.save callback
   ## renameSchema(name, newName, callback)
@@ -133,7 +136,9 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   #> returns a string encoded object representation
   #> if param readable is set, will indent and linebreak JSON output
   toString:(readable)->
-    JSON.stringify {__meta__:@__meta, __schemas__:@__schemas}, SchemaLoader.replacer, if readable then 2 else undefined
+    s = {}
+    _.each _.keys(@__schemas), (key)=> s[key] = @__schemas[key].__data
+    JSON.stringify {__meta__:@__meta, __schemas__:s}, SchemaRenderer.replacer, if readable then 2 else undefined
 ## SchemaManager.getInstance
 #> returns the Singleton instance
 SchemaManager.getInstance = ->

@@ -72,11 +72,9 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
       return callback? "Name is required", null
     # converts tree to wrapped schema
     model = RikkiTikkiAPI.model @name, new RikkiTikkiAPI.Schema tree
-    # defines data from API schema
-    @__data = model.toAPISchema().toSource()
     # attemps to create new Schema file
      # "#{RikkiTikkiAPI.getOptions().schema_path}#{path.sep}#{name}.js"
-    SchemaLoader.__super__.create.call @, _path, (e,s)=>
+    SchemaLoader.__super__.create.call @, _path, model.toAPISchema().toSource(), (e,s)=>
       # invokes callback if defined
       callback? (if e? then "Could not create Schema #{_path}\r\t#{e}" else null),s
   # renameSchema(name, newName, callback)
