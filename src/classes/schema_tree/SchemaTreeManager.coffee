@@ -7,7 +7,7 @@ SchemaTree    = require './SchemaTree'
 class SchemaTreeManager extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     @__trees  = {}
-    @__path = "#{RikkiTikkiAPI.getOptions().config_path}/schema_trees"
+    @__path = "#{RikkiTikkiAPI.getOptions().get 'config_path'}/schema_trees"
     (@load = =>
       try
         # attempt to get stats on the file

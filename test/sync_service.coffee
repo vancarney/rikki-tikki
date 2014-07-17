@@ -16,16 +16,15 @@ describe 'SyncService Class Test Suite', ->
       @collections = RikkiTikkiAPI.getCollectionManager()
       done()
   it 'should create Schemas and SchemaTrees', (done)=>
-    console.log "creating collection #{name}"
     @collections.createCollection name, (e,col)=>
       throw e if e?
-      iVal = setInterval (=>
-        # fs.exists (p = "#{RikkiTikkiAPI.getSchemaManager().__path}/#{name}.js"), (e)=>
+      setTimeout (=>
+        fs.exists (p = "#{RikkiTikkiAPI.getSchemaManager().__path}/#{name}.js"), (e)=>
           # clearInterval iVal if e
-          # RikkiTikkiAPI.Util.File.readFile p, (e,data)=>
-            # throw e if e?
+          RikkiTikkiAPI.Util.File.readFile p, (e,data)=>
+            throw e if e?
             done()
-      ), 500
+      ), 50
   it 'should tear down our testing env', (done)=>
     @collections.dropCollection name, (e,col)=>
       throw e if e?

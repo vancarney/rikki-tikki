@@ -1,6 +1,6 @@
 mongodb       = require 'mongodb'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-DSN           = RikkiTikkiAPI.DSN
+DSN           = require 'mongo-dsn'
 EventEmitter  = require('events').EventEmitter
 #### sparse.Collection
 # > Establshes Mongo DB with Mongoose
@@ -11,11 +11,11 @@ class NativeConnection extends EventEmitter
   handleClose:(evt)->
     @emit 'close', evt
   connect:(args)->
-    @__attemptConnection @__dsn = new DSN args
+    @__attemptConnection (@__dsn = new DSN args).toDSN()
   __attemptConnection:(string)->
     return if @__conn?
     try
-      @_client.connect "#{string}", null, (e,conn)=>
+      @_client.connect string, null, (e,conn)=>
         if e?
           console.log e
           return @emit 'error', e

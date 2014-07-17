@@ -90,7 +90,7 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
   #> destroys Schema and associated files 
   destroy:(callback)->
     # tests for destructiveness
-    if !RikkiTikkiAPI.getOptions().destructive
+    unless RikkiTikkiAPI.getOptions().get( 'destructive' )
       # attempts to rename file instead of deleting it. FileName.js becomes _FileName.js
       @rename "_#{@name}", (e,s) =>
         # invokes callback if present
@@ -102,7 +102,7 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
         # invokes callback if defined
         callback? (if e? then "Schema.destroy failed\r\t#{e}" else null),s
 SchemaLoader.createPath = (name)->
-  "#{RikkiTikkiAPI.getOptions().schema_path}#{path.sep}#{name}.js" 
+  "#{RikkiTikkiAPI.getOptions().get 'schema_path'}#{path.sep}#{name}.js" 
 # declares exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 module.exports = SchemaLoader

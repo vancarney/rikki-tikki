@@ -15,9 +15,7 @@ describe 'CollectionManager Test Suite', ->
         RikkiTikkiAPI.getConnection = => @conn
         done()
   it 'should List existing Collections', (done)=>
-    @cm = RikkiTikkiAPI.getCollectionManager()
-    @cm.listCollections (e, list)=>
-      console.log list
-      throw e if e?
-      list.length.should.equal 1
+    RikkiTikkiAPI.getCollectionMonitor().refresh =>
+      @cm = RikkiTikkiAPI.getCollectionManager()
+      @cm.listCollections().length.should.equal 0
       done()

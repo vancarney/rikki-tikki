@@ -175,9 +175,9 @@ RikkiTikkiAPI.getSchemaTreeManager = ->
 #> Returns the CollectionManager
 RikkiTikkiAPI.getCollectionManager = ->
   CollectionManager.getInstance()
-## getCollectionManitor()
-#> Returns the CollectionManager
-RikkiTikkiAPI.getCollectionManitor = ->
+## getCollectionMonitor()
+#> Returns the CollectionMonitor
+RikkiTikkiAPI.getCollectionMonitor = ->
   CollectionMonitor.getInstance()
 ## getSchemaTree(name)
 #> retrieves SchemaTree if exists
@@ -186,7 +186,7 @@ RikkiTikkiAPI.getSchemaTree = (name)->
 ## listCollections()
 #> Returns list of all collection names currently in Database
 RikkiTikkiAPI.listCollections = ->
-  @getCollectionManitor().getNames()
+  @getCollectionMonitor().getNames()
 ## RikkiTikkiAPI.extend(objects...)
 #> Reference to Underscore's extend
 RikkiTikkiAPI.extend = _.extend

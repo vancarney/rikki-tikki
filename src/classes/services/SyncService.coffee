@@ -5,7 +5,7 @@ module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 SchemaTreeManager = require '../schema_tree/SchemaTreeManager'
 class SyncService extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->
-    RikkiTikkiAPI.getCollectionManitor()
+    RikkiTikkiAPI.getCollectionMonitor()
     .on 'changed', (data)=>
       _.each _.keys( data ), (operation)=>
         _.each data[operation], (collection)=>

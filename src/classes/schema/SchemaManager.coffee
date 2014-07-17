@@ -19,13 +19,14 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   __schemas:{}
   ## `class` constructor
   constructor:->
+    SchemaManager.__super__.constructor.call @
     # defines `__path`
-    @__path = "#{RikkiTikkiAPI.getOptions().schema_path}"
+    @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
     # invokes `load`
     @load()
   ## load()
   #> Shallowly Traverses Schema Directory and loads found Schemas that are not marked as hidden with a prepended `_` or `.`
-  load:->
+  load:=>
     try
       # attempts to get stats on the file
       stat = fs.statSync @__path
@@ -40,6 +41,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
         # creates new SchemaLoader and assign to __schemas hash
         (@__schemas[n = Util.File.name file] = new SchemaLoader n)
         .on 'error', (e)=>
+          console.log e
           @emit 'error', e
   ## createSchema(name, [data], callback)
   #> retrieves loaded schema by name if exists

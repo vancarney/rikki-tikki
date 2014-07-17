@@ -22,13 +22,12 @@ class AbstractMonitor extends Singleton
           _initialized = true
           @startPolling @__iVal
       ), 3
-  filter:(value)->
+  filter:(value)=>
     if (type = typeof value) != 'string'
-      throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.filter exptected value to be a string. Type was <#{type}>"
+      throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.filter expected value to be a string. Type was <#{type}>"
     for item in @__exclude
-      if value.match item
-        return true 
-    return false 
+      return false if value.match item
+    return true 
   refresh:(callback)->
     throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.refresh(callback) is not implemented"
   startPolling:(interval)->

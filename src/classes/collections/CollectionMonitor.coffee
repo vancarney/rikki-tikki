@@ -12,7 +12,8 @@ class CollectionMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
     @__conn.getCollectionNames (e, names) =>
       ex = []
       if names?.length > 0
-        list = _.compact _.map names, (v)=> name:(n=v.name.split '.').pop(), db:n.shift(), options: v.options if !@filter v.name
+        list = _.compact _.map names, (v)=> 
+          name:name, db:n.shift(), options: (v.options || {}) if @filter (name = (n=v.name.split '.').pop())
         _.each list, (val,key)=>
           ex.push val if 0 <= @getNames().indexOf val.name
         # find removed collections

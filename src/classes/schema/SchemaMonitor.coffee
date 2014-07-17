@@ -12,15 +12,16 @@ class SchemaMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
     RikkiTikkiAPI.getSchemaManager().listSchemas (e, names)=>
       list = _.compact _.map names, (v)=>
         if !fs.existsSync _path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}#{path.sep}#{v}.js"
-          @__collection.removeItemAt @getNames().indexOf v 
+          @__collection.removeItemAt @getNames().indexOf v
           return null
-        if (!@filter v) and (stats = fs.statSync _path)? 
+        if (@filter v) and (stats = fs.statSync _path)?
           {name:v, updated:new Date(stats.mtime).getTime()}
       if list.length > 0
         _.each list, (value)=>
           if 0 <= (idx = @getNames().indexOf value.name)
             ex.push value
-            @__collection.setItemAt( value, idx ) if (@__collection.getItemAt( idx ).updated != value.updated)
+            if (@__collection.getItemAt( idx ).updated != value.updated)
+              @__collection.setItemAt( value, idx )
         @__collection.addAll list if (list = _.difference list, ex).length
       callback? e, list
   startPolling:->

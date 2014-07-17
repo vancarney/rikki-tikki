@@ -24,7 +24,7 @@
     "fun-utils":">=0.0.2",
     "obj-utils":">=0.0.2",
     "strictly-hash":">=0.0.2",
-    "mongo-dsn":">=0.0.3"
+    "mongo-dsn":">=0.0.4"
   },
   "devDependencies": {
     "coffee-script": ">=1.7.1",

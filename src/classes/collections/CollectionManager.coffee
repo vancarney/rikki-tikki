@@ -15,23 +15,22 @@ class CollectionManager extends RikkiTikkiAPI.base_classes.Singleton
       opts = {}
     Collection.create name, opts, (e,collection)=>
       return callback? e, null if e?
-      console.log "collection: #{JSON.stringify collection}"
       @__cache[name] = collection
-      # RikkiTikkiAPI.getCollectionManitor().refresh()
+      # RikkiTikkiAPI.getCollectionMonitor().refresh()
       callback? e, collection
   dropCollection:(name, callback)->
     @getCollection name, (e,collection)=>
       collection.drop (e, res)=>
-        RikkiTikkiAPI.getCollectionManitor().refresh()
+        RikkiTikkiAPI.getCollectionMonitor().refresh()
         callback? e, collection
   listCollections:->
-    c = RikkiTikkiAPI.getCollectionManitor().getCollection()
+    c = RikkiTikkiAPI.getCollectionMonitor().getCollection()
     # console.log c
     c
   renameCollection:(oldName, newName, callback)->
     @getCollection oldName, (e,collection)=> 
       collection.rename newName, dropTarget:true, (e, res)=>
-        RikkiTikkiAPI.getCollectionManitor().refresh()
+        RikkiTikkiAPI.getCollectionMonitor().refresh()
         callback? e, res
   getCollection:(name, callback)->
     if (collection = @__cache[name])? and collection instanceof Collection
@@ -41,7 +40,7 @@ class CollectionManager extends RikkiTikkiAPI.base_classes.Singleton
       # @createCollection name, callback
       # try
         # if (col = new Collection name)?
-          # RikkiTikkiAPI.getCollectionManitor().refresh()
+          # RikkiTikkiAPI.getCollectionMonitor().refresh()
           # callback? e, if e? then null else @__cache[name] = col
       # catch e
         # callback? e, null
