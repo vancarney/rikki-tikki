@@ -28,6 +28,6 @@ class ClientRenderer extends Object
     """
   toSource:->
     client_opts = new ClientOpts
-    ns = if (ns = (client_opts.get 'api_namespace').concat('.')) != '.' then ns else 'Client'
+    ns = if (ns = client_opts.get 'api_namespace') != '' then ns else 'Client'
     _.template @__template, {core_api:@__API, opts:client_opts.valueOf(), ns:ns}
 module.exports = ClientRenderer
