@@ -40,6 +40,7 @@ describe 'SchemaMonitor Class Test Suite', ->
   it 'should detect unlinked schema files', (done)=>
     @schemaMonitor.removeAllListeners 'changed'
     unlinkListener = (data)=>
+      @schemaMonitor.removeAllListeners 'changed'
       data.removed[0].name.should.equal 'Test'
       done()
     @schemaMonitor.on 'changed', unlinkListener

@@ -15,7 +15,7 @@ describe 'SyncService Class Test Suite', ->
       @sync        = SyncService.getInstance()
       @collections = RikkiTikkiAPI.getCollectionManager()
       done()
-  it 'should create Schemas and SchemaTrees', (done)=>
+  it 'should create Schemas and Schema Trees', (done)=>
     @collections.createCollection name, (e,col)=>
       throw e if e?
       setTimeout (=>

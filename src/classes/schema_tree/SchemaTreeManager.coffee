@@ -4,10 +4,12 @@ path          = require 'path'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 SchemaTree    = require './SchemaTree'
+AppConfig     = require '../config/AppConfig'
 class SchemaTreeManager extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     @__trees  = {}
-    @__path = "#{RikkiTikkiAPI.getOptions().get 'config_path'}/schema_trees"
+    @__path   = (new AppConfig).get 'trees_path'
+    fs.mkdirSync @__path unless fs.existsSync @__path
     (@load = =>
       try
         # attempt to get stats on the file

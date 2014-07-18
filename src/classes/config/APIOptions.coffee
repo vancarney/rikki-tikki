@@ -1,4 +1,5 @@
 {_} = require 'underscore'
+path = require 'path'
 RikkiTikkiAPI = module.parent.exports
 #### APIOptions
 class APIOptions extends RikkiTikkiAPI.base_classes.Hash
@@ -10,7 +11,6 @@ class APIOptions extends RikkiTikkiAPI.base_classes.Hash
       api_namespace : RikkiTikkiAPI.API_NAMESPACE
       auth_config_path: RikkiTikkiAPI.AUTH_CONFIG_PATH
       config_filename : RikkiTikkiAPI.CONFIG_FILENAME
-      schema_trees_file : RikkiTikkiAPI.SCHEMA_TREES_FILE
       config_path : RikkiTikkiAPI.CONFIG_PATH
       schema_path  : RikkiTikkiAPI.SCHEMA_PATH
       destructive : RikkiTikkiAPI.DESTRUCTIVE

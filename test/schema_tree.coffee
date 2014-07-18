@@ -6,7 +6,7 @@ RikkiTikkiAPI   = require '../src'
 SchemaTree = require '../src/classes/schema_tree/SchemaTree'
 RikkiTikkiAPI.CONFIG_PATH = "#{__dirname}/configs"
 RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
-RikkiTikkiAPI.TREE_PATH   = "#{RikkiTikkiAPI.CONFIG_PATH}/schema_trees"
+RikkiTikkiAPI.TREE_PATH   = "#{process.cwd()}/.rikki-tikki/trees"
 describe 'SchemaTree Test Suite', ->
   @treePath = "#{RikkiTikkiAPI.TREE_PATH}/Test.json"
   it 'should create a SchemaTree', (done)=>

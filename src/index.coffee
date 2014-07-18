@@ -3,6 +3,8 @@
 {_}             = require 'underscore'
 #> requires: events
 {EventEmitter}  = require 'events'
+#> requires: fs
+fs              = require 'fs'
 #> requires: path
 path            = require 'path'
 # > Defines the `RikkiTikki` namespace in the 'global' environment
@@ -111,12 +113,11 @@ class RikkiTikkiAPI extends EventEmitter
       delete SyncService.__instance
       delete @__conn
       callback? e,s
-    
+
 # exports the API
 module.exports = RikkiTikkiAPI
 
 #### Begin STATIC definitions
-
 
 #### API Option Defaults
 #> Debug: Toggles Debug Messages. Default: false
@@ -260,3 +261,7 @@ CollectionMonitor               = _collections.CollectionMonitor
 RikkiTikkiAPI.Collection        = _collections.Collection
 RikkiTikkiAPI.Document          = _collections.Document
 Model                           = _collections.Model
+# create app dirs
+config = new (require './classes/config/AppConfig')()
+fs.mkdirSync p unless fs.existsSync p = config.get 'data_path'
+fs.mkdirSync p unless fs.existsSync p = config.get 'trees_path'
