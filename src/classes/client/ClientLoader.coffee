@@ -16,7 +16,7 @@ class ClientLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
     ClientLoader.__super__.constructor.call @, _path
   load:(callback)->
     try
-      Util.File.readFile @__path, 'utf-8', (e, data) =>
+      Util.File.readFile @__path, 'utf8', (e, data) =>
         callback? e, @__data = data
     catch e
       callback? "could not load file '#{@__path}\n#{e}", null

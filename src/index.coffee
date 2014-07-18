@@ -16,15 +16,9 @@ class RikkiTikkiAPI extends EventEmitter
   # class constructor
   constructor:(__options=new RikkiTikkiAPI.APIOptions, callback)->
     # sets up an APIOptions object from passed params
-    __options = new RikkiTikkiAPI.APIOptions __options if !(RikkiTikkiAPI.Util.Object.isOfType __options, RikkiTikkiAPI.APIOptions)
-    # loops through list of Application Adapters
-    for name in ['express'] #for name in ['express','hapi']
-      # attempts to auto-detect default Connect Services
-      if RikkiTikkiAPI.Util.detectModule name
-        # sets `__detected_adapter` if not set
-        @__detected_adapter ?= name
-        # ends loop
-        break
+    __options = new RikkiTikkiAPI.APIOptions __options unless RikkiTikkiAPI.Util.Object.isOfType __options, RikkiTikkiAPI.APIOptions
+    # defines RikkiTikkiAPI.getOptions
+    RikkiTikkiAPI.getOptions = => __options
     # defines `RikkiTikkiAPI.getSchemas`
     RikkiTikkiAPI.getSchemas    = => RikkiTikkiAPI.SchemaManager.getInstance()
     # defines `RikkiTikkiAPI.useAdapter`
@@ -70,7 +64,7 @@ class RikkiTikkiAPI extends EventEmitter
         # defines open handler
         open: =>
           # attempts to use Routing Adapter if defined in APIOptions object
-          RikkiTikkiAPI.useAdapter __options.adapter if __options.adapter?
+          RikkiTikkiAPI.useAdapter adapter if (adapter = __options.get 'adapter')?
           # retrieves instance of Schema Service to initiate it
           SyncService.getInstance() if RikkiTikkiAPI.Util.Env.isDevelopment()
           # emits open event with reference to `connection`
@@ -82,8 +76,6 @@ class RikkiTikkiAPI extends EventEmitter
         # defines close handler that emits close event
         close: => @emit 'close'
       }
-    # defines RikkiTikkiAPI.getOptions
-    RikkiTikkiAPI.getOptions = => __options#.valueOf()
     # invokes callback if defined
     callback? null, true
   ## connect(dsn, options)
@@ -262,6 +254,6 @@ RikkiTikkiAPI.Collection        = _collections.Collection
 RikkiTikkiAPI.Document          = _collections.Document
 Model                           = _collections.Model
 # create app dirs
-config = new (require './classes/config/AppConfig')()
-fs.mkdirSync p unless fs.existsSync p = config.get 'data_path'
-fs.mkdirSync p unless fs.existsSync p = config.get 'trees_path'
+cnf = new (require './classes/config/AppConfig')()
+fs.mkdirSync p unless fs.existsSync p = cnf.get 'data_path'
+fs.mkdirSync p unless fs.existsSync p = cnf.get 'trees_path'

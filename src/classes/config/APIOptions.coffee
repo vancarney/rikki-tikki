@@ -2,10 +2,10 @@
 path = require 'path'
 RikkiTikkiAPI = module.parent.exports
 #### APIOptions
-class APIOptions extends RikkiTikkiAPI.base_classes.Hash
-  constructor:(params={})->
+class APIOptions extends Object
+  constructor:(params={})-> 
     # invokes `Hash` with extended API Option Defaults
-    APIOptions.__super__.constructor.call @, o = _.extend( (
+    return new RikkiTikkiAPI.base_classes.Hash o = _.extend( (
       api_basepath : RikkiTikkiAPI.API_BASEPATH
       api_version : RikkiTikkiAPI.API_VERSION
       api_namespace : RikkiTikkiAPI.API_NAMESPACE

@@ -3,9 +3,8 @@ RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 class AbstractAdapter extends Object
   required:[]
   constructor:(@params={})->
-    _super =  arguments.callee.caller.__super__
-    if typeof _super == 'undefined' or RikkiTikkiAPI.Util.Function.getFunctionName _super.constructor != 'AbstractAdapter'
-      return throw "AbstractAdapter can not be directly instatiated\nhint: use a subclass instead."
+    if 'AbstractAdapter' == RikkiTikkiAPI.Util.Function.getConstructorName @ 
+      throw 'AbstractAdapter can not be directly instatiated\nhint: use a subclass instead.'
     _.each @required, (param)=>
       throw Error "required param '#{param}' was not defined in the adapter params object" if !(@params.hasOwnProperty param)
   requestHandler:(req,res)->

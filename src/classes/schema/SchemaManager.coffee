@@ -7,7 +7,7 @@ fs            = require 'fs'
 #> requires: path
 path          = require 'path'
 # derives objects from module parent
-RikkiTikkiAPI = module.parent.exports
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 Util          = RikkiTikkiAPI.Util
 # exports RikkiTikkiAPI for loaded classes
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
@@ -139,9 +139,5 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
     s = {}
     _.each _.keys(@__schemas), (key)=> s[key] = @__schemas[key].__data
     JSON.stringify {__meta__:@__meta, __schemas__:s}, SchemaRenderer.replacer, if readable then 2 else undefined
-## SchemaManager.getInstance
-#> returns the Singleton instance
-SchemaManager.getInstance = ->
-  @__instance ?= new SchemaManager()
 # declares exports
 module.exports = SchemaManager

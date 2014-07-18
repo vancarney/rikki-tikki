@@ -17,8 +17,8 @@ class AbstractRoute extends Object
     @__after ?= []
     @__after.push fn
   constructor:(callback)->
-    if (RikkiTikkiAPI.Util.Function.getFunctionName arguments.callee.caller.__super__.constructor ) != 'AbstractRoute'
-      return throw "AbstractRoute can not be directly instatiated. Use a subclass instead."
+    if 'AbstractRoute' == RikkiTikkiAPI.Util.Function.getConstructorName @ 
+      throw 'AbstractRoute can not be directly instatiated\nhint: use a subclass instead.'
     _db               = RikkiTikkiAPI.getConnection()
     _collections      = RikkiTikkiAPI.getCollectionManager()
     _createCollection = (name, callback)->

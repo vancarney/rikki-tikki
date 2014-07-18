@@ -7,7 +7,7 @@ Capabilities    = Util.getCapabilities()
 SchemaRenderer  = require './SchemaRenderer'
 class APISchema extends SchemaRenderer
   constructor:->
-    @wrap_schema    = RikkiTikkiAPI.getOptions().wrap_schema_exports
+    @wrap_schema    = RikkiTikkiAPI.getOptions().get 'wrap_schema_exports'
     @model_export   = "module.exports = #{if Capabilities.mongooseLoaded() then 'mongoose' else 'API'}.model('<%=name%>', <%=name%>);"
     @schema_export  = "module.exports.<%=name%> = <%=name%>;"
     @__template = """

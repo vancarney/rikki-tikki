@@ -6,11 +6,11 @@ RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 Util          = RikkiTikkiAPI.Util
 class AbstractLoader extends EventEmitter
-  __data:null
+  # @__data:{}
+  replacer:null
   constructor:(@__path)->
-    _super =  arguments.callee.caller.__super__
-    if typeof _super == 'undefined' or RikkiTikkiAPI.Util.Function.getFunctionName _super.constructor != 'AbstractLoader'
-      return throw "AbstractAdapter can not be directly instatiated\nhint: use a subclass instead."
+    if 'AbstractLoader' == RikkiTikkiAPI.Util.Function.getConstructorName @ 
+      throw 'AbstractAdapter can not be directly instatiated\nhint: use a subclass instead.'
     if @__path?
       @load (e,s)=>
         # wraps emit in 3ms timeout to allow constructor to return first
@@ -66,15 +66,16 @@ class AbstractLoader extends EventEmitter
         callback?.apply @, arguments
     else
       callback? "file '#{@__path}' does not exist"
-  create:(@__path, data, callback)->
+  create:(@__path, data=null, callback)->
     if typeof data == 'function'
       callback = data
       data = null
+    else
+      @__data = if typeof data is 'string' then JSON.parse data else (if data? then data else {})
     if @__path? and !@pathExists @__path
       @save callback
     else
-      throw "file '#{@__path}' already exists"
-  replacer:null
+      callback "file '#{@__path}' already exists", null
   valueOf:-> 
     @__data
   toJSON:->

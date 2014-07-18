@@ -8,7 +8,7 @@ RouteDestroy  = require './RouteDestroy'
 class Routes extends Object
   __routes:{}
   afterAll:(fn)->
-    throw "afterAl expects function type was <#{type}>" if (type = typeof fn) != 'function'
+    throw "afterAll expects function type was <#{type}>" if (type = typeof fn) != 'function'
     for route, obj of @__routes
       for path, handler of obj
         handler.addAfterHandler fn

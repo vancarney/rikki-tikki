@@ -70,11 +70,8 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
       _path = SchemaLoader.createPath @name
     else
       return callback? "Name is required", null
-    # converts tree to wrapped schema
-    model = RikkiTikkiAPI.model @name, new RikkiTikkiAPI.Schema tree
     # attemps to create new Schema file
-     # "#{RikkiTikkiAPI.getOptions().schema_path}#{path.sep}#{name}.js"
-    SchemaLoader.__super__.create.call @, _path, model.toAPISchema().toSource(), (e,s)=>
+    SchemaLoader.__super__.create.call @, _path, tree, (e,s)=>
       # invokes callback if defined
       callback? (if e? then "Could not create Schema #{_path}\r\t#{e}" else null),s
   # renameSchema(name, newName, callback)
@@ -99,6 +96,12 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
       SchemaLoader.__super__.destroy.call @, (e,s)=>
         # invokes callback if defined
         callback? (if e? then "Schema.destroy failed\r\t#{e}" else null),s
+  save:(callback)->
+    if @__path?
+      model = RikkiTikkiAPI.model @name, new RikkiTikkiAPI.Schema @__data
+      Util.File.writeFile @__path, model.toAPISchema().toSource(), null, callback
+    else
+      callback? "path was not defined"
 SchemaLoader.createPath = (name)->
   "#{RikkiTikkiAPI.getOptions().get 'schema_path'}#{path.sep}#{name}.js" 
 # declares exports

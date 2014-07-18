@@ -21,7 +21,7 @@ describe 'AbstractLoader Test Suite', ->
     (products = new @clazz).load 'test/data/products.json', (e,s)=>
       return throw e if e
       # cache the initial data to use on reset
-      @cache = products.__data
+      @cache = _.union [], products.__data
       done()
   it 'should get a value from the loaded document', (done)=>
     (@products = new @clazz 'test/data/products.json').on 'success', =>
@@ -60,14 +60,7 @@ describe 'AbstractLoader Test Suite', ->
         done()
   it 'should create a new document', (done)=>
     path = 'test/data/products.json'
-    (products = new @clazz).create path, (e,r)=>
+    (products = new @clazz).create path, @cache, (e,r)=>
       throw e if e?
       (products.pathExists path).should.equal true
       done()
-  it 'should reset the test document', (done)=>
-    (prod = new @clazz 'test/data/products.json').on 'success', (e,r)=>
-      return throw e if e?
-      prod.__data = @cache
-      prod.save (e,r)=>
-        return throw e if e?
-        done()

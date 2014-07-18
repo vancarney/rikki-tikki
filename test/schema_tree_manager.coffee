@@ -21,11 +21,11 @@ describe 'SchemaTreeManager Test Suite', ->
       if e?
         throw e
       else
-        tree.set name:String, (e)=> 
+        tree.set {name:String}, (e)=>
           if e?
-            throw w
+            throw e
           else
-            fs.readFile tree.__path, 'utf-8', (e,data)=>
+            fs.readFile tree.__path, 'utf8', (e,data)=>
               throw e if e?
               if JSON.parse(data, RikkiTikkiAPI.Schema.reviver).name == String
                 done()

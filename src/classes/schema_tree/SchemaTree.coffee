@@ -4,12 +4,16 @@ path          = require 'path'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
 Util          = RikkiTikkiAPI.Util
 class SchemaTree extends RikkiTikkiAPI.base_classes.AbstractLoader
-  __data:{}
-  constructor:(path)->
-    @replacer = RikkiTikkiAPI.Schema.replacer
-    @reviver  = RikkiTikkiAPI.Schema.reviver
-    SchemaTree.__super__.constructor.call @, path
+  # __data  : {}
+  replacer : RikkiTikkiAPI.Schema.replacer
+  reviver  : RikkiTikkiAPI.Schema.reviver
+  # constructor:(path)->
+    # SchemaTree.__super__.constructor.call @, path
+    # @replacer = RikkiTikkiAPI.Schema.replacer
+    # @reviver  = RikkiTikkiAPI.Schema.reviver
+    # @__data   = {}
   set:(tree, opts, callback)->
+    # @__data   = {}
     if typeof opts == 'function'
       callback = opts
       opts = {}
@@ -22,7 +26,7 @@ class SchemaTree extends RikkiTikkiAPI.base_classes.AbstractLoader
     if @pathExists @__path
       SchemaTree.__super__.load.call @, (e, data) =>
         return callback? e if e?
-        @_data = JSON.parse "#{JSON.stringify data}", @reviver
+        @__data = JSON.parse "#{JSON.stringify data}", @reviver
         callback? null, @__data
     else
       @__data = {}
