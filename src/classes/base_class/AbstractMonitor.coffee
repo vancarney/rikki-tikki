@@ -40,6 +40,8 @@ class AbstractMonitor extends Singleton
     _.pluck @getCollection(), 'name'
   getCollection:->
     @__collection.__list
+  getItemIdx:(name)->
+    @getNames().lastIndexOf name
   itemExists:(name)->
-    @getNames().lastIndexOf name > -1
+    @getItemIdx(name) > -1
 module.exports = AbstractMonitor

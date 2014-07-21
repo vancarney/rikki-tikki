@@ -8,7 +8,7 @@ class ConfigLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
     @__path = path.normalize "#{@__options.get 'config_path'}#{path.sep}#{@__options.get 'config_filename'}"
     if fs.existsSync @__path
       ConfigLoader.__super__.load.call @, (e, @__data)=>
-        callback? e, @__data
+        callback?.apply @, arguments
     else
       callback? new Error "Could not find config file at '#{@__path}'"
   getEnvironment:(env)->

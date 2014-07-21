@@ -57,6 +57,7 @@ _scratch
 .DS_Store
 .DS_Store?
 ._*
+schemas/*
 .Spotlight-V100
 .Trashes
 ehthumbs.db

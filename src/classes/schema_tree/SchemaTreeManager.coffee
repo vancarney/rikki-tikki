@@ -23,7 +23,7 @@ class SchemaTreeManager extends RikkiTikkiAPI.base_classes.Singleton
           @__trees[file.split('.').shift()] = new SchemaTree "#{fs.realpathSync @__path}#{path.sep}#{file}"
     )()
   createTree:(name, data={}, callback)->
-    if !@__trees[name]
+    unless @__trees[name]
       (@__trees[name] = new SchemaTree).create "#{@__path}#{path.sep}#{name}.json", data, callback
     else
       callback? new Error "SchemaTree '#{name}' already exists"

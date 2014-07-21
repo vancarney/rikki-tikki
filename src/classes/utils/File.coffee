@@ -17,4 +17,14 @@ FS.readFile = (_path, options, callback)->
   fs.readFile "#{_path}", options, (e,data)=>
     console.error "Failed to read file '#{_path}'\nError: #{e}" if e?
     callback? e, data
+FS.ensureDirExists = (path)->
+  unless fs.existsSync path
+    try
+      fs.mkdirSync path
+    catch e
+      console.error """
+      required path '#{path}' does not exist and rikki-tikki could not create it for you.
+      hint: either create the directory manually change permissions on the parent directory.
+      """
+      process.exit  1
 module.exports = FS

@@ -75,11 +75,11 @@ Schema.nativeTypes =
   ['Object','Number','String','Boolean','Array']
 ## Schema.reserved
 Schema.reserved = _.object _.map """
-on,db,add,set,get,init,isNew,path,pathType,errors,schema,options,modelName,__template,virtual,virtualpath,collection,toObject,toJSON,toString,toSource,constructor,emit,_events,_pres,_posts
+on,db,add,set,get,init,isNew,path,__path,pathType,errors,schema,options,modelName,__template,virtual,virtualpath,collection,toObject,toJSON,toString,toSource,constructor,emit,_events,_pres,_posts
 """.split(','), (v)->[v,1]
 Schema.replacer = (key,value)->
   value = value.toClientSchema() if value?.toClientSchema?
-  return if value? and (0 >= _.keys( @reserved ).indexOf key) then Util.Function.toString value else undefined
+  return if value? and (0 > _.keys( @reserved ).indexOf key) then Util.Function.toString value else undefined
 Schema.reviver = (key,value)->
   # removes reserved element names from schema params
   return undefined if 0 <= _.keys( @reserved ).indexOf key

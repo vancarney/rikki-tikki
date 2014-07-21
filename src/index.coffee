@@ -51,6 +51,7 @@ class RikkiTikkiAPI extends EventEmitter
       else
         # throws error if adapter is not passed
         throw 'param \'adapter\' is required'
+        process.exit 1
     # defines `RikkiTikkiAPI.getAdapter`
     RikkiTikkiAPI.getAdapter    = => @__adapter
     #  Invokes `RikkiTikkiAPI.useAdapter` if adapter is defined
@@ -168,19 +169,23 @@ RikkiTikkiAPI.addRoute = (path, operation, handler)=>
   else
     throw new Error 'Adapter is not defined'
 ## getSchemaManager(type,options)
-#> Returns the SchemaManager
+#> Returns the SchemaManager instance
 RikkiTikkiAPI.getSchemaManager = ->
   SchemaManager.getInstance()
 ## getSchemaTreeManager(type,options)
-#> Returns the SchemaTreeManager
+#> Returns the SchemaTreeManager instance
 RikkiTikkiAPI.getSchemaTreeManager = ->
   SchemaTreeManager.getInstance()
+## getCollectionMonitor()
+#> Returns the SchemaMonitor instance
+RikkiTikkiAPI.getSchemaMonitor = ->
+  SchemaMonitor.getInstance()
 ## getCollectionManager()
-#> Returns the CollectionManager
+#> Returns the CollectionManager instance
 RikkiTikkiAPI.getCollectionManager = ->
   CollectionManager.getInstance()
 ## getCollectionMonitor()
-#> Returns the CollectionMonitor
+#> Returns the CollectionMonitor instance
 RikkiTikkiAPI.getCollectionMonitor = ->
   CollectionMonitor.getInstance()
 ## getSchemaTree(name)
@@ -225,6 +230,7 @@ try
 catch e
   # throws error if client lib was not found
   throw new Error "rikki-tikki-client was not found. Try 'npm install rikki-tikki-client'"
+  process.exit 1
 
 RikkiTikkiAPI.Util              = require './classes/utils'
 RikkiTikkiAPI.base_classes      = require './classes/base_class'
@@ -244,6 +250,7 @@ RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
 AdapterManager                  = require './classes/request_adapters/AdapterManager'
 SchemaManager                   = require './classes/schema/SchemaManager'
+SchemaMonitor                   = require './classes/schema/SchemaMonitor'
 SchemaTree                      = require './classes/schema_tree/SchemaTree'
 SchemaTreeManager               = require './classes/schema_tree/SchemaTreeManager'
 SyncService                     = require './classes/services/SyncService'
@@ -255,5 +262,5 @@ RikkiTikkiAPI.Document          = _collections.Document
 Model                           = _collections.Model
 # create app dirs
 cnf = new (require './classes/config/AppConfig')()
-fs.mkdirSync p unless fs.existsSync p = cnf.get 'data_path'
-fs.mkdirSync p unless fs.existsSync p = cnf.get 'trees_path'
+RikkiTikkiAPI.Util.File.ensureDirExists cnf.get 'data_path'
+RikkiTikkiAPI.Util.File.ensureDirExists cnf.get 'trees_path'

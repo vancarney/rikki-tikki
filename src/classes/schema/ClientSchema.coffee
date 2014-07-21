@@ -14,7 +14,7 @@ ClientSchema::__template = """
       __extends(<%=name%>, _super);
       function <%=name%>() {
         <% _.each( schema, function(value,key) {%>
-          this.<%=key%> = <%=JSON.stringify(value, null, 2)%>;
+          this.<%=key%> = <%=typeof value == 'object' ? JSON.stringify(value, null, 2) : value%>;
         <%});%>
       }
   })(RikkiTikki.Schema);

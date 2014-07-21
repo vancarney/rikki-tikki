@@ -12,8 +12,8 @@ Util          = RikkiTikkiAPI.Util
 # exports RikkiTikkiAPI for loaded classes
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 # requires: SchemaLoader
-SchemaLoader  = require './SchemaLoader'
-SchemaRenderer = require './SchemaRenderer'
+SchemaLoader    = require './SchemaLoader'
+SchemaRenderer  = require './SchemaRenderer'
 # defines `SchemaManager` as sub-class of `Singleton`
 class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   __meta:{}
@@ -23,7 +23,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     SchemaManager.__super__.constructor.call @
     # defines `__path`
-    @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
+    Util.File.ensureDirExists @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
     # invokes `load`
     @load()
   ## load()

@@ -57,6 +57,4 @@ class Router extends Object #RikkiTikkiAPI.base_classes.Singleton
     params = new RoutingParams params.path, params.operation if !RikkiTikkiAPI.Util.Object.isOfType params, RoutingParams
     # throw "Handler was invalid" if !params.handler or typeof handler != 'function'
     @__adapter.addRoute params.path, params.method, handler if (handler = @__routes.createRoute params.method, params.path, params.operation)?
-# Router.getInstance = ->
-  # @__instance ?= new Router
 module.exports = Router
