@@ -20,9 +20,9 @@ class RikkiTikkiAPI extends EventEmitter
     # defines RikkiTikkiAPI.getOptions
     RikkiTikkiAPI.getOptions = => __options
     # defines `RikkiTikkiAPI.getSchemas`
-    RikkiTikkiAPI.getSchemas    = => RikkiTikkiAPI.SchemaManager.getInstance()
+    RikkiTikkiAPI.getSchemas = => RikkiTikkiAPI.SchemaManager.getInstance()
     # defines `RikkiTikkiAPI.useAdapter`
-    RikkiTikkiAPI.useAdapter    = (adapter, options)=>
+    RikkiTikkiAPI.useAdapter = (adapter, options)=>
       # checks for adapter passed from arguments
       if adapter
         # tests for adapter  param type
@@ -146,7 +146,17 @@ RikkiTikkiAPI.CLIENT_REST_KEY             = null
 RikkiTikkiAPI.CLIENT_REST_KEY_PARAM_NAME  = null
 RikkiTikkiAPI.CLIENT_PROTOCOL             = 'HTTP'
 
-
+RikkiTikkiAPI.createAdapter = (name, opts)->
+  AdapterManager.getInstance().createAdapter.apply @, arguments
+RikkiTikkiAPI.getAdapterByName = (name)->
+  AdapterManager.getInstance().getAdapter.apply @, arguments
+RikkiTikkiAPI.listAdapters = ->
+  AdapterManager.getInstance().listAdapters()
+RikkiTikkiAPI.registerAdapter = (name, adapterClass)->
+  AdapterManager.getInstance().registerAdapter.apply @, arguments
+RikkiTikkiAPI.unregisterAdapter = (name)->
+  AdapterManager.getInstance().registerAdapter.apply @, arguments
+  
 #### Static API Methods
 
 ## getConnection()
@@ -157,12 +167,7 @@ RikkiTikkiAPI.getConnection = ->
 #> returns the Base REST path for the API Client
 RikkiTikkiAPI.getAPIPath = ->
   "#{RikkiTikkiAPI.API_BASEPATH}/#{RikkiTikkiAPI.API_VERSION}"
-## createAdapter(type,options)
-#> Creates an Routing Adapter of type <type>
-RikkiTikkiAPI.createAdapter = (type,options)->
-  for param in ['type','options']
-    return throw "param '#{param}' is not defined" if typeof param == 'undefined' or param == null
-  RikkiTikkiAPI.Adapters.createAdapter type, options
+
 RikkiTikkiAPI.addRoute = (path, operation, handler)=>
   if (_adapter = RikkiTikkiAPI.getAdapter())?
     _adapter.addRoute path, operation, handler

@@ -86,5 +86,5 @@ class SyncService extends RikkiTikkiAPI.base_classes.Singleton
     else
       @__opCache.splice idx, 1
   schemaReplaced:(name)->
-    console.log "replaced schema: #{name}"
+    @schemaManager.reloadSchema name
 module.exports = SyncService

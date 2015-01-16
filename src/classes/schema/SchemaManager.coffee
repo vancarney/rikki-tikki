@@ -57,9 +57,9 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
     # attempts to get existing schema
     @getSchema name, (e,schema)=>
       # tests if schema was not found
-      if e?
+      unless schema?
         # attempts to create a new schema
-        (schema = @__schemas[name] = new SchemaLoader)
+        @__schemas[name] = new SchemaLoader()
         .create "#{name}", data, callback
       else
         # invokes callback if schema was found
@@ -75,6 +75,12 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
     else
       # invokes callback with error if schema not found
       callback? "Schema '#{name}' was not found", null
+  reloadSchema:(name,callback)->
+    @getSchema name, (e,schema)=>
+      unless schema
+        callback? e, null
+      else
+        schema.reload callback
   ## listSchemas(callback)
   #> retrieves list of all loaded schema names
   listSchemas:(callback)->
@@ -136,8 +142,9 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   #> returns a string encoded object representation
   #> if param readable is set, will indent and linebreak JSON output
   toString:(readable)->
+    # console.log @__schemas['Created'].__data#.toClientSchema()
     s = {}
-    _.each _.keys(@__schemas), (key)=> s[key] = @__schemas[key].__data
+    _.each _.keys(@__schemas), (key)=> s[key] = if (schema = @__schemas[key].__data).toClientSchema then schema.toClientSchema() else schema
     JSON.stringify {__meta__:@__meta, __schemas__:s}, SchemaRenderer.replacer, if readable then 2 else undefined
 # declares exports
 module.exports = SchemaManager

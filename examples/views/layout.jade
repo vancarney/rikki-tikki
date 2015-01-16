@@ -1,0 +1,21 @@
+doctype html
+html(lang="en")
+	head
+		title= 'Rikki-Tikki Usage Example'
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+		title #{title}
+		meta(name="viewport", content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no")
+		link(rel="stylesheet", href="bower_components/bootstrap/dist/css/bootstrap.css")
+	body
+		#main.container
+			block yield
+		script(src="/bower_components/jquery/dist/jquery.js")
+		script(src="/bower_components/underscore/underscore.js")
+		script(src="/bower_components/backbone/backbone.js")
+		script(src="/bower_components/rivets/dist/rivets.js")
+		script(src="/bower_components/bootstrap/dist/js/bootstrap.js")
+		script(src="/api/1/client.js")
+		script(src="/js/_baseview.js")
+		script(src="/js/_indexview.js")
+		script(src="/js/main.js")

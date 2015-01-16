@@ -7,9 +7,8 @@ ClientLoader  = require './ClientLoader'
 class ClientRenderer extends Object
   constructor:->
     try
-      new ClientLoader().load (e,js)=>
+      new ClientLoader().load (e, @__API)=>
         throw new Error e if e?
-        @__API = js
     catch e
       console.log e
     
@@ -22,7 +21,7 @@ class ClientRenderer extends Object
     (function() {
       var NS = RikkiTikki.createNameSpace('<%=ns%>');
       <% for (var key in opts) { %>
-      <% if (opts[key]) { %>NS.<%= key %> = <%= typeof opts[key] == 'string' ?  '"'+opts[key]+'"' : opts[key] %>;<% } %><% } %>
+      <% if (opts[key]) { %>NS.<%= key.toUpperCase() %> = <%= typeof opts[key] == 'string' ?  '"'+opts[key]+'"' : opts[key] %>;<% } %><% } %>
     }).call(this);
     """
   toSource:->

@@ -33,6 +33,7 @@ class AbstractLoader extends EventEmitter
     try
       if @__path.match /\.js+$/
         @__data = require @__path.replace /\.js$/, ''
+        # console.log @__data
         callback? null, @__data
       else
         Util.File.readFile @__path, (e, data) =>

@@ -68,7 +68,7 @@ var api = new rikkitikki({
 
 
 app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+app.set('view engine', 'jade');
 app.use(logger({path: "" + __dirname + "/" + environment + ".log"}));
 app.use(cookieParser());
 app.use(bodyParser());

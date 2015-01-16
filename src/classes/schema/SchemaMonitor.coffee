@@ -6,8 +6,13 @@ Util          = RikkiTikkiAPI.Util
 class SchemaMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
   __exclude:[/^(_+.*|\.+\.?)$/]
   constructor:->
-    SchemaMonitor.__super__.constructor.call @
     Util.File.ensureDirExists @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
+    SchemaMonitor.__super__.constructor.call @
+    setTimeout (=>
+      if !_initialized
+        _initialized = true
+        @emit 'init', '0':'added':@getCollection()
+    ), 6
   refresh:(callback)->
     ex = []
     RikkiTikkiAPI.getSchemaManager().listSchemas (e, names)=>
@@ -22,7 +27,7 @@ class SchemaMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
           if 0 <= (idx = @getNames().indexOf value.name)
             ex.push value
             if (@__collection.getItemAt( idx ).updated != value.updated)
-              @__collection.setItemAt( value, idx )
+              @__collection.setItemAt value, idx
         @__collection.addAll list if (list = _.difference list, ex).length
       callback? e, list
   startPolling:->

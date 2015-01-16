@@ -10,6 +10,11 @@ class CollectionMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
   constructor:->
     return throw 'database is not connected' if !(@__conn = RikkiTikkiAPI.getConnection())
     CollectionMonitor.__super__.constructor.call @
+    setTimeout (=>
+      if !_initialized
+        _initialized = true
+        @emit 'init', '0':'added':@getCollection()
+    ), 6
   refresh:(callback)->
     @__conn.getCollectionNames (e, names) =>
       ex = []

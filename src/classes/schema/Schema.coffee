@@ -75,7 +75,7 @@ Schema.nativeTypes =
   ['Object','Number','String','Boolean','Array']
 ## Schema.reserved
 Schema.reserved = _.object _.map """
-on,db,add,set,get,init,isNew,path,__path,pathType,errors,schema,options,modelName,__template,virtual,virtualpath,collection,toObject,toJSON,toString,toSource,constructor,emit,_events,_pres,_posts
+on,db,add,set,get,init,isNew,path,__path,pathType,errors,schema,options,modelName,__template,virtual,virtualpath,collection,toObject,toJSON,toModel,toString,toSource,constructor,emit,_events,_pres,_posts
 """.split(','), (v)->[v,1]
 Schema.replacer = (key,value)->
   value = value.toClientSchema() if value?.toClientSchema?

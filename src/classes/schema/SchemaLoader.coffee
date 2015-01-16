@@ -63,6 +63,12 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
       @__data = {}
       # invokes callback if defined
       callback? null, @__data
+  # reload(callback)
+  #> reloads Schema file
+  reload:(callback)->
+    # deletes loaded schema from `module cache`
+    delete require.cache[@__path]
+    @load @__path, callback
   # create(name, tree={}, callback)
   #> creates new Schema and associated files
   create:(@name, tree={}, callback)->
