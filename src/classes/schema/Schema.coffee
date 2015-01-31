@@ -79,7 +79,7 @@ on,db,add,set,get,init,isNew,path,__path,pathType,errors,schema,options,modelNam
 """.split(','), (v)->[v,1]
 Schema.replacer = (key,value)->
   value = value.toClientSchema() if value?.toClientSchema?
-  return if value? and (0 > _.keys( @reserved ).indexOf key) then Util.Function.toString value else undefined
+  if value? and (0 > _.keys( @reserved ).indexOf key) then Util.Function.toString value else undefined
 Schema.reviver = (key,value)->
   # removes reserved element names from schema params
   return undefined if 0 <= _.keys( @reserved ).indexOf key

@@ -118,10 +118,8 @@ class Collection extends Object
 Collection.create = (name, opts, callback)->
   if (_db = RikkiTikkiAPI.getConnection())?
     _db.getMongoDB().createCollection name, opts, (e,collection)=>
-      RikkiTikkiAPI.getCollectionMonitor().refresh()
-      if collection
-        callback? e, new Collection( name ) #.getCollection (e,collection)=>
-          # callback? e, collection
+      return callback? e, null unless e
+      return callback null, new Collection name if collection?
   else
     callback? 'Database is not connected', null  
 module.exports = Collection

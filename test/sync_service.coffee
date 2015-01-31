@@ -5,6 +5,7 @@ RikkiTikkiAPI   = require '../src'
 fs              = require 'fs'
 Connection      = RikkiTikkiAPI.Connection
 SyncService     = require '../src/classes/services/SyncService'
+RikkiTikkiAPI.SCHEMA_API_REQUIRE_PATH = '../../lib/'
 describe 'SyncService Class Test Suite', ->
   @timeout 15000
   name = 'SyncTestCollection'
@@ -12,21 +13,22 @@ describe 'SyncService Class Test Suite', ->
     (@conn = new Connection 'mongodb://0.0.0.0:27017/testing'
     ).on 'open', =>
       RikkiTikkiAPI.getConnection = => @conn
-      @sync        = SyncService.getInstance()
-      @collections = RikkiTikkiAPI.getCollectionManager()
+      @sync         = SyncService.getInstance()
+      @colMon       = RikkiTikkiAPI.getCollectionMonitor()
+      @colManager   = RikkiTikkiAPI.getCollectionManager()
       done()
   it 'should create Schemas and Schema Trees', (done)=>
-    @collections.createCollection name, (e,col)=>
+    @colManager.createCollection name, (e,col)=>
       throw e if e?
       setTimeout (=>
         fs.exists (p = "#{RikkiTikkiAPI.getSchemaManager().__path}/#{name}.js"), (e)=>
-          # clearInterval iVal if e
+          # clearInterval iVal if e?
           RikkiTikkiAPI.Util.File.readFile p, (e,data)=>
             throw e if e?
             done()
-      ), 50
+      ), 1500
   it 'should tear down our testing env', (done)=>
-    @collections.dropCollection name, (e,col)=>
+    @colManager.dropCollection name, (e,col)=>
       throw e if e?
       setTimeout (=>
         f = "#{RikkiTikkiAPI.getSchemaManager().__path}/_#{name}.js"
@@ -34,4 +36,4 @@ describe 'SyncService Class Test Suite', ->
           throw "Collection Schema was not destroyed (non-destructively) by SyncManager"
         fs.unlinkSync f
         done()
-      ), 50
+      ), 3000

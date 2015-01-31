@@ -26,25 +26,29 @@ class SyncService extends RikkiTikkiAPI.base_classes.Singleton
         @schemaManager.getSchema v.name, (e,col)=>
           unless col?
             @__opCache.push new SyncOperation v.name, 'added'
-            @schemaManager.createSchema v.name    
-    RikkiTikkiAPI.getCollectionMonitor()
-    .on 'init', (data)=>
-      _collections = arguments['0'].added
-      _syncInit() if ((_collectionInit = true) and _schemaInit)
-    .on 'changed', (data)=>
-      _.each _.keys( data ), (operation)=>
-        _.each data[operation], (collection)=>
-          @["collection#{Util.String.capitalize operation}"] collection.name
-          @__opCache.push new SyncOperation collection.name, operation
+            @schemaManager.createSchema v.name
     RikkiTikkiAPI.getSchemaMonitor()
     .on 'init', (data)=>
       _schemas = arguments['0'].added
       _syncInit() if ((_schemaInit = true) and _collectionInit)
     .on 'changed', (data)=>
-      _.each _.keys( data ), (operation)=>
-        _.each data[operation], (schema)=>
-          @["schema#{Util.String.capitalize operation}"] schema.name
-          @__opCache.push new SyncOperation schema.name, operation
+      setTimeout (=>
+        _.each _.keys( data ), (operation)=>
+          _.each data[operation], (schema)=>
+            @["schema#{Util.String.capitalize operation}"] schema.name
+            @__opCache.push new SyncOperation schema.name, operation
+      ), 500
+    RikkiTikkiAPI.getCollectionMonitor()
+    .on 'init', (data)=>
+      _collections = arguments['0'].added
+      _syncInit() if ((_collectionInit = true) and _schemaInit)
+    .on 'changed', (data)=>
+      setTimeout (=>
+        _.each _.keys( data ), (operation)=>
+          _.each data[operation], (collection)=>
+            @["collection#{Util.String.capitalize operation}"] collection.name
+            @__opCache.push new SyncOperation collection.name, operation
+      ), 500
   collectionAdded:(name)->
     unless 0 <= (idx = @getOpIndex name, 'added')
       @collectionManager.getCollection name, (e,col)=>

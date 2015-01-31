@@ -14,7 +14,7 @@ class CollectionMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
       if !_initialized
         _initialized = true
         @emit 'init', '0':'added':@getCollection()
-    ), 6
+    ), 600
   refresh:(callback)->
     @__conn.getCollectionNames (e, names) =>
       ex = []

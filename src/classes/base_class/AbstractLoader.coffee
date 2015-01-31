@@ -33,7 +33,6 @@ class AbstractLoader extends EventEmitter
     try
       if @__path.match /\.js+$/
         @__data = require @__path.replace /\.js$/, ''
-        # console.log @__data
         callback? null, @__data
       else
         Util.File.readFile @__path, (e, data) =>
@@ -41,7 +40,7 @@ class AbstractLoader extends EventEmitter
           try
             d = JSON.parse data
           catch e
-            callback? 'data was not JSON string', null
+            return callback? 'data was not JSON string', null
           callback? e, @__data = d
     catch e
       callback? "could not load file '#{@__path}\n#{e}", null
@@ -50,15 +49,13 @@ class AbstractLoader extends EventEmitter
   set:(attr, value)->
     @__data[attr] = value
   save:(callback)->
-    if @__path? 
-      Util.File.writeFile @__path, @toString(true), null, callback
-    else
-      callback? "path was not defined"
+    return callback? "path was not defined" unless @__path?
+    Util.File.writeFile @__path, @toString(true), null, callback
   rename:(newPath, callback)->
     if @__path? and @pathExists @__path
       fs.rename @__path, newPath, (e,s)=>
         @__path = newPath
-        callback? e,s
+        callback? e, s
     else
       callback? "file '#{@__path}' does not exist", null
   destroy:(callback)->
@@ -68,20 +65,17 @@ class AbstractLoader extends EventEmitter
     else
       callback? "file '#{@__path}' does not exist"
   create:(@__path, data=null, callback)->
-    if typeof data == 'function'
-      callback = data
+    if typeof data is 'function'
+      callback = arguments[1]
       data = null
-    else
-      @__data = if typeof data is 'string' then JSON.parse data else (if data? then data else {})
-    if @__path? and !@pathExists @__path
-      @save callback
-    else
-      callback "file '#{@__path}' already exists", null
+    @__data = if typeof data is 'string' then JSON.parse data else (if data? then data else {})
+    return callback? "file '#{@__path}' already exists", null unless @__path? and !@pathExists @__path
+    @save callback
   valueOf:-> 
     @__data
   toJSON:->
     JSON.parse @toString()
   toString:(readable=false)->
-    return @__data if typeof @__data == 'string'
+    return @__data if typeof @__data is 'string'
     JSON.stringify @__data, @replacer, if readable then 2 else undefined
 module.exports = AbstractLoader

@@ -131,6 +131,8 @@ RikkiTikkiAPI.CONFIG_PATH         = "#{process.cwd()}#{path.sep}configs"
 RikkiTikkiAPI.CONFIG_FILENAME     = 'db.json'
 #> SCHEMA_PATH: Filesystem path to the Schema Files. Default: ./schemas
 RikkiTikkiAPI.SCHEMA_PATH         = "#{process.cwd()}#{path.sep}schemas"
+#> SCHEMA_API_REQUIRE_PATH: Filesystem path to the RikkiTikki API for Schema Files. Default: 'rikki-tikki'
+RikkiTikkiAPI.SCHEMA_API_REQUIRE_PATH   = "rikki-tikki"
 RikkiTikkiAPI.SCHEMA_TREES_FILE   = 'schema.json'
 #> WRAP_SCHEMA_EXPORTS: Wrap Generated Schemas with a `model`. Default: true
 RikkiTikkiAPI.WRAP_SCHEMA_EXPORTS = true

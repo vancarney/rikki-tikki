@@ -24,30 +24,31 @@ class CollectionManager extends RikkiTikkiAPI.base_classes.Singleton
       opts = {}
     Collection.create name, opts, (e,collection)=>
       return callback? e, null if e?
-      @__cache[name] = collection
+      @__cache[name] = if collection instanceof Collection then collection else new Collection name
+      RikkiTikkiAPI.getCollectionMonitor().refresh()
       callback? e, collection
   dropCollection:(name, callback)->
     @getCollection name, (e,collection)=>
+      return callback? e if e?
+      return callback? 'collection undefined' unless collection?
       collection.drop (e, res)=>
         RikkiTikkiAPI.getCollectionMonitor().refresh()
         callback? e, collection
   listCollections:->
-    c = RikkiTikkiAPI.getCollectionMonitor().getCollection()
-    # console.log c
-    c
+    RikkiTikkiAPI.getCollectionMonitor().getCollection()
   renameCollection:(oldName, newName, callback)->
     @getCollection oldName, (e,collection)=> 
       collection.rename newName, dropTarget:true, (e, res)=>
         RikkiTikkiAPI.getCollectionMonitor().refresh()
         callback? e, res
   getCollection:(name, callback)->
-    # tests for existance of Collection name in Collection Cache
+    # tests for existence of Collection name in Collection Cache
     if (collection = @__cache[name])? and collection instanceof Collection
-      return callback? null, _.clone collection
+      return callback? null, collection
     else
-      # creates Collection existance in Monitor and adds it to Collection Cache
+      # checks for Collection existence in Monitor and adds it to Collection Cache
       if 0 <= (idx = RikkiTikkiAPI.getCollectionMonitor().getItemIdx(name))
-        return callback? null, @__cache[name] = new Collection name
+        return callback? null, (@__cache[name] = new Collection name).getCollection()
     # reports failure to find collection in cache
     callback? 'collection not found', null
 module.exports = CollectionManager

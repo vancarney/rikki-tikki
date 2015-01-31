@@ -9,10 +9,10 @@ class SchemaMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
     Util.File.ensureDirExists @__path = "#{RikkiTikkiAPI.getOptions().get 'schema_path'}"
     SchemaMonitor.__super__.constructor.call @
     setTimeout (=>
-      if !_initialized
+      unless _initialized
         _initialized = true
         @emit 'init', '0':'added':@getCollection()
-    ), 6
+    ), 600
   refresh:(callback)->
     ex = []
     RikkiTikkiAPI.getSchemaManager().listSchemas (e, names)=>

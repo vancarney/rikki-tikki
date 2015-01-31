@@ -13,7 +13,7 @@ Util          = RikkiTikkiAPI.Util
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
 # requires: SchemaLoader
 SchemaLoader    = require './SchemaLoader'
-SchemaRenderer  = require './SchemaRenderer'
+RenderableSchema  = require './RenderableSchema'
 # defines `SchemaManager` as sub-class of `Singleton`
 class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   __meta:{}
@@ -43,13 +43,12 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
         # creates new SchemaLoader and assign to __schemas hash
         (@__schemas[n = Util.File.name file] = new SchemaLoader n)
         .on 'error', (e)=>
-          console.log e
           @emit 'error', e
   ## createSchema(name, [data], callback)
   #> retrieves loaded schema by name if exists
   createSchema:(name, data={}, callback)->
     # tests for missing data param
-    if typeof data == 'function'
+    if typeof data is 'function'
       # assigns args param to callback
       callback = arguments[1]
       # defines data as empty object
@@ -59,8 +58,7 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
       # tests if schema was not found
       unless schema?
         # attempts to create a new schema
-        @__schemas[name] = new SchemaLoader()
-        .create "#{name}", data, callback
+        (@__schemas[name] = new SchemaLoader).create "#{name}", data, callback
       else
         # invokes callback if schema was found
         callback? null, schema
@@ -142,9 +140,8 @@ class SchemaManager extends RikkiTikkiAPI.base_classes.Singleton
   #> returns a string encoded object representation
   #> if param readable is set, will indent and linebreak JSON output
   toString:(readable)->
-    # console.log @__schemas['Created'].__data#.toClientSchema()
     s = {}
     _.each _.keys(@__schemas), (key)=> s[key] = if (schema = @__schemas[key].__data).toClientSchema then schema.toClientSchema() else schema
-    JSON.stringify {__meta__:@__meta, __schemas__:s}, SchemaRenderer.replacer, if readable then 2 else undefined
+    JSON.stringify {__meta__:@__meta, __schemas__:s}, RenderableSchema.replacer, if readable then 2 else undefined
 # declares exports
 module.exports = SchemaManager

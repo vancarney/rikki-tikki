@@ -72,14 +72,13 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
   # create(name, tree={}, callback)
   #> creates new Schema and associated files
   create:(@name, tree={}, callback)->
-    if @name
-      _path = SchemaLoader.createPath @name
-    else
-      return callback? "Name is required", null
-    # attemps to create new Schema file
-    SchemaLoader.__super__.create.call @, _path, tree, (e,s)=>
+    return callback? "Name is required", null unless @name?
+    @__path = SchemaLoader.createPath @name
+    @save callback
+    # attempts to create new Schema file
+    # SchemaLoader.__super__.create.call @, _path, tree, (e,s)=>
       # invokes callback if defined
-      callback? (if e? then "Could not create Schema #{_path}\r\t#{e}" else null),s
+      # callback? (if e? then "Could not create Schema #{_path}\r\t#{e}" else null), s
   # renameSchema(name, newName, callback)
   #> renames Schema file on filesystem
   rename:(newName, callback)->
@@ -103,11 +102,9 @@ class SchemaLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
         # invokes callback if defined
         callback? (if e? then "Schema.destroy failed\r\t#{e}" else null),s
   save:(callback)->
-    if @__path?
-      model = RikkiTikkiAPI.model @name, new RikkiTikkiAPI.Schema @__data
-      Util.File.writeFile @__path, model.toAPISchema().toSource(), null, callback
-    else
-      callback? "path was not defined"
+    return callback? "path was not defined" unless @__path?
+    model = RikkiTikkiAPI.model @name, new RikkiTikkiAPI.Schema @__data
+    Util.File.writeFile @__path, model.toAPISchema().toSource(), null, callback
 SchemaLoader.createPath = (name)->
   "#{RikkiTikkiAPI.getOptions().get 'schema_path'}#{path.sep}#{name}.js" 
 # declares exports

@@ -2,8 +2,8 @@
 RikkiTikkiAPI   = module.parent.exports
 module.exports = {}
 module.exports.RikkiTikkiAPI = RikkiTikkiAPI
-SchemaRenderer  = require './SchemaRenderer'
-class ClientSchema extends SchemaRenderer
+RenderableSchema  = require './RenderableSchema'
+class ClientSchema extends RenderableSchema
 ClientSchema::__template = """
 (function() {
   var __hasProp = {}.hasOwnProperty,

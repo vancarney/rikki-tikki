@@ -16,9 +16,7 @@ class NativeConnection extends EventEmitter
     return if @__conn?
     try
       @_client.connect string, null, (e,conn)=>
-        if e?
-          console.log e
-          return @emit 'error', e
+        return @emit 'error', e if e?
         @__conn = conn
         @emit 'open', conn
     catch e
