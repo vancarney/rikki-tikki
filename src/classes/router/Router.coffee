@@ -19,7 +19,7 @@ class Router extends Object #RikkiTikkiAPI.base_classes.Singleton
       @__adapter.responseHandler res, 
         status:200
         content: RikkiTikkiAPI.getSchemaManager().toJSON RikkiTikkiAPI.Util.Env.isDevelopment()
-    @__adapter.addRoute "#{@__api_path}/client.js", 'get', (req,res)=>
+    @__adapter.addRoute "#{@__api_path}/client(\.js)?", 'get', (req,res)=>
       @__adapter.responseHandler res, (
         status:200
         content: @__client
