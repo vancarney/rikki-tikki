@@ -19,7 +19,7 @@ class ClientRenderer extends Object
      */
     <%= core_api %>
     (function() {
-      var NS = RikkiTikki.createNameSpace('<%=ns%>');
+      var NS = RikkiTikki.createScope('<%=ns%>');
       <% for (var key in opts) { %>
       <% if (opts[key]) { %>NS.<%= key.toUpperCase() %> = <%= typeof opts[key] == 'string' ?  '"'+opts[key]+'"' : opts[key] %>;<% } %><% } %>
     }).call(this);
