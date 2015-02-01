@@ -149,15 +149,15 @@ RikkiTikkiAPI.CLIENT_REST_KEY_PARAM_NAME  = null
 RikkiTikkiAPI.CLIENT_PROTOCOL             = 'HTTP'
 
 RikkiTikkiAPI.createAdapter = (name, opts)->
-  AdapterManager.getInstance().createAdapter.apply @, arguments
+  (inst = AdapterManager.getInstance()).createAdapter.apply inst, arguments
 RikkiTikkiAPI.getAdapterByName = (name)->
-  AdapterManager.getInstance().getAdapter.apply @, arguments
+  (inst = AdapterManager.getInstance()).getAdapter.apply inst, arguments
 RikkiTikkiAPI.listAdapters = ->
   AdapterManager.getInstance().listAdapters()
 RikkiTikkiAPI.registerAdapter = (name, adapterClass)->
-  AdapterManager.getInstance().registerAdapter.apply @, arguments
+  (inst = AdapterManager.getInstance()).registerAdapter.apply inst, arguments
 RikkiTikkiAPI.unregisterAdapter = (name)->
-  AdapterManager.getInstance().registerAdapter.apply @, arguments
+  (inst = AdapterManager.getInstance()).registerAdapter.apply inst, arguments
   
 #### Static API Methods
 
