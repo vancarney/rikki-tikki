@@ -129,10 +129,8 @@ class AbstractRoute extends Object
     # remove each valid query operator from the query object keys
     _.each RikkiTikkiAPI.OperationTypes.query, (v)=> filtered = filter v
     _.each filtered, (v,k)=>
-      # remove unknown or missapplied operators
-      delete query[v] if v.match /^\$/
-      # remove restricted fields
-      delete query[v] if 0 <= restricted.indexOf v
+      # remove unknown/missapplied operators and restricted fields
+      delete query[v] if (v.match /^\$/) or (0 <= restricted.indexOf v)
     query
   ## checkSchema( name )
   #> To be implemented
