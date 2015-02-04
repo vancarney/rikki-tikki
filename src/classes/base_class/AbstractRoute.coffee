@@ -75,13 +75,11 @@ class AbstractRoute extends Object
         _collections.getCollection name, (e,col)=>
           # tests for collection
           if col?
-            # listens for incoming data
-            req.on 'data', (data)=>
-              # insures data is set and is consumable
-              if data? and (data = @sanitize JSON.parse data )?
-                  col.insert data, _callback callback 
-              else
-                callback? {status:400, reason:"Bad Request"}, null
+            # handles data in request body
+            if (data = req.body) and (data = @sanitize JSON.parse JSON.stringify data )?
+              col.insert data, _callback callback 
+            else
+              callback? {status:400, reason:"Bad Request"}, null
           else
             if Env.isDevelopment()
               # creates collection
