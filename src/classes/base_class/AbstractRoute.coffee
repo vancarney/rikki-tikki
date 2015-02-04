@@ -132,7 +132,7 @@ class AbstractRoute extends Object
       # remove unknown or missapplied operators
       delete query[v] if v.match /^\$/
       # remove restricted fields
-      delete query[v] if restricted.indexOf v >= 0
+      delete query[v] if 0 <= restricted.indexOf v
     query
   ## checkSchema( name )
   #> To be implemented
