@@ -39,7 +39,7 @@ class AbstractRoute extends Object
             # calls `after` handlers to post-process the data
             after req, res, data
           # invokes callback with final data representation
-          callback? null, {status:200, content: if _.isArray(data) and data.length == 1 then data[0] else data}
+          callback? null, {status:200, content: if _.isArray(data.ops) and data.ops.length == 1 then data.ops[0] else data.ops}
       ## handler.find( callback )
       #> Performs query and object lookup in collection
       @handler.find = (callback)=>
@@ -52,6 +52,7 @@ class AbstractRoute extends Object
             # performs find operation and passes in generated callback handler
             col.find where, _callback callback
           else
+            console.log "isDevelopment: #{Env.isDevelopment()}"
             # tests if in Development Environment
             if Env.isDevelopment()
               # attempts to create collection <name>
@@ -76,10 +77,12 @@ class AbstractRoute extends Object
           # tests for collection
           if col?
             # handles data in request body
-            if (data = req.body) and (data = @sanitize JSON.parse JSON.stringify data )?
-              col.insert data, _callback callback 
-            else
-              callback? {status:400, reason:"Bad Request"}, null
+            req.on 'data', (b)=>
+              data = JSON.parse b.toString 'utf8'
+              if data? and (data = @sanitize data )?
+                col.insert data, _callback callback 
+              else
+                callback? {status:400, reason:"Bad Request"}, null
           else
             if Env.isDevelopment()
               # creates collection
@@ -95,9 +98,10 @@ class AbstractRoute extends Object
         _collections.getCollection name, (e,col)=>
           if col?
             # listens for incoming data
-            req.on 'data', (data)=>
+            req.on 'data', (b)=>
+              data = JSON.parse b.toString 'utf8'
               # insures data is set and is consumable
-              if (id = req.params.id)? and data? and (data = @sanitize JSON.parse data )?
+              if (id = req.params.id)? and data? and (data = @sanitize data )?
                 col.update {_id:id}, data, _callback callback
               else
                 callback? {status:400, reason:"Bad Request"}, null

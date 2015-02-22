@@ -1,9 +1,9 @@
-{_}           = require 'underscore'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-module.exports.RikkiTikkiAPI = RikkiTikkiAPI
-Routes        = require './routes'
-RoutingParams = require './RoutingParams'
-ClientRenderer  = require '../client/ClientRenderer'
+{_}                           = require 'underscore'
+RikkiTikkiAPI                 = module.parent.exports.RikkiTikkiAPI
+module.exports.RikkiTikkiAPI  = RikkiTikkiAPI
+Routes                        = require './routes'
+RoutingParams                 = require './RoutingParams'
+ClientRenderer                = require '../client/ClientRenderer'
 class Router extends Object #RikkiTikkiAPI.base_classes.Singleton
   constructor:->
     throw "Routing Adapter not defined." if !(@__adapter = RikkiTikkiAPI.getAdapter())

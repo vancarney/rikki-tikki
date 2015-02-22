@@ -35,6 +35,8 @@ class SchemaItem
     return null if !@hasDefault()
     if typeof @default is 'function' then (@default)() else @default
   hasDefault: -> @default?
+  getAPIPath:->
+    "#{RikkiTikkiAPI.getAPIPath()}#{@api_path}"
   get:(fun)->
     if typeof fun is 'function'
       @getter = fun
@@ -62,5 +64,5 @@ SchemaItem.Types =
   Date:Date
   Number:Number
   String:String
-SchemaItem.Allowed = "index,default,validators,options,required".split ','
+SchemaItem.Allowed = "index,default,validators,options,required,api_path".split ','
 module.exports = SchemaItem

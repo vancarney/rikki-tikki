@@ -2,6 +2,7 @@ mongodb       = require 'mongodb'
 RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
 DSN           = require 'mongo-dsn'
 EventEmitter  = require('events').EventEmitter
+{_}           = require 'underscore'
 #### sparse.Collection
 # > Establshes Mongo DB with Mongoose
 class NativeConnection extends EventEmitter
@@ -29,7 +30,8 @@ class NativeConnection extends EventEmitter
   getDatabaseName:->
     @getMongoDB().databaseName
   getCollectionNames:(callback)->
-    @__conn.collectionNames (e,res) => callback? e, res
+    @__conn.collections (e,res) =>
+      callback? e, _.compact _.map _.values(res), (v)-> if (v.s.name.match /\.+/)? then null else name:v.s.namespace
   isConnected:-> 
     @__conn?
   close:(callback)->
