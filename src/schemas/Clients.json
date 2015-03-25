@@ -1,8 +1,0 @@
-{
-	"user_id":"[Native::ObjectID]",
-	"name":"[Native::String]",
-	"roles":[],
-	"key": "[Native::String]",
-	"secret": "[Native::String]",
-	"redirect_uri": "[Native::String]"
-}
