@@ -18,22 +18,26 @@ describe 'SyncService Class Test Suite', ->
       @colManager   = RikkiTikkiAPI.getCollectionManager()
       done()
   it 'should create Schemas and Schema Trees', (done)=>
+    fs.unlinkSync f if fs.existsSync f = "./.rikki-tikki/trees/#{name}.json"
     @colManager.createCollection name, (e,col)=>
       throw e if e?
       setTimeout (=>
-        fs.exists (p = "#{RikkiTikkiAPI.getSchemaManager().__path}/#{name}.js"), (e)=>
-          # clearInterval iVal if e?
-          RikkiTikkiAPI.Util.File.readFile p, (e,data)=>
+        fs.exists (p = "#{RikkiTikkiAPI.getSchemaManager().__path}/#{name}.js"), (exists)=>
+          @colManager.dropCollection name, (e,col)=>
             throw e if e?
             done()
       ), 1500
   it 'should tear down our testing env', (done)=>
-    @colManager.dropCollection name, (e,col)=>
-      throw e if e?
-      setTimeout (=>
-        f = "#{RikkiTikkiAPI.getSchemaManager().__path}/_#{name}.js"
-        unless fs.existsSync f
-          throw "Collection Schema was not destroyed (non-destructively) by SyncManager"
-        fs.unlinkSync f
-        done()
-      ), 3000
+    setTimeout (=>
+      f = "#{RikkiTikkiAPI.getSchemaManager().__path}/_#{name}.js"
+      unless fs.existsSync f
+        fs.unlinkSync ".rikki-tikki/trees/#{name}.json"
+        fs.unlinkSync "#{RikkiTikkiAPI.getSchemaManager().__path}/#{name}.js"
+        throw "Collection '#{name}' was not destroyed (non-destructively) by SyncManager"
+      fs.unlinkSync f
+      done()
+    ), 3000
+    
+    @colManager.dropCollection 'TestSchema', (e,col)=>
+      fs.unlink f if fs.existsSync f = '../.rikki-tikki/trees/TestSchema.json'
+          

@@ -74,9 +74,9 @@ class SyncService extends RikkiTikkiAPI.base_classes.Singleton
     unless 0 <= (idx = @getOpIndex name, 'added')
       @schemaTreeManager.createTree name, tree, (e)=>
         return console.log "could not create SchemaTree file for '#{name}'\n\t#{e}" if e?
-      # attempts to rename the Collection from the Database
-      @collectionManager.createCollection name, (e)=>
-        console.log "could not create Collection '#{name}'\n\t#{e}" if e?
+        # attempts to rename the Collection from the Database
+        @collectionManager.createCollection name, (e)=>
+          console.log "could not create Collection '#{name}'\n\t#{e}" if e?
     else
       @__opCache.splice idx, 1
   schemaRemoved:(name)->
@@ -84,9 +84,9 @@ class SyncService extends RikkiTikkiAPI.base_classes.Singleton
       # console.log "removed schema: #{name}"
       @schemaTreeManager.destroyTree name, (e)=>
         console.log "could not destroy SchemaTree file for '#{name}'\n\t#{e}" if e?
-      # attempts to rename the Collection from the Database
-      @collectionManager.dropCollection name, (e)=>
-        console.log "could not destroy Collection '#{name}'\n\t#{e}" if e?
+        # attempts to remove the Collection from the Database
+        @collectionManager.dropCollection name, (e)=>
+          console.log "could not destroy Collection '#{name}'\n\t#{e}" if e?
     else
       @__opCache.splice idx, 1
   schemaReplaced:(name)->

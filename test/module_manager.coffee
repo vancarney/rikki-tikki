@@ -8,4 +8,5 @@ RikkiTikkiAPI.CONFIG_PATH = "#{__dirname}/configs"
 RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
 Connection      = RikkiTikkiAPI.Connection
 describe 'ModuleManager Test Suite', ->
-  it 'should setup our test connection', (done)=>
+  # it 'should setup our test connection', (done)=>
+    # done()

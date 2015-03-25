@@ -8,5 +8,5 @@ describe 'ClientRenderer Test Suites', ->
   it 'should provide a client', =>
     @renderer = new ClientRenderer
     source = @renderer.toSource()
-    console.log source
-    source.match(/.*[\s\S]*(var\sNS\s=\sRikkiTikki\.createNameSpace\('Client'\))+/)[1].should.equal "var NS = RikkiTikki.createNameSpace('Client')"
+    # console.log source
+    source.match(/.*[\s\S]*(var\sNS\s=\sRikkiTikki\.createScope\('Client'\))+/)[1].should.equal "var NS = RikkiTikki.createScope('Client')"

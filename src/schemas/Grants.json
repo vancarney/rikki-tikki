@@ -1,0 +1,5 @@
+{
+  user_id: "[Native::ObjectID]",
+  client_id: "[Native::ObjectID]",
+  token: "[Native::String]"
+}

@@ -42,12 +42,14 @@ class RikkiTikkiAPI extends EventEmitter
           # initializes routes if both `__adapter` and `router` are defined
           if @__adapter? and (router = new RikkiTikkiAPI.Router)?
             router.intializeRoutes()
+            @emit 'ready'
         else
           # declares listener for open event
           @once 'open', =>
             # initialized routes if both `__adapter` and `router` are defined (Can we DRY this out?)
             if @__adapter? and (router = new RikkiTikkiAPI.Router)?
               router.intializeRoutes()
+              @emit 'ready'
       else
         # throws error if adapter is not passed
         throw 'param \'adapter\' is required'
@@ -255,6 +257,7 @@ RikkiTikkiAPI.ConfigLoader      = require './classes/config/ConfigLoader'
 RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
+OAuth                           = require './classes/oauth'
 AdapterManager                  = require './classes/request_adapters/AdapterManager'
 SchemaManager                   = require './classes/schema/SchemaManager'
 SchemaMonitor                   = require './classes/schema/SchemaMonitor'

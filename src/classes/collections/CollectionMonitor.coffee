@@ -18,7 +18,7 @@ class CollectionMonitor extends RikkiTikkiAPI.base_classes.AbstractMonitor
   refresh:(callback)->
     @__conn.getCollectionNames (e, names) =>
       ex = []
-      if names?.length > 0
+      if names?
         # maps list with objects derived from our collection info
         list = _.compact _.map names, (v)=> 
           name:name, db:n.shift(), options: (v.options || {}) if @filter (name = (n=v.name.split '.').pop())
