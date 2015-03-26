@@ -10,7 +10,7 @@ describe 'Connection Test Suite', ->
     @conn1.once 'open', => done()
   it 'should close the connection', (done)=>
     @conn1.close (e) => done() if !e
-  # it 'should Connect with a DSN Object', (done)=>
-    # DSN.loadConfig "#{__dirname}/configs/db.json", (e,dsn)=>
-      # @conn2 = new RikkiTikkiAPI.Connection dsn.toJSON()
-      # @conn2.once 'open', => @conn2.close (e) => done() if !e
+  it 'should Connect with a DSN Object', (done)=>
+    DSN.loadConfig "#{__dirname}/configs/db.json", (e,dsn)=>
+      @conn2 = new RikkiTikkiAPI.Connection dsn.toJSON()
+      @conn2.once 'open', => @conn2.close (e) => done() if !e

@@ -61,9 +61,9 @@ class RikkiTikkiAPI extends EventEmitter
     # Attempts to load `db.json` in CONFIG_PATH
     (@__config = new RikkiTikkiAPI.ConfigLoader __options ).load (e, data)=>
       # returns and invokes callback if error is defined
-      return callback? e if e?
+      # return callback? e if e?
       # attempts to connect with `DSN` created for NODEJS.ENV from Config
-      @connect (@__config.getEnvironment RikkiTikkiAPI.Util.Env.getEnvironment()), {
+      @connect (unless e? then @__config.getEnvironment RikkiTikkiAPI.Util.Env.getEnvironment() else port:27017), {
         # defines open handler
         open: =>
           # attempts to use Routing Adapter if defined in APIOptions object
