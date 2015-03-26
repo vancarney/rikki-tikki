@@ -63,7 +63,7 @@ class RikkiTikkiAPI extends EventEmitter
       # returns and invokes callback if error is defined
       # return callback? e if e?
       # attempts to connect with `DSN` created for NODEJS.ENV from Config
-      @connect (unless e? then @__config.getEnvironment RikkiTikkiAPI.Util.Env.getEnvironment() else port:27017), {
+      @connect (unless e? then @__config.getEnvironment RikkiTikkiAPI.Util.Env.getEnvironment() else host:'localhost'), {
         # defines open handler
         open: =>
           # attempts to use Routing Adapter if defined in APIOptions object

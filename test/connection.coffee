@@ -14,3 +14,6 @@ describe 'Connection Test Suite', ->
     DSN.loadConfig "#{__dirname}/configs/db.json", (e,dsn)=>
       @conn2 = new RikkiTikkiAPI.Connection dsn.toJSON()
       @conn2.once 'open', => @conn2.close (e) => done() if !e
+  it 'should Connect with a JSON Object', (done)=>
+    @conn3 = new RikkiTikkiAPI.Connection host:'localhost'
+    @conn3.once 'open', => @conn3.close (e) => done() if !e
