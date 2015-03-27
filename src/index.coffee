@@ -189,6 +189,14 @@ RikkiTikkiAPI.getSchemaTreeManager = ->
 #> Returns the SchemaMonitor instance
 RikkiTikkiAPI.getSchemaMonitor = ->
   SchemaMonitor.getInstance()
+## registerModule(name, class)
+#> Registers a Module with the API
+RikkiTikkiAPI.registerModule = (name, clazz)->
+  ModuleManager.getInstance()?.registerModule name, clazz
+## removeModule(name)
+#> Removes a Module from the API
+RikkiTikkiAPI.removeModule = (name)->
+  ModuleManager.getInstance()?.removeModule name
 ## getCollectionManager()
 #> Returns the CollectionManager instance
 RikkiTikkiAPI.getCollectionManager = ->
@@ -258,6 +266,7 @@ RikkiTikkiAPI.Schema            = require './classes/schema/Schema'
 RikkiTikkiAPI.APISchema         = require './classes/schema/APISchema'
 RikkiTikkiAPI.ClientSchema      = require './classes/schema/ClientSchema'
 AdapterManager                  = require './classes/request_adapters/AdapterManager'
+ModuleManager                   = require './classes/modules/ModuleManager'
 SchemaManager                   = require './classes/schema/SchemaManager'
 SchemaMonitor                   = require './classes/schema/SchemaMonitor'
 SchemaTree                      = require './classes/schema_tree/SchemaTree'
