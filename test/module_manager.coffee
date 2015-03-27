@@ -8,9 +8,10 @@ RikkiTikkiAPI   = require '../src'
 # RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
 # Connection      = RikkiTikkiAPI.Connection
 class Mod
-  onRegister:(api)->
-  onRemove:(api)->
+  onRegister:->
+  onRemove:->
 describe 'ModuleManager Test Suite', ->
   it 'should register a module', (done)=>
-    Mod::onRegister = => done()
+    Mod::onRegister = -> 
+      done() if @api?
     RikkiTikkiAPI.registerModule 'mod', Mod

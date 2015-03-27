@@ -8,7 +8,8 @@ class ModuleManager extends RikkiTikkiAPI.base_classes.Singleton
       # console.log 'open'
     @registerModule = (name,clazz)=>
       modules.addItem {name:name, _class:clazz, instance:(inst = new clazz)}
-      inst.onRegister RikkiTikkiAPI
+      inst.api = RikkiTikkiAPI
+      inst.onRegister()
     @removeModule = (name)=>
       # modules.removeItemAt _.find
 module.exports = ModuleManager
