@@ -17,12 +17,8 @@ class RikkiTikkiAPI extends EventEmitter
   constructor:(__options=new RikkiTikkiAPI.APIOptions, callback)->
     # sets up an APIOptions object from passed params
     __options = new RikkiTikkiAPI.APIOptions __options unless RikkiTikkiAPI.Util.Object.isOfType __options, RikkiTikkiAPI.APIOptions
-    # defines RikkiTikkiAPI.getOptions
-    RikkiTikkiAPI.getOptions = => __options
-    # defines `RikkiTikkiAPI.getSchemas`
-    RikkiTikkiAPI.getSchemas = => RikkiTikkiAPI.SchemaManager.getInstance()
-    # defines `RikkiTikkiAPI.useAdapter`
-    RikkiTikkiAPI.useAdapter = (adapter, options)=>
+    return callback? 'required param `adapter` was undefined', false unless (adapter = __options.get 'adapter')
+    useAdapter = (adapter, options)=>
       # checks for adapter passed from arguments
       if adapter
         # tests for adapter  param type
@@ -37,6 +33,8 @@ class RikkiTikkiAPI extends EventEmitter
         else
           # sets adapter with Routing Adapter
           @__adapter = adapter
+        # overwrites statis getAdapter method with defined routing adapter
+        RikkiTikkiAPI.getAdapter = => @__adapter
         # tests for active DB Connection
         if RikkiTikkiAPI.getConnection()?
           # initializes routes if both `__adapter` and `router` are defined
@@ -54,10 +52,6 @@ class RikkiTikkiAPI extends EventEmitter
         # throws error if adapter is not passed
         throw 'param \'adapter\' is required'
         process.exit 1
-    # defines `RikkiTikkiAPI.getAdapter`
-    RikkiTikkiAPI.getAdapter    = => @__adapter
-    #  Invokes `RikkiTikkiAPI.useAdapter` if adapter is defined
-    RikkiTikkiAPI.useAdapter adapter if (adapter = __options.get 'adapter')?
     # Attempts to load `db.json` in CONFIG_PATH
     (@__config = new RikkiTikkiAPI.ConfigLoader __options ).load (e, data)=>
       # returns and invokes callback if error is defined
@@ -67,7 +61,7 @@ class RikkiTikkiAPI extends EventEmitter
         # defines open handler
         open: =>
           # attempts to use Routing Adapter if defined in APIOptions object
-          RikkiTikkiAPI.useAdapter adapter if (adapter = __options.get 'adapter')?
+          useAdapter adapter if (adapter = __options.get 'adapter')?
           # retrieves instance of Schema Service to initiate it
           SyncService.getInstance() if RikkiTikkiAPI.Util.Env.isDevelopment()
           # emits open event with reference to `connection`
@@ -85,11 +79,9 @@ class RikkiTikkiAPI extends EventEmitter
   # > Manually create connection to Mongo Database Server
   connect:(dsn,opts)->
     # defines __conn with Connection
-    @__conn = new RikkiTikkiAPI.Connection
+    @__conn = RikkiTikkiAPI.getConnection()
     # adds listener for open events
     @__conn.once 'open', (evt)=>
-      # defines RikkiTikkiAPI.getConnection
-      RikkiTikkiAPI.getConnection = => @__conn
       # invokes open handler in options object if exists
       opts?.open? evt
     # adds listener for close event
@@ -162,11 +154,13 @@ RikkiTikkiAPI.unregisterAdapter = (name)->
   (inst = AdapterManager.getInstance()).registerAdapter.apply inst, arguments
   
 #### Static API Methods
-
+RikkiTikkiAPI.getAdapter = -> null
 ## getConnection()
 #> returns the current DB Connection
 RikkiTikkiAPI.getConnection = ->
-  @connection
+  RikkiTikkiAPI.Connection.getInstance()
+RikkiTikkiAPI.isConnected = ->
+  RikkiTikkiAPI.getConnection().isConnected()
 ## getAPIPath()
 #> returns the Base REST path for the API Client
 RikkiTikkiAPI.getAPIPath = ->

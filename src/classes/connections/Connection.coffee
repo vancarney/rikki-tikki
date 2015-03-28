@@ -4,7 +4,7 @@ EventEmitter  = require('events').EventEmitter
 Connector     = null
 #### sparse.Collection
 # > Wrapper for Mongoose or MongoDB Clients
-class Connection extends EventEmitter
+class Connection extends RikkiTikkiAPI.base_classes.SingletonEmitter
   constructor:(args, @opts={})->
     Connector = require if Util.getCapabilities().mongooseLoaded() and !@opts.forceNative then './MongooseConnection' else './NativeConnection'
     @__conn = new Connector args, @opts
