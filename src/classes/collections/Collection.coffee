@@ -57,12 +57,23 @@ class Collection extends Object
   _sanitize:(params)->
     JSON.parse Util.String.stripNull if typeof params == 'string' then params else JSON.stringify params   
   find:(params, opts, callback)->
+    throw 'argument `params` required' unless params
+    throw 'argument `params` expected type `pbject` type was #{typeof params}' unless typeof params is 'object'
     if typeof opts == 'function'
       callback = arguments[1]
-      opts = null
+      opts = {}
     @getCollection (e,col) =>
       return callback? e, null if e?
-      col.find @_sanitize(params), callback
+      col.find @_sanitize(params), opts, callback
+  findOne:(params, opts, callback)->
+    throw 'argument `params` required' unless params
+    throw 'argument `params` expected type `pbject` type was #{typeof params}' unless typeof params is 'object'
+    if typeof opts == 'function'
+      callback = arguments[1]
+      opts = {}
+    @getCollection (e,col) =>
+      return callback? e, null if e?
+      col.findOne @_sanitize(params), opts, callback
   insert:(params, opts={}, callback)->
     @upsert @_sanitize(params), opts, callback
   save:(params, opts={}, callback)->

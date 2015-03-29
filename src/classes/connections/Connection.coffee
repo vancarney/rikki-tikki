@@ -7,6 +7,8 @@ Connector     = null
 class Connection extends RikkiTikkiAPI.base_classes.SingletonEmitter
   constructor:(args, @opts={})->
     Connector = require if Util.getCapabilities().mongooseLoaded() and !@opts.forceNative then './MongooseConnection' else './NativeConnection'
+    @getTypes = =>
+      Connector.types
     @__conn = new Connector args, @opts
     @__conn.once 'open', (conn)=> 
       @emit 'open', @

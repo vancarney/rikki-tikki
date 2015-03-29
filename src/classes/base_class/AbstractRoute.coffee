@@ -39,7 +39,11 @@ class AbstractRoute extends Object
             # calls `after` handlers to post-process the data
             after req, res, data
           # invokes callback with final data representation
-          callback? null, {status:200, content: if _.isArray(data.ops) and data.ops.length == 1 then data.ops[0] else data.ops}
+          status = 200
+          content = if _.isArray(data.ops) and data.ops.length == 1 then data.ops[0] else data.ops
+          console.log content if (req.route.methods.get)?
+          # status = 404 if (_.isArray(data.ops) and data.ops.length == 0) or typeof data.ops 'undefined'
+          callback? null, {status:status, content: content}
       ## handler.find( callback )
       #> Performs query and object lookup in collection
       @handler.find = (query,callback)=>
@@ -59,14 +63,21 @@ class AbstractRoute extends Object
         where = if q? then @sanitize q else {}
         # attempts to access collection
         _collections.getCollection name, (e,col)=>
-          # tests for collection result and performs find operation and passes in generated callback handler
-          return col.find where, _callback callback if col?
-          # invokes error callback if Collection not found while in Production Environment
-          return callback? {status:400, reason:"Bad Request"}, null unless Env.isDevelopment()
-          # attempts to create collection <name>
-          _createCollection name, (e,res)=>
-            # invokes callback and returns if error is set
-            return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}]   
+          # tests for collection result
+          if col?
+            # performs find operation and passes in generated callback handler
+            col.find where, _callback callback
+          else
+            console.log "isDevelopment: #{Env.isDevelopment()}"
+            # tests if in Development Environment
+            if Env.isDevelopment()
+              # attempts to create collection <name>
+              _createCollection name, (e,res)=>
+                # invokes callback and returns if error is set
+                return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}] 
+            else
+              # we should not ever get here, so invoke an error callback and return
+              return callback? {status:400, reason:"Bad Request"}, null 
       ## handler.list( callback )
       #> Handles index requests
       @handler.list = (callback)=>
@@ -74,7 +85,18 @@ class AbstractRoute extends Object
       ## handler.show( callback )
       #> Handles show requests
       @handler.show = (callback)=>
-        @handler.find {_id:req.params.id}, _callback callback
+        # attempts to access collection
+        _collections.getCollection name, (e,col)=>
+          # tests for collection result and performs findOne operation
+          return col.findOne {_id:req.params.id}, _callback callback if req.params.id if col?
+          # tests if in Development Environment
+          if Env.isDevelopment()
+            # attempts to create collection <name>
+            _createCollection name, (e,res)=>
+              # invokes callback and returns if error is set
+              return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:404, content:{}}] 
+          # invokes an error callback and return if above conditions were not met
+          return callback? {status:400, reason:"Bad Request"}, null
       ## handler.insert( callback )
       #> Handles index requests
       @handler.insert = (callback)=>
