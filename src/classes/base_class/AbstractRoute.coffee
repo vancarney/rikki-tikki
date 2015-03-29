@@ -42,26 +42,31 @@ class AbstractRoute extends Object
           callback? null, {status:200, content: if _.isArray(data.ops) and data.ops.length == 1 then data.ops[0] else data.ops}
       ## handler.find( callback )
       #> Performs query and object lookup in collection
-      @handler.find = (callback)=>
+      @handler.find = (query,callback)=>
+        switch typeof query
+          when 'object'
+            q = query
+          when 'string'
+            q = JSON.parse query
+          when 'function'
+            q = {}
+            callback = arguments[0]
+          else
+            return callback? 'unable to process query'
+        # overwrites `q` with contents of Request Query
+        q = req.query.where if req.query?.where
         # holds the cleaned up query if present
-        where = @sanitize JSON.parse req.query.where || "{}"
+        where = if q? then @sanitize q else {}
         # attempts to access collection
         _collections.getCollection name, (e,col)=>
-          # tests for collection result
-          if col?
-            # performs find operation and passes in generated callback handler
-            col.find where, _callback callback
-          else
-            console.log "isDevelopment: #{Env.isDevelopment()}"
-            # tests if in Development Environment
-            if Env.isDevelopment()
-              # attempts to create collection <name>
-              _createCollection name, (e,res)=>
-                # invokes callback and returns if error is set
-                return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}] 
-            else
-              # we should not ever get here, so invoke an error callback and return
-              return callback? {status:400, reason:"Bad Request"}, null
+          # tests for collection result and performs find operation and passes in generated callback handler
+          return col.find where, _callback callback if col?
+          # invokes error callback if Collection not found while in Production Environment
+          return callback? {status:400, reason:"Bad Request"}, null unless Env.isDevelopment()
+          # attempts to create collection <name>
+          _createCollection name, (e,res)=>
+            # invokes callback and returns if error is set
+            return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}]   
       ## handler.list( callback )
       #> Handles index requests
       @handler.list = (callback)=>
