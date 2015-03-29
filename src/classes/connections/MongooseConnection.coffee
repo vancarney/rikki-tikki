@@ -37,4 +37,5 @@ class MongooseConnection extends EventEmitter
         @__conn = null
         # @emit 'close'
         callback? e
+MongooseConnection.types = mongoose.types
 module.exports = MongooseConnection

@@ -39,4 +39,7 @@ class NativeConnection extends EventEmitter
       @__conn.close (e)=>
         @__conn = null
         callback? e
+NativeConnection.types =
+  ObjectId: mongodb.ObjectID
+  Binary: mongodb.Binary
 module.exports = NativeConnection
