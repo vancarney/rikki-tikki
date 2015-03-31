@@ -89,7 +89,9 @@ class AbstractRoute extends Object
         _collections.getCollection name, (e,col)=>
           return callback? {status:400, reason:"collecton `#{name}` was not defined"}, null unless col?
           # tests for collection result and performs findOne operation
-          return col.findOne {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId req.params.id}, _callback callback
+          return col.findOne {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId req.params.id}, (e,doc)=> 
+            return callback? e, null if e?
+            callback? null, { status: (if doc? then 200 else 404), content: doc }
           # tests if in Development Environment
           if Env.isDevelopment()
             # attempts to create collection <name>
