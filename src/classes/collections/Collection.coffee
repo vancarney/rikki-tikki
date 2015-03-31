@@ -95,16 +95,21 @@ class Collection extends Object
       # performs find operation
       col.findOne @_sanitize( params ), opts, callback
   insert:(params, opts={}, callback)->
-    @upsert params, opts, callback
-  save:(params, opts={}, callback)->
-    @upsert params, opts, callback
-  update:(params, opts={}, callback)->
     @getCollection (e,col) =>
       return callback? e, null if e?
       col.insert params, opts, callback
+  save:(params, opts={}, callback)->
+    @getCollection (e,col) =>
+      return callback? e, null if e?
+      col.save params, opts, callback
+  update:(params, opts={}, callback)->
+    @getCollection (e,col) =>
+      return callback? e, null if e?
+      col.update params, opts, callback
   upsert:(params, opts={}, callback)->
-    opts.upsert = true
-    @update @_sanitize( params ), opts, callback
+    @getCollection (e,col) =>
+      return callback? e, null if e?
+      col.upsert params, opts, callback
   show:(callback)->
     @find {}, {}, callback
   rename:(name, opts,callback)->

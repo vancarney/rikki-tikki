@@ -130,9 +130,13 @@ class AbstractRoute extends Object
             # listens for incoming data
             req.on 'data', (b)=>
               data = JSON.parse b.toString 'utf8'
+              console.log data
+              delete data._id if data.hasOwnProperty '_id'
               # insures data is set and is consumable
-              if (id = req.params.id)? and data? and (data = @sanitize data )?
-                col.update {_id:id}, data, _callback callback
+              if (id = req.params.id)?
+                col.update {_id: id}, {$set:data}, (e,num,rec)=>
+                  return callback? {status:400, reason:e.message} if e?
+                  callback? {status: 200, content:rec}
               else
                 callback? {status:400, reason:"Bad Request"}, null
           else
@@ -143,7 +147,7 @@ class AbstractRoute extends Object
         # objectID, 
         _collections.getCollection name, (e,col)=>
           if col?
-            col.destroy {_id:req.params.id}, _callback callback
+            col.remove {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId req.params.id}, _callback callback
           else
             return callback? {status:400, reason:"Bad Request"}, null
       _.each @__before, (before,k)=> before req,res,data
