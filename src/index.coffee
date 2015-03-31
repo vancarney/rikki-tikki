@@ -187,6 +187,10 @@ RikkiTikkiAPI.getSchemaMonitor = ->
 #> Registers a Module with the API
 RikkiTikkiAPI.registerModule = (name, clazz)->
   ModuleManager.getInstance()?.registerModule name, clazz
+## registerModule(name, class)
+#> Registers a Module with the API
+RikkiTikkiAPI.retrieveModule = (name)->
+  ModuleManager.getInstance()?.retrieveModule name
 ## removeModule(name)
 #> Removes a Module from the API
 RikkiTikkiAPI.removeModule = (name)->

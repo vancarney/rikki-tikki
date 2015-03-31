@@ -11,5 +11,12 @@ class ModuleManager extends RikkiTikkiAPI.base_classes.Singleton
       inst.api = RikkiTikkiAPI
       inst.onRegister()
     @removeModule = (name)=>
-      # modules.removeItemAt _.find
+      for k,o of modules.__list
+        if o.name is name
+          modules.removeItemAt k
+          return o
+      null
+    @retrieveModule = (name)->
+      for k,o of modules.__list
+        return o if o.name is name
 module.exports = ModuleManager

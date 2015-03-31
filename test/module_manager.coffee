@@ -4,9 +4,7 @@ Router          = require 'routes'
 fs              = require 'fs'
 DSN             = require 'mongo-dsn'
 RikkiTikkiAPI   = require '../src'
-# RikkiTikkiAPI.CONFIG_PATH = "#{__dirname}/configs"
-# RikkiTikkiAPI.SCHEMA_PATH = "#{__dirname}/schemas"
-# Connection      = RikkiTikkiAPI.Connection
+
 class Mod
   onRegister:->
   onRemove:->
@@ -15,3 +13,9 @@ describe 'ModuleManager Test Suite', ->
     Mod::onRegister = -> 
       done() if @api?
     RikkiTikkiAPI.registerModule 'mod', Mod
+  it 'should retrieve a module', =>
+    (RikkiTikkiAPI.retrieveModule 'mod').should.be.a 'object'
+  it 'should remove a module', =>
+    (RikkiTikkiAPI.removeModule 'mod').should.be.a 'object'
+  it 'should have removed the module', =>
+    (typeof RikkiTikkiAPI.retrieveModule 'mod').should.equal 'undefined'
