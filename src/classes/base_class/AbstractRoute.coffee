@@ -68,7 +68,6 @@ class AbstractRoute extends Object
             # performs find operation and passes in generated callback handler
             col.find where, _callback callback
           else
-            console.log "isDevelopment: #{Env.isDevelopment()}"
             # tests if in Development Environment
             if Env.isDevelopment()
               # attempts to create collection <name>
@@ -85,10 +84,12 @@ class AbstractRoute extends Object
       ## handler.show( callback )
       #> Handles show requests
       @handler.show = (callback)=>
+        return callback? {status:400, reason:'required parameter `id` was not defined'} unless req.params.hasOwnProperty 'id'
         # attempts to access collection
         _collections.getCollection name, (e,col)=>
+          return callback? {status:400, reason:"collecton `#{name}` was not defined"}, null unless col?
           # tests for collection result and performs findOne operation
-          return col.findOne {_id:req.params.id}, _callback callback if req.params.id if col?
+          return col.findOne {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId req.params.id}, _callback callback
           # tests if in Development Environment
           if Env.isDevelopment()
             # attempts to create collection <name>
