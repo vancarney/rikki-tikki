@@ -41,7 +41,7 @@ class AbstractRoute extends Object
           # invokes callback with final data representation
           status = 200
           content = if _.isArray(data.ops) and data.ops.length == 1 then data.ops[0] else data.ops
-          console.log content if (req.route.methods.get)?
+          # console.log content if (req.route.methods.get)?
           # status = 404 if (_.isArray(data.ops) and data.ops.length == 0) or typeof data.ops 'undefined'
           callback? null, {status:status, content: content}
       ## handler.find( callback )
@@ -130,11 +130,10 @@ class AbstractRoute extends Object
             # listens for incoming data
             req.on 'data', (b)=>
               data = JSON.parse b.toString 'utf8'
-              console.log data
               delete data._id if data.hasOwnProperty '_id'
               # insures data is set and is consumable
               if (id = req.params.id)?
-                col.update {_id: id}, {$set:data}, (e,num,rec)=>
+                col.update {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId id}, {$set:data}, (e,num,rec)=>
                   return callback? {status:400, reason:e.message} if e?
                   callback? {status: 200, content:rec}
               else
