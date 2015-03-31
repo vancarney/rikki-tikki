@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "underscore": ">=1.6.0",
-    "mongodb":">=1.4.2",
+    "mongodb":"2.0.25",
     "rikki-tikki-client":"git+https://github.com/vancarney/rikki-tikki-client.git",
     "strictly-hash":">=0.0.1",
     "js-arraycollection":">=0.0.1",

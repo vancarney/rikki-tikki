@@ -5,7 +5,8 @@ Util          = RikkiTikkiAPI.Util
 class Collection extends Object
   constructor:(@name)->
     throw "collection name must be defined" if !@name
-    Object.freeze @
+    # Object.freeze @
+    # @
   getCollection: (callback)=>
     if (_db = RikkiTikkiAPI.getConnection())?
       _db.getMongoDB().collection @name, (e,collection)=>
@@ -54,37 +55,56 @@ class Collection extends Object
     @getCollection (e,col) =>
       return callback? e, null if e?
       col.indexInformation opts, callback 
-  _sanitize:(params)->
-    JSON.parse Util.String.stripNull if typeof params == 'string' then params else JSON.stringify params   
+  _sanitize: (params)-> params
   find:(params, opts, callback)->
-    throw 'argument `params` required' unless params
-    throw 'argument `params` expected type `pbject` type was #{typeof params}' unless typeof params is 'object'
+    # return error if params argument is empty
+    return callback? 'argument `params` required', null unless params
+    # return error if params argument is not an object
+    return callback? 'argument `params` expected type `object` type was #{typeof params}', null unless typeof params is 'object'
+    # tests if opts is a function
     if typeof opts == 'function'
+      # assigns callback to opts params
       callback = arguments[1]
+      # assigns opts argument
       opts = {}
+    # assigns opts argument if unassigned
+    opts ?= {}
+    # attempts to retrieve collection
     @getCollection (e,col) =>
+      # returns callback with error if error is present
       return callback? e, null if e?
-      col.find @_sanitize(params), opts, callback
+      # performs find operation
+      col.find @_sanitize( params ), {}, (e, res)=> res.toArray callback    
   findOne:(params, opts, callback)->
-    throw 'argument `params` required' unless params
-    throw 'argument `params` expected type `pbject` type was #{typeof params}' unless typeof params is 'object'
+    # return error if params argument is empty
+    return callback? 'argument `params` required', null unless params
+    # return error if params argument is not an object
+    return callback? 'argument `params` expected type `object` type was #{typeof params}', null unless typeof params is 'object'
+    # tests if opts is a function
     if typeof opts == 'function'
+      # assigns callback to opts params
       callback = arguments[1]
+      # assigns opts argument
       opts = {}
+    # assigns opts argument if unassigned
+    opts ?= {}
+    # attempts to retrieve collection
     @getCollection (e,col) =>
+      # returns callback with error if error is present
       return callback? e, null if e?
-      col.findOne @_sanitize(params), opts, callback
+      # performs find operation
+      col.findOne @_sanitize( params ), opts, callback
   insert:(params, opts={}, callback)->
-    @upsert @_sanitize(params), opts, callback
+    @upsert params, opts, callback
   save:(params, opts={}, callback)->
-    @upsert @_sanitize(params), opts, callback
+    @upsert params, opts, callback
   update:(params, opts={}, callback)->
     @getCollection (e,col) =>
       return callback? e, null if e?
-      col.insert @_sanitize(params), opts, callback
+      col.insert params, opts, callback
   upsert:(params, opts={}, callback)->
     opts.upsert = true
-    @update @_sanitize(params), opts, callback
+    @update @_sanitize( params ), opts, callback
   show:(callback)->
     @find {}, {}, callback
   rename:(name, opts,callback)->
