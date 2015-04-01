@@ -223,8 +223,9 @@ RikkiTikkiAPI.model = (name,schema={})->
   throw "name is required for model" if !name
   # throws error if name was not string
   throw "name expected to be String type was '#{type}'" if (type = typeof name) != 'string'
+  _this = @
   # defined JS function that will be invoked with new constructor
-  model = `function model(data, opts) { if (!(this instanceof RikkiTikkiAPI.model)) return _.extend(arguments.callee, new RikkiTikkiAPI.Document( data, opts )); }`
+  model = `function model(data, opts) { if (!(this instanceof RikkiTikkiAPI.model)) return _.extend(_this, new RikkiTikkiAPI.Document( data, opts )); }`
   # defines modelName attribute on Wrapper Function
   model.modelName = name
   # defines schema attribute on Wrapper Function
