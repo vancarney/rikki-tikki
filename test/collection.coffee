@@ -17,67 +17,74 @@ describe 'Collection Class Test Suite', ->
         RikkiTikkiAPI.getConnection = => @conn
         done()
   it 'should create a Collection', (done)=>
-    RikkiTikkiAPI.Collection.create 'Test', {}, (e,col)=>
+    RikkiTikkiAPI.Collection.create 'Test', {}, (e,@col)=>
       throw e if e?
       done()
-  it 'should get a Collection', (done)=>
-    (@_collection = new RikkiTikkiAPI.Collection 'Test').getCollection (e,@col)=>
-      throw e if e?
-      done()
+
   it 'should save a record to the Collection', (done)=>
-    @col.save {name:"record 1", value:"foo"}, null, (e, res)=>
+    @col.save {name:"record 1", value:"foo"}, (e, res)=>
       throw e if e?
+      @record_id = res.ops[0]._id
       done()
+      
   it 'should find the record in the Collection', (done)=>
-    @col.find {name:"record 1"}, {}, (e, res)=>
+    @col.find {name:"record 1"}, (e, res)=>
       throw e if e?
-      res.toArray (e,doc)=>
-        done() if doc.length and (@record_id = doc[0]._id)?
+      done() if (res.length) and ("#{@record_id}" is "#{res[0]._id}")
+        
   it 'should find the record in the Collection by ObjectId', (done)=>
-    # console.log new ObjectID @record_id
     q = _id: new ObjectID "#{@record_id}"
-    @_collection.find q, {}, (e, docs)=>
+    @col.find q, (e, docs)=>
       throw e if e?
-      console.log docs
       done() if "#{@record_id}" == "#{docs[0]._id}"
+      
   it 'should find the record in the Collection by ObjectId with findOne', (done)=>
     q = _id: new ObjectID "#{@record_id}"
-    @_collection.findOne q, {}, (e, doc)=>
+    @col.findOne q, {}, (e, doc)=>
       throw e if e?
       done() if "#{@record_id}" == "#{doc._id}"
-  it 'should derive a Tree from the Collection', (done)=>
-    @_collection.save [
+  it 'should save an array of records to the Collection', (done)=>
+    @col.insert [
       {name:"record 2", value:false},
       {name:"record 3", value:false},
       {name:"record 4", value:false},
       {name:"record 5", value:false}
-      ], {}, (e, res)=>
+      ], {multi:true}, (e, res)=>
       throw e if e?
-      @_collection.getTree (e, tree)=>
-        throw e if e?
-        tree._id.should.equal 'ObjectID'
-        tree.name.should.equal 'String'
-        tree.value.should.equal 'Mixed'
-        done()
+      done()
+      
+  it 'should provide a getTree method', =>
+    @col.getTree.should.be.a 'function'
+    
+  it 'should derive a Tree from the Collection', (done)=>
+    @col.getTree (e, tree)=>
+      throw e if e?
+      tree._id.should.equal 'ObjectID'
+      tree.name.should.equal 'String'
+      tree.value.should.equal 'Mixed'
+      done()
+        
   it 'should rederive a Tree from the Collection', (done)=>
-    @_collection.save [
+    @col.insert [
       {name:"record 6", value:false},
       {name:"record 7", value:false},
       {name:"record 8", value:false},
       {name:"record 9", value:false},
       {name:"record 10", value:false}
-      ], null, (e, res)=>
+      ], {multi:true}, (e, res)=>
       throw e if e?
-      @_collection.getTree (e, tree)=>
+      @col.getTree (e, tree)=>
         throw e if e?
         tree._id.should.equal 'ObjectID'
         tree.name.should.equal 'String'
         tree.value.should.equal 'Boolean'
         done()
+        
   it 'should remove a record from the Collection', (done)=>
     @col.remove {name:"record 1"}, null, (e, res)=>
       throw e if e?
       done()
+      
   it 'should tear down our test collection', (done)=>
     @col.drop (e,col)=>
       throw e if e?

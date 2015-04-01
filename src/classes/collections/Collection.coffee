@@ -5,8 +5,8 @@ Util          = RikkiTikkiAPI.Util
 class Collection extends Object
   constructor:(@name)->
     throw "collection name must be defined" if !@name
-    # Object.freeze @
-    # @
+    Object.freeze @
+    @
   getCollection: (callback)=>
     if (_db = RikkiTikkiAPI.getConnection())?
       _db.getMongoDB().collection @name, (e,collection)=>
@@ -134,7 +134,7 @@ class Collection extends Object
       0
     @getCollection (e,col) =>
       return callback? e, null if e?
-      col.find {}, (e,res)=>
+      col.find {}, {}, (e,res)=>
         return callback? e if e?
         res.toArray (e,arr)=>
           for record in arr
@@ -154,7 +154,7 @@ class Collection extends Object
 Collection.create = (name, opts, callback)->
   if (_db = RikkiTikkiAPI.getConnection())?
     _db.getMongoDB().createCollection name, opts, (e,collection)=>
-      return callback? e, null unless e
+      return callback? e, null if e
       return callback null, new Collection name if collection?
   else
     callback? 'Database is not connected', null  
