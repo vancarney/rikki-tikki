@@ -1,0 +1,12 @@
+{
+  "debug": false,
+  "destructive": false,
+  "api_basepath": "/api",
+  "api_version": "1",
+  "api_namepace": "",
+  "schema_path": "./schemas",
+  "api_schema_path": "api-hero",
+  "schema_trees_file": "schema.json",
+  "wrap_schema_exports": true,
+  "default_datasource": "mongo"
+}

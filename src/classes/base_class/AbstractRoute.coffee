@@ -130,7 +130,7 @@ class AbstractRoute extends Object
                 data = JSON.parse b.toString 'utf8'
                 if data? and (data = @sanitize data )?
                    _createCollection name, null, data, null, (e,res)=>
-                     console.log res
+                     # console.log res
                      return callback?.apply @, [null, {status:200, content:{}}]
               # creates collection
               # _createCollection name, (e,res)=>

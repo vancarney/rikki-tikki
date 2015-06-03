@@ -19,7 +19,7 @@ class CollectionMonitor extends AbstractMonitor
     DataSourceManager = require '../datasource/DataSourceManager'
     dsm = DataSourceManager.getInstance()
     _.each dsm.getDSNames(), (dsName)=>
-      console.log dsName
+      # console.log dsName
       # console.log "dsName: #{dsName}"
       dsm.getDataSource dsName, (e, conn)=>
         conn.listCollections (e, names) =>

@@ -30,8 +30,6 @@ class ApiHero extends EventEmitter
     app.set 'legacyExplorer', false
     app.ApiHero = ApiHero
     app.on 'ready', =>
-      console.log app.get.toString()
-      
       # console.log JSON.stringify @params.app._router.stack, null, 2
       # @router = ApiHero.Router.getInstance()
       # @router.addRoute "/api-client/__schema__.json", 'get', (req,res)=>
