@@ -1,5 +1,5 @@
-{_} = require 'lodash'
-Util = require '../utils'
+{_}   = require 'lodash'
+Util  = require '../utils'
 class AbstractAdapter extends Object
   required:[]
   constructor:(@params={})->

@@ -26,7 +26,7 @@ class AbstractRoute extends Object
       throw 'AbstractRoute can not be directly instatiated\nhint: use a subclass instead.'
     # _db               = DSManager.getInstance().getDataSource()
     _getDS = (dsname)=>
-      dsname ?= (new APIOptions).get 'default_datasource'
+      dsname ?= APIOptions.get 'default_datasource'
       ds = dsm.getDataSource dsname
     _collections      = CollectionManager.getInstance()
     _createCollection = (name, dsname, json, opts, callback)=>

@@ -8,6 +8,8 @@ fs              = require 'fs'
 #> requires: path
 path            = require 'path'
 Util            = require './classes/utils'
+  
+global.logger   = console
 
 # > Defines the `RikkiTikki` namespace in the 'global' environment
 class ApiHero extends EventEmitter
@@ -55,37 +57,6 @@ class ApiHero extends EventEmitter
           # if (v.s.name.match /\.+/)? then null else name:v.s.name
         # for ds in dsList
           # SyncService
-
-#### API Option Defaults
-#> Debug: Toggles Debug Messages. Default: false
-ApiHero.DEBUG               = false
-#> Adapter: Defines which Routing Adapter to use. Default: null
-ApiHero.ADAPTER             = null
-#> DESTRUCTIVE: If enabled will destroy Schema Files and Collections. Default: false
-ApiHero.DESTRUCTIVE         = false
-#> API_BASEPATH: Base routing path for the API. Default: /api
-ApiHero.API_BASEPATH        = '/api'
-#> API_VERSION: Declarative version of the API appends to API_BASEPATH. Default: 1
-ApiHero.API_VERSION         = '1'
-ApiHero.API_NAMESPACE       = ''
-ApiHero.AUTH_CONFIG_PATH    = "#{process.cwd()}#{path.sep}configs#{path.sep}auth"
-#> CONFIG_PATH: Filesystem path to the Config File. Default: ./configs
-ApiHero.CONFIG_PATH         = "#{process.cwd()}#{path.sep}configs"
-#> CONFIG_FILENAME: Name for the Config File. Default: db.json
-ApiHero.CONFIG_FILENAME     = 'db.json'
-#> SCHEMA_PATH: Filesystem path to the Schema Files. Default: ./schemas
-ApiHero.SCHEMA_PATH         = "#{process.cwd()}#{path.sep}schemas"
-#> SCHEMA_API_REQUIRE_PATH: Filesystem path to the RikkiTikki API for Schema Files. Default: 'rikki-tikki'
-ApiHero.SCHEMA_API_REQUIRE_PATH   = "ApiHero"
-ApiHero.SCHEMA_TREES_FILE         = 'schema.json'
-#> WRAP_SCHEMA_EXPORTS: Wrap Generated Schemas with a `model`. Default: true
-ApiHero.WRAP_SCHEMA_EXPORTS   = true
-ApiHero.DEFAULT_DATASOURCE    = 'mongo'
-# ApiHero.getAPIPath = ->
-  # "#{ApiHero.API_BASEPATH}/"
-
-
-
 
 ApiHero.init = (app)-> 
   new ApiHero app

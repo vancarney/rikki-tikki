@@ -6,13 +6,14 @@ Adapter               = require '../request_adapters/Adapter'
 Routes                = require './routes'
 RoutingParams         = require './RoutingParams'
 ClientRenderer        = require '../client/ClientRenderer'
+APIOpts               = require '../config/APIOptions'
+Adapter               = require '../request_adapters/Adapter'
 # SchemaManager         = (require '../schema/SchemaManager').getInstance()
 class Router extends Singleton
   constructor:->
     Fleek   = require '../..'
-    Adapter = require '../request_adapters/Adapter'
     throw "Routing Adapter not defined." unless (@__adapter = new Adapter app:Fleek.getApp())?
-    @__api_path = Fleek.getApp().get 'restApiRoot'
+    @__api_path = @__adapter.params.app.get 'restApiRoot'
     client    = new ClientRenderer
     @__routes = new Routes @__adapter
     @intializeRoutes()
@@ -22,34 +23,13 @@ class Router extends Singleton
   getAdapter:-> @__adapter
   getClient:-> @__client
   intializeRoutes:->
-    Fleek   = require '../..'
-    Fleek.DEBUG && logger.log 'debug', "#{name}:"
     # return unless Fleek.Util.Env.isDevelopment()
     # generate routes based on the REST operations
-    for operation in ['index','show','create','update','destroy']
-      switch operation
-        # matches GET with id param
-        when 'show'
-          path = "#{@__api_path}/:collection/:id"
-        # matches POST or PUT with id param
-        when 'update'
-          path = "#{@__api_path}/:collection/:id"
-        # matches POST with no param
-        when 'create'
-          path = "#{@__api_path}/:collection"
-        # matches DELETE with id param
-        when 'destroy'
-          path = "#{@__api_path}/:collection/:id"
-        # matches GET with no param
-        when 'index'
-          path = "#{@__api_path}/:collection"
-        else
-          # throws error if path is fubar
-          throw new Error "unrecognized REST operation type: '#{operation}'"
+    for operation in ['index','create'] #['index','show','create','update','destroy']
       # adds the route to the adapter
-      @createRoute route = new RoutingParams path, operation
+      @createRoute route = new RoutingParams "#{@__api_path}/:collection", operation
       # handles debug
-      Fleek.DEBUG && logger.log 'debug', "#{route.method.toUpperCase()} #{route.path} -> #{route.operation}"
+      logger.log 'debug', "#{route.method.toUpperCase()} #{route.path} -> #{route.operation}" if APIOpts.get 'debug'
   createRoute:(params)->
     # ensure params is cast to RikkiTikkiAPI.RoutingParams
     unless Util.Object.isOfType params, RoutingParams
