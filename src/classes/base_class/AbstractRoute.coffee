@@ -1,6 +1,9 @@
-{_}             = require 'underscore'
-RikkiTikkiAPI   = module.parent.exports.RikkiTikkiAPI
-Env             = RikkiTikkiAPI.Util.Env
+{_}               = require 'lodash'
+{OperationTypes}  = require '../types'
+Util              = require '../utils'
+CollectionManager = require '../collections/CollectionManager'
+# DSManager         = require '../datasource/DataSourceManager'
+APIOptions        = require '../config/APIOptions'
 class AbstractRoute extends Object
   __before: null
   __after: null
@@ -17,14 +20,19 @@ class AbstractRoute extends Object
     @__after ?= []
     @__after.push fn
   constructor:(callback)->
-    if 'AbstractRoute' == RikkiTikkiAPI.Util.Function.getConstructorName @ 
+    DSManager         = require '../datasource/DataSourceManager'
+    dsm               = DSManager.getInstance()
+    if 'AbstractRoute' == Util.Function.getConstructorName @ 
       throw 'AbstractRoute can not be directly instatiated\nhint: use a subclass instead.'
-    _db               = RikkiTikkiAPI.getConnection()
-    _collections      = RikkiTikkiAPI.getCollectionManager()
-    _createCollection = (name, callback)->
-      _collections.createCollection name, {}, (e,collection)=>
-        callback? e, collection
-    ## Handler Object
+    # _db               = DSManager.getInstance().getDataSource()
+    _getDS = (dsname)=>
+      dsname ?= (new APIOptions).get 'default_datasource'
+      ds = dsm.getDataSource dsname
+    _collections      = CollectionManager.getInstance()
+    _createCollection = (name, dsname, json, opts, callback)=>
+      ds = _getDS dsname 
+      ds.buildCollection name, json, opts, callback
+    # ## Handler Object
     return (req,res)=>
       # references the colleciton name from the request params
       name = req.params.collection
@@ -39,7 +47,7 @@ class AbstractRoute extends Object
             # calls `after` handlers to post-process the data
             after req, res, data
           # invokes callback with final data representation
-          status = 200
+          status  = 200
           content = if _.isArray(data.ops) and data.ops.length == 1 then data.ops[0] else data.ops
           # console.log content if (req.route.methods.get)?
           # status = 404 if (_.isArray(data.ops) and data.ops.length == 0) or typeof data.ops 'undefined'
@@ -69,11 +77,13 @@ class AbstractRoute extends Object
             col.find where, _callback callback
           else
             # tests if in Development Environment
-            if Env.isDevelopment()
-              # attempts to create collection <name>
-              _createCollection name, (e,res)=>
-                # invokes callback and returns if error is set
-                return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}] 
+            if Util.Env.isDevelopment()
+              # if -1 is _collections.listCollections().indexOf name
+              return callback?.apply @, [null, {status:200, content:[]}]
+              # # attempts to create collection <name>
+              # _createCollection name, (e,res)=>
+                # # invokes callback and returns if error is set
+                # return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:200, content:{}}] 
             else
               # we should not ever get here, so invoke an error callback and return
               return callback? {status:400, reason:"Bad Request"}, null 
@@ -89,11 +99,11 @@ class AbstractRoute extends Object
         _collections.getCollection name, (e,col)=>
           return callback? {status:400, reason:"collecton `#{name}` was not defined"}, null unless col?
           # tests for collection result and performs findOne operation
-          return col.findOne {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId req.params.id}, (e,doc)=> 
+          return col.findOne {_id: new Fleek.getConnection().getTypes().ObjectId req.params.id}, (e,doc)=> 
             return callback? e, null if e?
             callback? null, { status: (if doc? then 200 else 404), content: doc }
           # tests if in Development Environment
-          if Env.isDevelopment()
+          if Util.Env.isDevelopment()
             # attempts to create collection <name>
             _createCollection name, (e,res)=>
               # invokes callback and returns if error is set
@@ -114,11 +124,18 @@ class AbstractRoute extends Object
               else
                 callback? {status:400, reason:"Bad Request"}, null
           else
-            if Env.isDevelopment()
+            if Util.Env.isDevelopment()
+              req.on 'data', (b)=>
+                # console.log b.toString 'utf8'
+                data = JSON.parse b.toString 'utf8'
+                if data? and (data = @sanitize data )?
+                   _createCollection name, null, data, null, (e,res)=>
+                     console.log res
+                     return callback?.apply @, [null, {status:200, content:{}}]
               # creates collection
-              _createCollection name, (e,res)=>
-                return callback? {status:400, reason:e}, null if e?
-                col.insert data, _callback callback
+              # _createCollection name, (e,res)=>
+                # return callback? {status:400, reason:e}, null if e?
+                # col.insert data, _callback callback
             else
               # invokes an error callback and returns
               return callback? {status:400, reason:"Bad Request"}, null
@@ -133,7 +150,7 @@ class AbstractRoute extends Object
               delete data._id if data.hasOwnProperty '_id'
               # insures data is set and is consumable
               if (id = req.params.id)?
-                col.update {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId id}, {$set:data}, (e,num,rec)=>
+                col.update {_id: new Fleek.getConnection().getTypes().ObjectId id}, {$set:data}, (e,num,rec)=>
                   return callback? {status:400, reason:e.message} if e?
                   callback? {status: 200, content:rec}
               else
@@ -146,7 +163,7 @@ class AbstractRoute extends Object
         # objectID, 
         _collections.getCollection name, (e,col)=>
           if col?
-            col.remove {_id: new RikkiTikkiAPI.getConnection().getTypes().ObjectId req.params.id}, _callback callback
+            col.remove {_id: new Fleek.getConnection().getTypes().ObjectId req.params.id}, _callback callback
           else
             return callback? {status:400, reason:"Bad Request"}, null
       _.each @__before, (before,k)=> before req,res,data
@@ -155,7 +172,7 @@ class AbstractRoute extends Object
   #> Abstract Handler Method
   #> Must be implemented by `subclass`
   handler:(callback)->
-    throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.handler(callback) is not implemented"
+    throw "#{Util.Function.getConstructorName @}.handler(callback) is not implemented"
   ## sanitize( query )
   #> removes bad characters and reserved terms from passed object
   sanitize: (query)->
@@ -164,7 +181,7 @@ class AbstractRoute extends Object
     restricted = []
     filter = _.partial _.without, _.keys query
     # remove each valid query operator from the query object keys
-    _.each RikkiTikkiAPI.OperationTypes.query, (v)=> filtered = filter v
+    _.each OperationTypes.query, (v)=> filtered = filter v
     _.each filtered, (v,k)=>
       # remove unknown/missapplied operators and restricted fields
       delete query[v] if (v.match /^\$/) or (0 <= restricted.indexOf v)

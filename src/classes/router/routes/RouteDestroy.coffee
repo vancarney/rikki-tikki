@@ -1,5 +1,5 @@
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-class RouteDestroy extends RikkiTikkiAPI.base_classes.AbstractRoute
+AbstractRoute = require '../../base_class/AbstractRoute'
+class RouteDestroy extends AbstractRoute
   handler:(callback)->   
     (req,res)=>
       @handler.destroy (e,result)=>

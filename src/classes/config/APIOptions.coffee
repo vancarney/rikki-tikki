@@ -1,31 +1,36 @@
-{_} = require 'underscore'
-path = require 'path'
-RikkiTikkiAPI = module.parent.exports
+{_}     = require 'lodash'
+Hash    = require 'strictly-hash'
+path    = require 'path'
 #### APIOptions
-class APIOptions extends RikkiTikkiAPI.base_classes.Hash
+class APIOptions extends Hash
   constructor:(params={})-> 
+    Fleek = require '../..'
     # invokes `Hash` with extended API Option Defaults
     APIOptions.__super__.constructor.call @, o = _.extend((
       # defines `api_basepath`: the base path for the REST route
-      api_basepath : RikkiTikkiAPI.API_BASEPATH
+      api_basepath : Fleek.API_BASEPATH
       # defines `api_version`: the version for the REST route
-      api_version : RikkiTikkiAPI.API_VERSION
+      api_version : Fleek.API_VERSION
       # defines `api_namespace`: the published API NameSpace
-      api_namespace : RikkiTikkiAPI.API_NAMESPACE
+      api_namespace : Fleek.API_NAMESPACE
       # defines `config_filename`: the config file name
-      config_filename : RikkiTikkiAPI.CONFIG_FILENAME
+      config_filename : Fleek.CONFIG_FILENAME
       # defines `config_path`: the config file path
-      config_path : RikkiTikkiAPI.CONFIG_PATH
+      config_path : Fleek.CONFIG_PATH
       # defines `schema_path`: the schema directory path
-      schema_path  : RikkiTikkiAPI.SCHEMA_PATH
+      schema_path  : Fleek.SCHEMA_PATH
+      # defines `require_path`: the path to require npm modules from
+      schema_api_require_path  : Fleek.SCHEMA_API_REQUIRE_PATH
       # defines `destructive`: destroy orrenamedeleteted collection schemas
-      destructive : RikkiTikkiAPI.DESTRUCTIVE
+      destructive : Fleek.DESTRUCTIVE
       # defines `wrap_schema_exports`: wrap schema exports in Model
-      wrap_schema_exports : RikkiTikkiAPI.WRAP_SCHEMA_EXPORTS
+      wrap_schema_exports : Fleek.WRAP_SCHEMA_EXPORTS || true
       # defines `adapter`: routing adapter to use
-      adapter : RikkiTikkiAPI.ADAPTER
+      adapter : Fleek.ADAPTER
       # defines `debug`: debug mode on/off
-      debug : RikkiTikkiAPI.DEBUG
+      debug : Fleek.DEBUG
+      # defines `default_datasource`: name of datasource to use by default
+      default_datasource : Fleek.DEFAULT_DATASOURCE
       ), params),
       # passes array of keys to restrict Hash access
       _.keys o

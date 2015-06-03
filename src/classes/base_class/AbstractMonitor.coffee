@@ -1,8 +1,7 @@
-{_}               = require 'underscore'
+{_}               = require 'lodash'
+Util              = require '../utils'
+Singleton         = require './Singleton'
 ArrayCollection   = require 'js-arraycollection'
-RikkiTikkiAPI     = module.parent.exports.RikkiTikkiAPI
-Util              = RikkiTikkiAPI.Util
-Singleton         = module.parent.exports.Singleton
 class AbstractMonitor extends Singleton
   __exclude:[]
   __iVal:null
@@ -16,7 +15,7 @@ class AbstractMonitor extends Singleton
         # _initialized = true
         type = 'init'
       @emit type, data
-    if RikkiTikkiAPI.Util.Env.isDevelopment()
+    if Util.Env.isDevelopment()
       setTimeout (=>
         @refresh (e,list) => 
           _initialized = true
@@ -24,12 +23,12 @@ class AbstractMonitor extends Singleton
       ), 3
   filter:(value)=>
     if (type = typeof value) != 'string'
-      throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.filter expected value to be a string. Type was <#{type}>"
+      throw "#{Util.Function.getConstructorName @}.filter expected value to be a string. Type was <#{type}>"
     for item in @__exclude
       return false if value.match item
     return true 
   refresh:(callback)->
-    throw "#{RikkiTikkiAPI.Util.Function.getConstructorName @}.refresh(callback) is not implemented"
+    throw "#{Util.Function.getConstructorName @}.refresh(callback) is not implemented"
   startPolling:(interval)->
     @__polling_interval = interval if interval?
     @stopPolling()

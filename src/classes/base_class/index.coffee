@@ -1,6 +1,5 @@
-{_}             = require 'underscore'
+{_}             = require 'lodash'
 {EventEmitter}  = require 'events'
-module.exports.RikkiTikkiAPI    = module.parent.exports
 module.exports.AbstractAdapter  = require './AbstractAdapter'
 module.exports.AbstractLoader   = require './AbstractLoader'
 module.exports.AbstractRoute    = require './AbstractRoute'

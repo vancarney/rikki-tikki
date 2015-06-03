@@ -3,7 +3,8 @@ class RoutingParams extends Object
     @setPath path if path
     @setOperation operation if operation
   setPath:(@path)->
-    throw "Path was invalid" if !@path || (@path.match /[a-zA-Z]+\/+[a-zA-Z0-9]+\/:?[A-Za-z_0-9]+\/?:?[a-zA-Z0-9]?/) == null
+    throw "Path was undefiend" unless @path
+    # throw "Path was invalid" unless (@path.match /\/?[a-zA-Z]+\/+[\:a-zA-Z0-9]+\/\:?[A-Za-z_0-9]?\/?:?[a-zA-Z0-9\(\)]?/)?
   setOperation:(@operation)->
     switch @operation
       when 'index'

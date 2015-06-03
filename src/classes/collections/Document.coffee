@@ -1,6 +1,7 @@
-{_}           = require 'underscore'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-Util          = RikkiTikkiAPI.Util
+{_}           = require 'lodash'
+Util          = {}
+Util.String   = require '../utils/String'
+Util.Object   = require '../utils/Object'
 class Document extends Object
   __data:{}
   constructor:(data, opts={})->
@@ -35,3 +36,4 @@ class Document extends Object
     serialize @__data, '', maxDepth
     branch
 module.exports = Document
+Fleek = require '../..'

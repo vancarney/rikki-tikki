@@ -1,16 +1,15 @@
 {ObjectID, Binary} = require 'mongodb'
-Str = module.parent.exports.String
+Str = require '../utils/String'
 Obj = require 'obj-utils'
 Obj.isHash = (value)->
   if typeof value == 'object'
     return !(Array.isArray value or value instanceof Date or value instanceof ObjectId or value instanceof BinData)
   false
-Obj.getMongoType = (obj)->
-  throw 'Util.Object.getMongoType() requires an argument' if obj == undefined
-  return Str.capitalize type if (type = typeof obj) != 'object' 
+Obj.getMongoType = ->
+  throw 'Util.Object.getMongoType() requires an argument' if arguments[0] == undefined
+  return 'null' if (obj = arguments[0]) is null
+  return Str.capitalize type unless (type = typeof obj) is 'object' 
   return 'Array' if obj && obj.constructor == Array
-  return 'null' if obj is null
-  return 'ObjectID' if ObjectID(obj).getTimestamp() instanceof Date
   return 'Date' if obj instanceof Date
   if (obj instanceof Binary)
       BinaryTypes = {}
@@ -21,5 +20,7 @@ Obj.getMongoType = (obj)->
       BinaryTypes[0x05] = 'MD5'
       BinaryTypes[0x80] = 'user'
       return "Binary-#{BinaryTypes[obj.subtype()]}"
+  return 'ObjectID' if typeof obj.hasOwnProperty 'getTimestamp' is 'function' and obj.getTimestamp() instanceof Date
+  # return 'ObjectID' if "#{obj}".match /^[0-9a-z]{24,24}$/ and ObjectID(obj).getTimestamp() instanceof Date
   return 'Object'
 module.exports = Obj

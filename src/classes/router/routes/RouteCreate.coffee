@@ -1,5 +1,5 @@
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-class RouteCreate extends RikkiTikkiAPI.base_classes.AbstractRoute
+AbstractRoute = require '../../base_class/AbstractRoute'
+class RouteCreate extends AbstractRoute
   handler:(callback)->
     (req,res)=>
       @handler.insert (e,result)=>

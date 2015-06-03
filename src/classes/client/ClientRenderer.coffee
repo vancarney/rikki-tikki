@@ -1,13 +1,10 @@
-{_}           = require 'underscore'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-module.exports.RikkiTikkiAPI = RikkiTikkiAPI
-Util          = RikkiTikkiAPI.Util
+{_}           = require 'lodash'
+Util          = require '../utils'
 ClientOpts    = require '../config/ClientOptions'
-ClientLoader  = require './ClientLoader'
 class ClientRenderer extends Object
   constructor:->
     try
-      new ClientLoader().load (e, @__API)=>
+      (new ClientLoader).load (e, @__API)=>
         throw new Error e if e?
     catch e
       return console.log e
@@ -26,6 +23,7 @@ class ClientRenderer extends Object
     """
   toSource:->
     client_opts = new ClientOpts
-    ns = if (ns = client_opts.get 'api_namespace') != '' then ns else 'Client'
+    ns = unless (ns = client_opts.get 'api_namespace') is undefined or ns is '' then ns else 'Client'
     (_.template @__template) {core_api:@__API, opts:client_opts.valueOf(), ns:ns}
-module.exports = ClientRenderer
+module.exports  = ClientRenderer
+ClientLoader    = require './ClientLoader'

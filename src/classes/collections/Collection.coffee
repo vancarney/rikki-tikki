@@ -1,18 +1,14 @@
-{_}           = require 'underscore'
-# {BSON}          = require 'mongodb'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI
-Util          = RikkiTikkiAPI.Util
+{_}               = require 'lodash'
+Util              = require '../utils'
 class Collection extends Object
-  constructor:(@name)->
+  constructor:(@name, @ds)->
     throw "collection name must be defined" if !@name
+    @getCollection = (callback)=>
+      return callback? 'Database is not connected', null unless @ds.collection?
+      @ds.collection @name, (e,collection)=>
+        callback? e, collection
     Object.freeze @
     @
-  getCollection: (callback)=>
-    if (_db = RikkiTikkiAPI.getConnection())?
-      _db.getMongoDB().collection @name, (e,collection)=>
-        callback? e, collection
-    else
-      callback? 'Database is not connected', null
   drop:(callback)->
     @getCollection (e,col) =>
       return callback? e, null if e?
@@ -138,7 +134,7 @@ class Collection extends Object
         return callback? e if e?
         res.toArray (e,arr)=>
           for record in arr
-            branch = (new RikkiTikkiAPI.Document record).serialize()
+            branch = (new Document record).serialize()
             for key,value of branch
               types[key] ?= {}
               types[key][value] = if types[key][value]? then types[key][value] + 1 else 1
@@ -151,11 +147,25 @@ class Collection extends Object
               type = tPair[0][0]
             tree[field] = type
           return callback? null, tree
-Collection.create = (name, opts, callback)->
-  if (_db = RikkiTikkiAPI.getConnection())?
-    _db.getMongoDB().createCollection name, opts, (e,collection)=>
-      return callback? e, null if e
-      return callback null, new Collection name if collection?
-  else
-    callback? 'Database is not connected', null  
+          
+Collection.create = (name, ds, json, opts, callback)->
+  if typeof opts is 'function'
+    callback = arguments[2]
+    opts = null
+  ds.createCollection name, json, opts, (e,collection)=>
+    if collection # != undefined and collection?
+      return callback? null, new Collection name, ds
+    else
+      callback? "unable to create collection #{name}", null
+      
+Collection.build = (name, ds, json, opts, callback)->
+  if typeof opts is 'function'
+    callback = arguments[2]
+    opts = null
+  ds.buildCollection name, json, opts, (e,collection)=>
+    if collection # != undefined and collection?
+      return callback? null, new Collection name, ds
+    else
+      callback? "unable to create collection #{name}", null
 module.exports = Collection
+Document       = require './Document'

@@ -1,15 +1,13 @@
-{_}           = require 'underscore'
+{_}           = require 'lodash'
 fs            = require 'fs'
 path          = require 'path'
+Util          = require '../utils'
 {EventEmitter}  = require 'events'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
-module.exports.RikkiTikkiAPI = RikkiTikkiAPI
-Util          = RikkiTikkiAPI.Util
 class AbstractLoader extends EventEmitter
   # @__data:{}
   replacer:null
   constructor:(@__path)->
-    if 'AbstractLoader' == RikkiTikkiAPI.Util.Function.getConstructorName @ 
+    if 'AbstractLoader' is Util.Function.getConstructorName @ 
       throw 'AbstractAdapter can not be directly instatiated\nhint: use a subclass instead.'
     if @__path?
       @load (e,s)=>

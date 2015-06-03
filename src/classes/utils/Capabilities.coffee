@@ -1,6 +1,5 @@
-{_}   = require 'underscore'
+{_}   = require 'lodash'
 path  = require 'path'
-Util  = module.parent.exports
 class Capabilities extends Object
   __modules: []
   __loaded_modules: []
@@ -33,3 +32,4 @@ class Capabilities extends Object
   hapiLoaded: ->
     0 <= @loadedModules().indexOf 'hapi'
 module.exports = Capabilities
+Util = require './Modules'

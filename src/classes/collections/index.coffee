@@ -1,6 +1,0 @@
-module.exports.RikkiTikkiAPI      = module.parent.exports
-module.exports.Document           = require './Document'
-module.exports.Model              = require './Model'
-module.exports.Collection         = require './Collection'
-module.exports.CollectionManager  = require './CollectionManager'
-module.exports.CollectionMonitor  = require './CollectionMonitor'

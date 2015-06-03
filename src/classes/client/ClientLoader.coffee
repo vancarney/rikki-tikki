@@ -1,17 +1,15 @@
 #### ClientLoader
-#> Loads the Rikki-Tikki Client Library to pass to Requesting Browser Client
-#> requires: underscore
-{_}           = require 'underscore'
-# derives objects from module parent
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI ||  module.parent.exports
-Util          = RikkiTikkiAPI.Util
-      
+#> Loads the Client Library to pass to Requesting Browser Client
+#> requires: lodash
+{_}               = require 'lodash'
+{AbstractLoader}  = require '../base_class'
+Util              = require '../utils'
 # defines `SchemaLoader` as sub-class of `AbstractLoader`
-class ClientLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
+class ClientLoader extends AbstractLoader
   # holder for Schema Data
   __data:{}
   constructor:->
-    _path = (Util.getModulePath 'rikki-tikki-client').replace /index\.js/, 'lib/rikki-tikki-client.js'
+    _path = (Util.Module.getModulePath 'rikki-tikki-client').replace /index\.js/, 'lib/rikki-tikki-client.js'
     # invokes `AbstractLoader` with path if passed
     ClientLoader.__super__.constructor.call @, _path
   load:(callback)->

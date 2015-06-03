@@ -1,0 +1,25 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mongo": {
+    "database": "ezcake",
+    "name": "mongo",
+    "connector": "mongodb"
+  },
+  "pgsql": {
+    "database": "rikki-tikki",
+    "username": "rt-test",
+    "password": "<%qI=dozA95W#(o",
+    "name": "pgsql",
+    "connector": "postgresql"
+  },
+  "mysql": {
+    "database": "rikki-tikki",
+    "username": "rt-test",
+    "password": "<%qI=dozA95W#(o",
+    "name": "mysql",
+    "connector": "mysql"
+  }
+}

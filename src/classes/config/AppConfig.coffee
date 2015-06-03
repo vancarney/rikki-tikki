@@ -1,8 +1,8 @@
-{_} = require 'underscore'
-path = require 'path'
-RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
+{_}     = require 'lodash'
+path    = require 'path'
+Hash    = require 'strictly-hash'
 #### AppConfig
-class AppConfig extends RikkiTikkiAPI.base_classes.Hash
+class AppConfig extends Hash
   constructor:->
     # invokes `Hash` with internal application settings
     AppConfig.__super__.constructor.call @, o = (

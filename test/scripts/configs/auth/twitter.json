@@ -1,8 +1,0 @@
-{
-	"userAuthorizationURL": "https://api.twitter.com/oauth/authorize",
-	"requestTokenURL": "https://api.twitter.com/oauth/access_token",
-	"accessTokenURL": "https://api.twitter.com/oauth/access_token",
-	"consumerKey": "I2XyWK2kHhGWJE6ObxuKXZYG5",
-	"consumerSecret": "dDwZLsl9v68Begrs66JLYBRnVLkYN4YLZP4BkgGjMinANNAJPK",
-	"callbackURL": "http://0.0.0.0:3000/auth/twitter/callback"
-}

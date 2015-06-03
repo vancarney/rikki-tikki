@@ -1,7 +1,7 @@
 fs   = require 'fs'
 path = require 'path'
-RikkiTikkiAPI = module.parent.exports
-class ConfigLoader extends RikkiTikkiAPI.base_classes.AbstractLoader
+Fleek = module.parent.exports
+class ConfigLoader extends Fleek.base_classes.AbstractLoader
   constructor:(@__options)->
     ConfigLoader.__super__.constructor.call @
   load:(callback)->
