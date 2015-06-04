@@ -88,7 +88,7 @@ ApiHero.Util.File.ensureDirExists cnf.get 'data_path'
 ApiHero.Util.File.ensureDirExists cnf.get 'trees_path'
 
 # ApiHero.SchemaManager = require './classes/schema/SchemaManager'
-# SyncService   = require './classes/services/SyncService'
+SyncService   = require './classes/services/SyncService'
 
 Document              = require './classes/collections/Document'
 # ApiHero.APISchema       = require './classes/schema/APISchema'
@@ -119,5 +119,6 @@ ApiHero.model = (name,schema={})->
   
   
 ApiHero.DSManager     = require './classes/datasource/DataSourceManager'
+
 # exports the API
 module.exports = ApiHero

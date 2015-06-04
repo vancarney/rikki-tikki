@@ -19,4 +19,4 @@ class ClientOptions extends Hash
       # passes array of keys to restrict Hash access
       _.keys o
 module.exports = ClientOptions
-# Fleek = require '../..'
+Fleek = require '../..'

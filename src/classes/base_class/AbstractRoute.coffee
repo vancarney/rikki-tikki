@@ -31,7 +31,10 @@ class AbstractRoute extends Object
     _collections      = CollectionManager.getInstance()
     _createCollection = (name, dsname, json, opts, callback)=>
       ds = _getDS dsname 
-      ds.buildCollection name, json, opts, callback
+      if (model = ds.buildCollection name, json, opts)
+        # m = new model json
+        return model.create json, callback
+      callback 'unable to create model'
     # ## Handler Object
     return (req,res)=>
       # references the colleciton name from the request params
@@ -129,7 +132,7 @@ class AbstractRoute extends Object
                 # console.log b.toString 'utf8'
                 data = JSON.parse b.toString 'utf8'
                 if data? and (data = @sanitize data )?
-                   _createCollection name, null, data, null, (e,res)=>
+                   _createCollection name, null, data, {idInjection: true}, (e,res)=>
                      # console.log res
                      return callback?.apply @, [null, {status:200, content:{}}]
               # creates collection

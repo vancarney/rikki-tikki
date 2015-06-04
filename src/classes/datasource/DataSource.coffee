@@ -9,10 +9,8 @@ class DataSource extends EventEmitter
     if typeof ds.buildModelFromInstance is 'function'
       @canBuildModelFromInstance = -> 
         true
-      @buildModelFromInstance = (name, json, options, callback)=>
-        throw 'callback is required as arguments[3]' unless callback? and typeof callback is 'function'
-        m = ds.buildModelFromInstance.apply @, _.initial arguments
-        callback.apply @, if m? then [null, m] else ['could not build model']
+      @buildModelFromInstance = ds.buildModelFromInstance #(name, json, options)=>
+        # ds.buildModelFromInstance.apply @, arguments
     @isRelational = ->
       @connector.relational || false
     @isNoSQL = ->
@@ -49,7 +47,7 @@ class DataSource extends EventEmitter
        opts = {}
      @modelBuilder.on 'initialize', => console.log 'initialized model'
      throw "cannot create collections on SQL connection" unless @canBuildModelFromInstance()
-     throw 'could not create collection' unless typeof (o = @buildModelFromInstance.apply @, arguments) is 'object'
+     throw 'could not create model' unless typeof (o = @buildModelFromInstance.apply @, arguments) is 'function'
      o
      
    getCollection:(name)->

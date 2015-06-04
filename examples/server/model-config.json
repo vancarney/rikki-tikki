@@ -25,9 +25,5 @@
   "Role": {
     "dataSource": "db",
     "public": false
-  },
-  "testing": {
-    "dataSource": "pgsql",
-    "public": true
   }
 }
