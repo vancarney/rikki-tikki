@@ -38,5 +38,4 @@ class CollectionMonitor extends AbstractMonitor
       @__collection.setSource list if (list = _.difference list, ex).length
       callback @, unless e? then [null, list] else [e]
 module.exports = CollectionMonitor
-Fleek = require '../..'
 DSManager = require '../datasource/DataSourceManager'
