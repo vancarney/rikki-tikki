@@ -129,17 +129,17 @@ class SchemaManager extends Singleton
         delete @__schemas[name] if @__schemas[name]?
         # invokes callback if defined
         callback e,s
-  ## toJSON(readable)
+  ## toJSON(pretty)
   #> returns a JSON parsed string encoded hash
-  #> if param readable is set, will indent and linebreak JSON output
-  toJSON:(readable)->
-    JSON.parse @toString readable
-  ## toString(readable)
+  #> if param pretty is set, will indent and linebreak JSON output
+  toJSON:(pretty)->
+    JSON.parse @toString pretty
+  ## toString(pretty)
   #> returns a string encoded object representation
-  #> if param readable is set, will indent and linebreak JSON output
-  toString:(readable)->
+  #> if param pretty is set, will indent and linebreak JSON output
+  toString:(pretty)->
     s = {}
     _.each _.keys(@__schemas), (key)=> s[key] = if (schema = @__schemas[key].__data).toClientSchema then schema.toClientSchema() else schema
-    JSON.stringify {__meta__:@__meta, __schemas__:s}, RenderableSchema.replacer, if readable then 2 else undefined
+    JSON.stringify {__meta__:@__meta, __schemas__:s}, RenderableSchema.replacer, if pretty then 2 else undefined
 # declares exports
 module.exports = SchemaManager

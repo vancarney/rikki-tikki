@@ -1,6 +1,6 @@
 {_}       = require 'lodash'
 Util      = require '../utils'
-Singleton = require 'events'
+Singleton = require '../base_class/Singleton'
 class SyncService extends Singleton
   __opCache:[]
   getOpIndex:(name, type)->
@@ -25,7 +25,7 @@ class SyncService extends Singleton
           unless col?
             @__opCache.push new SyncOperation v.name, 'added'
             @schemaManager.createSchema v.name
-    new SchemaMonitor ds
+    SchemaMonitor.getInstance()
     .on 'init', (data)=>
       _schemas = arguments['0'].added
       _syncInit() if ((_schemaInit = true) and _collectionInit)
@@ -36,7 +36,7 @@ class SyncService extends Singleton
             @["schema#{Util.String.capitalize operation}"] schema.name
             @__opCache.push new SyncOperation schema.name, operation
       ), 500
-    new CollectionMonitor ds
+    CollectionMonitor.getInstance()
     .on 'init', (data)=>
       _collections = arguments['0'].added
       _syncInit() if ((_collectionInit = true) and _schemaInit)
