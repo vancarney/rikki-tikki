@@ -1,12 +1,13 @@
 {_}       = require 'lodash'
 Hash      = require 'strictly-hash'
+fs        = require 'fs'
 path      = require 'path'
 Singleton = require '../base_class/Singleton'
+config_path = "#{process.cwd()}#{path.sep}server#{path.sep}api-hero.json"
 #### APIOptions
 class APIOptions extends Hash
   constructor:-> 
-    config_path = './server/api-hero.json'
-    params = if path.exists config_path then require config_path else {}
+    params = if fs.existsSync( config_path ) then require config_path else {}
     # invokes `Hash` with extended API Option Defaults
     APIOptions.__super__.constructor.call @, o = _.extend((
       # defines `api_basepath`: the base path for the REST route
@@ -37,10 +38,6 @@ class APIOptions extends Hash
       # passes array of keys to restrict Hash access
       _.keys o
     @set 'api_path', "#{@get 'api_basepath'}/#{@get 'api_version'}/"
-    # replaces setter method with a no-op
-    @set = => false
-    # sets all values to read-only
-    @freeze()
 class ReturnValue extends Singleton
   constructor:->
     @__opts = new APIOptions

@@ -39,9 +39,9 @@ class SchemaManager extends Singleton
         # skip files that are declared as hidden
         continue if file.match /^(_|\.)+/
         # creates new SchemaLoader and assign to __schemas hash
-        (@__schemas[n = Util.File.name file] = new SchemaLoader n)
+        (@__schemas[n = Util.File.name file] = new SchemaLoader "#{@__path}#{path.sep}#{n}")
         .on 'error', (e)=>
-          @emit 'error', e
+          @emit 'error', e if e?
   ## createSchema(name, [data], callback)
   #> retrieves loaded schema by name if exists
   createSchema:(name, data={}, callback)->

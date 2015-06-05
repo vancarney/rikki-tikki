@@ -1,4 +1,6 @@
-#### Api Hero
+#### APiHero
+#> Manages Schema Life Cycle
+#> requires: lodash
 #> author: van carney <carney.van@gmail.com>
 #>
 #> requires: lodash
@@ -15,7 +17,7 @@ global.logger   = console
 # > Defines the `ApiHero` Class
 class ApiHero extends EventEmitter
   constructor:(app, options)->
-    throw 'argument[0] must be App reference' unless app? and typeof app is function
+    throw 'argument[0] must be App reference' unless app? and typeof app is 'function'
     # extends Loopback App with NoeJS EventEmitter
     _.extend app.prototype, EventEmitter
     # exports getApp helper method
