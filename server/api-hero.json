@@ -4,7 +4,7 @@
   "api_basepath": "/api",
   "api_version": "1",
   "api_namepace": "",
-  "schema_path": "test/server/common/models",
+  "schema_path": "./test/server/common/models",
   "api_schema_path": "api-hero",
   "schema_trees_file": "schema.json",
   "wrap_schema_exports": true,
