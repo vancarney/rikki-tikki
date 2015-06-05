@@ -32,6 +32,7 @@ class APIOptions extends Hash
       debug : process.NODE_ENV is undefined or process.NODE_ENV is 'development'
       # defines `default_datasource`: name of datasource to use by default
       default_datasource : 'mongo'
+      server_dir: './server'
       ), params),
       # passes array of keys to restrict Hash access
       _.keys o

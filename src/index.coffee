@@ -8,16 +8,19 @@ fs              = require 'fs'
 #> requires: path
 path            = require 'path'
 Util            = require './classes/utils'
-  
+APIOptions      = require './classes/config/APIOptions'
 global.logger   = console
 
 # > Defines the `RikkiTikki` namespace in the 'global' environment
 class ApiHero extends EventEmitter
   __defaultDSName = 'mongo'
-  constructor:(app)->
+  constructor:(app, options)->
     _.extend app.prototype, EventEmitter
     module.exports.getApp = => app
     services = []
+    _.each options, (v,k)=> APIOptions.set k,v
+    ApiHero.Util.File.ensureDirExists APIOptions.get 'data_path'
+    ApiHero.Util.File.ensureDirExists APIOptions.get 'trees_path'
     @router = ApiHero.Router.getInstance()
     @router.addRoute "/api-client/__schema__.json", 'get', (req,res)=>
       @router.getAdapter()?.responseHandler res,
@@ -31,34 +34,10 @@ class ApiHero extends EventEmitter
     # app.get '/api/Fooberry', (req,res,next)-> console.log 'fooberry surprise'
     app.set 'legacyExplorer', false
     app.ApiHero = ApiHero
-    app.on 'ready', =>
-      SyncService.getInstance()
-      # console.log JSON.stringify @params.app._router.stack, null, 2
-      # @router = ApiHero.Router.getInstance()
-      # @router.addRoute "/api-client/__schema__.json", 'get', (req,res)=>
-        # @router.getAdapter()?.responseHandler res,
-          # status:200
-          # content: ApiHero.SchemaManager.getInstance().toJSON Util.Env.isDevelopment()
-      # @router.addRoute "/api-client/client(\.js)?", 'get', (req,res)=>
-        # @router.getAdapter()?.responseHandler res, (
-          # status:200
-          # content: @router.getClient()
-        # ), 'Content-Type':'text/javascript'
-
+    app.on 'ahero-initialized', =>
+      SyncService.getInstance() unless Util.Env.isProduction()
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
-      app.emit 'ready' unless e?
-      
-    # app.dataSources.mongo.connect (e,db)-> 
-      # app.emit 'ready'
-      # for name in _.uniq _.map( _.keys( app.dataSources ), ((v)-> v.toLowerCase()))
-        # services.push new SyncService app.dataSources[name]
-        
-      # app.dataSources.mongo.adapter.db.collections (e,res)->
-        # dsList = _.uniq _.compact _.map _.values(res), (v)-> 
-          # if (v.s.name.match /\.+/)? then null else name:v.s.name
-        # for ds in dsList
-          # SyncService
-
+      app.emit 'ahero-initialized' unless e?
 ApiHero.init = (app)-> 
   new ApiHero app
 
@@ -83,15 +62,11 @@ catch e
   
 _.extend ApiHero, require './classes/router'
 ApiHero.Util = require './classes/utils'
-# create app dirs
-cnf = new (require './classes/config/AppConfig')()
-ApiHero.Util.File.ensureDirExists cnf.get 'data_path'
-ApiHero.Util.File.ensureDirExists cnf.get 'trees_path'
 
 # ApiHero.SchemaManager = require './classes/schema/SchemaManager'
 SyncService   = require './classes/services/SyncService'
-
-Document              = require './classes/collections/Document'
+Document      = require './classes/collections/Document'
+ApiHero.DSManager     = require './classes/datasource/DataSourceManager'
 # ApiHero.APISchema       = require './classes/schema/APISchema'
 # ApiHero.ClientSchema    = require './classes/schema/ClientSchema'
   
@@ -116,10 +91,6 @@ ApiHero.model = (name,schema={})->
     APISchema = require './classes/schema/APISchema'
     new APISchema @modelName, @schema
   model
-  
-  
-  
-ApiHero.DSManager     = require './classes/datasource/DataSourceManager'
 
 # exports the API
 module.exports = ApiHero

@@ -16,8 +16,7 @@ class CollectionMonitor extends AbstractMonitor
         @emit 'init', '0':'added':@getCollection()
     ), 600
   refresh:(callback)->
-    throw 'callback required as arguments[0]' unless typeof callback is 'function'
-    return callback 'unable to allocate DataSourceManager instance' unless (dsm = DataSourceManager.getInstance())?
+    dsm = DataSourceManager.getInstance()
     list = []
     async.forEachOf dsm.getDSNames(), ((dsName, k, cB)=>
       if (ds = dsm.getDataSource dsName)?
@@ -36,6 +35,6 @@ class CollectionMonitor extends AbstractMonitor
         @__collection.removeItemAt @getNames().indexOf item
       # resets with new collections added to the list
       @__collection.setSource list if (list = _.difference list, ex).length
-      callback @, unless e? then [null, list] else [e]
+      callback? @, unless e? then [null, list] else [e]
 module.exports = CollectionMonitor
 DSManager = require '../datasource/DataSourceManager'

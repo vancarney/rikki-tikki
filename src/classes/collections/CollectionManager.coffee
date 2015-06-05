@@ -12,7 +12,7 @@ class CollectionManager extends Singleton
     if typeof opts == 'function'
       callback ?= opts
       opts = {}
-    Collection.create name, ds, json, opts, (e,collection)=>
+    Collection.create name, ds || @__ds.getDataSource(), json, opts, (e,collection)=>
       return callback? e, null if e?
       @__cache[name] = if collection instanceof Collection then collection else new Collection name
       @refresh()

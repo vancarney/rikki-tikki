@@ -1,6 +1,7 @@
 {_}         = require 'lodash'
 async       = require 'async'
 Singleton   = require '../base_class/Singleton'
+APIOptions  = require '../config/APIOptions'
 class DSManager extends Singleton
   defaultDataSource:'db'
   __ds:{}
@@ -11,7 +12,7 @@ class DSManager extends Singleton
   getDataSource:(name)->
     Fleek = require '../..'
     ds = null
-    name = @defaultDataSource unless 0 <= @getDSNames().indexOf name
+    name = APIOptions.get 'default_datasource' unless 0 <= @getDSNames().indexOf name
     unless (ds = @__ds[name])?
       ds = @__ds[name] = new DataSource name, source if (source = Fleek.getApp().datasources[name])?
     ds || null
@@ -25,4 +26,4 @@ class DSManager extends Singleton
       callback.apply @, if e? then [e] else [null,true]
 module.exports = DSManager
 DataSource  = require './DataSource'
-Fleek       = null # require '../..'
+Fleek       = null
