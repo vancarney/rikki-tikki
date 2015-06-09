@@ -41,8 +41,11 @@ class DataSourceWrapper extends DataSource
     l = _.filter @models, (model, name)=>
       (0 > builtins.indexOf name) and (model != undefined) and (model.getDataSource()?.settings.name == @sourceName)
     _.compact _.map l, (m)-> m.definition.name
-  listCollections:->
-    []
+  listCollections:(callback)->
+    if @hasOwnProperty 'ApiHero'
+      ds.ApiHero.listCollections (e,cols)=> callback null cols
+    else
+      process.nextTick => callback null, ds.models
     # console.log @ #connector.db.collectionNames
     # @adapter.db.collections (e,res)->
       # return callback? e, null if e?

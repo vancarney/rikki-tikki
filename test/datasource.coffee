@@ -24,5 +24,5 @@ describe 'DataSource Test Suite', ->
 
   it 'should list mongo collections',(done)=>
     @mongo.ApiHero.listCollections (e,cols)=>
-      cols.length.should.equal 2
+      cols.length.should.equal 4
       done.apply @, arguments

@@ -4,7 +4,7 @@
     "connector": "memory"
   },
   "mongo": {
-    "database": "ezcake",
+    "database": "test",
     "name": "mongo",
     "connector": "apihero-mongodb"
   },
