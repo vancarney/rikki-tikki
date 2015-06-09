@@ -102,7 +102,7 @@ class AbstractRoute extends Object
         _collections.getCollection name, (e,col)=>
           return callback? {status:400, reason:"collecton `#{name}` was not defined"}, null unless col?
           # tests for collection result and performs findOne operation
-          return col.findOne {_id: new Fleek.getConnection().getTypes().ObjectId req.params.id}, (e,doc)=> 
+          return col.findOne {_id: new ApiHero.getConnection().getTypes().ObjectId req.params.id}, (e,doc)=> 
             return callback? e, null if e?
             callback? null, { status: (if doc? then 200 else 404), content: doc }
           # tests if in Development Environment
@@ -127,14 +127,14 @@ class AbstractRoute extends Object
               else
                 callback? {status:400, reason:"Bad Request"}, null
           else
-            if Util.Env.isDevelopment()
+            unless Util.Env.isProduction()
               req.on 'data', (b)=>
                 # console.log b.toString 'utf8'
                 data = JSON.parse b.toString 'utf8'
                 if data? and (data = @sanitize data )?
                    _createCollection name, null, data, {idInjection: true}, (e,res)=>
                      # console.log res
-                     return callback?.apply @, [null, {status:200, content:{}}]
+                     return callback?.apply @, [null, {status:200, content:res}]
               # creates collection
               # _createCollection name, (e,res)=>
                 # return callback? {status:400, reason:e}, null if e?
@@ -153,7 +153,7 @@ class AbstractRoute extends Object
               delete data._id if data.hasOwnProperty '_id'
               # insures data is set and is consumable
               if (id = req.params.id)?
-                col.update {_id: new Fleek.getConnection().getTypes().ObjectId id}, {$set:data}, (e,num,rec)=>
+                col.update {_id: new ApiHero.getConnection().getTypes().ObjectId id}, {$set:data}, (e,num,rec)=>
                   return callback? {status:400, reason:e.message} if e?
                   callback? {status: 200, content:rec}
               else
@@ -166,7 +166,7 @@ class AbstractRoute extends Object
         # objectID, 
         _collections.getCollection name, (e,col)=>
           if col?
-            col.remove {_id: new Fleek.getConnection().getTypes().ObjectId req.params.id}, _callback callback
+            col.remove {_id: new ApiHero.getConnection().getTypes().ObjectId req.params.id}, _callback callback
           else
             return callback? {status:400, reason:"Bad Request"}, null
       _.each @__before, (before,k)=> before req,res,data

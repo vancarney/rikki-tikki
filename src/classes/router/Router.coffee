@@ -1,5 +1,5 @@
 {_}                   = require 'lodash'
-# module.exports.Fleek  = Fleek
+# module.exports.ApiHero  = ApiHero
 Util                  = require '../utils'
 Singleton             = require '../base_class/Singleton'
 Adapter               = require '../request_adapters/Adapter'
@@ -11,8 +11,8 @@ Adapter               = require '../request_adapters/Adapter'
 # SchemaManager         = (require '../schema/SchemaManager').getInstance()
 class Router extends Singleton
   constructor:->
-    Fleek   = require '../..'
-    throw "Routing Adapter not defined." unless (@__adapter = new Adapter app:Fleek.getApp())?
+    ApiHero   = require '../..'
+    throw "Routing Adapter not defined." unless (@__adapter = new Adapter app:ApiHero.getApp())?
     @__api_path = @__adapter.params.app.get 'restApiRoot'
     client    = new ClientRenderer
     @__routes = new Routes @__adapter
@@ -23,7 +23,7 @@ class Router extends Singleton
   getAdapter:-> @__adapter
   getClient:-> @__client
   intializeRoutes:->
-    # return unless Fleek.Util.Env.isDevelopment()
+    # return unless ApiHero.Util.Env.isDevelopment()
     # generate routes based on the REST operations
     for operation in ['index','create'] #['index','show','create','update','destroy']
       # adds the route to the adapter
@@ -40,5 +40,5 @@ class Router extends Singleton
   addRoute:(path, method, handler)->
     @__adapter.addRoute path, method, handler
     # @__adapter.addRoute?.apply @, arguments
-Fleek = require '../..'
+ApiHero = require '../..'
 module.exports = Router

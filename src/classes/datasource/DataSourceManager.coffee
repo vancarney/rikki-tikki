@@ -1,29 +1,26 @@
 {_}         = require 'lodash'
-async       = require 'async'
 Singleton   = require '../base_class/Singleton'
 APIOptions  = require '../config/APIOptions'
+{DataSource}= require 'loopback-datasource-juggler'
 class DSManager extends Singleton
-  defaultDataSource:'db'
   __ds:{}
   constructor:->
-    for name in @getDSNames()
-      @__ds[name] = @getDataSource name
-    @
   getDataSource:(name)->
-    Fleek = require '../..'
-    ds = null
-    name = APIOptions.get 'default_datasource' unless 0 <= @getDSNames().indexOf name
-    unless (ds = @__ds[name])?
-      ds = @__ds[name] = new DataSource name, source if (source = Fleek.getApp().datasources[name])?
-    ds || null
+    name = APIOptions.get 'default_datasource' unless name? or 0 <= _.keys(@__ds).indexOf name
+    @__ds[name] || null
   getDSNames:->
-    Fleek = require '../..'
-    throw 'could not retrieve datasources' unless typeof (datasources = Fleek.getApp().datasources) is 'object'
-    _.uniq _.compact _.map (_.keys datasources), (key)-> key.toLowerCase()
+    _.keys @__ds
   initialize:(callback)->
     return throw 'callback required as arguments[0]' unless typeof arguments[0] is 'function'
-    async.forEachOf @__ds, ((ds, k, cB)=> ds.connect cB), (e)=>
-      callback.apply @, if e? then [e] else [null,true]
+    ApiHero       = require '../..'
+    {datasources} = ApiHero.getApp()
+    names       = _.uniq _.compact _.map (_.keys datasources), (key)-> key.toLowerCase()
+    done        = _.after names.length, => callback null, 'ok'
+    for dsName in names
+      ds = @__ds[dsName] = new DataSource datasources[dsName].name, {} unless (ds = @__ds[dsName])?
+      return callback "unable to allocate datasrouce #{dsName}" unless ds?
+      process.nextTick done if ds.connected || ds.connecting
+      ds.connect (e,db)=>
+        return callback e if e?
+        done()
 module.exports = DSManager
-DataSource  = require './DataSource'
-Fleek       = null

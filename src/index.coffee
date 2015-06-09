@@ -47,11 +47,13 @@ class ApiHero extends EventEmitter
     app.ApiHero = ApiHero
     # registers handler for 'ahero-initialized' event
     app.on 'ahero-initialized', =>
-      SyncService.getInstance() unless Util.Env.isProduction()
+      # SyncService.getInstance() unless Util.Env.isProduction()
     # initialize DataSource Manager instance
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
-      # emits 'ahero-initialized' event upon success
-      app.emit 'ahero-initialized' unless e?
+      unless e?
+        # emits 'ahero-initialized' event upon success
+        return app.emit 'ahero-initialized'
+      console.log e
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options

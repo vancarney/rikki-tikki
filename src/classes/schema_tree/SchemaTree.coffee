@@ -10,8 +10,8 @@ class SchemaTree extends AbstractLoader
   reviver  : Schema.reviver
   # constructor:(path)->
     # SchemaTree.__super__.constructor.call @, path
-    # @replacer = Fleek.Schema.replacer
-    # @reviver  = Fleek.Schema.reviver
+    # @replacer = ApiHero.Schema.replacer
+    # @reviver  = ApiHero.Schema.reviver
     # @__data   = {}
   set:(tree, opts, callback)->
     # @__data   = {}

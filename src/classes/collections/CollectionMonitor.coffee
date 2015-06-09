@@ -1,5 +1,5 @@
 {_}               = require 'lodash'
-async             = require 'async'
+# async             = require 'async'
 Util              = require '../utils'
 AbstractMonitor   = require '../base_class/AbstractMonitor'
 DataSourceManager = require '../datasource/DataSourceManager'
@@ -18,23 +18,24 @@ class CollectionMonitor extends AbstractMonitor
   refresh:(callback)->
     dsm = DataSourceManager.getInstance()
     list = []
-    async.forEachOf dsm.getDSNames(), ((dsName, k, cB)=>
+    # async.forEachOf dsm.getDSNames(), ((dsName, k, cB)=>
+    for dsName in dsm.getDSNames()
       if (ds = dsm.getDataSource dsName)?
         # maps list with objects derived from our collection info
         list = _.flatten list.concat _.compact _.map ds.listCollections(), (n)=> 
           name:name, dsName:dsName, dataSource: ds if @filter (name = n.split('.').pop())
-      # invokes async iterator callback
-      cB()
-    ), (e)=>
-      ex = []
-      # filters out existing collections
-      for val in list
-        ex.push val if 0 <= @getNames().indexOf val.name
-      # finds removed collections
-      for item in (rm = _.difference @getNames(), _.pluck list, 'name' )
-        @__collection.removeItemAt @getNames().indexOf item
-      # resets with new collections added to the list
-      @__collection.setSource list if (list = _.difference list, ex).length
-      callback? @, unless e? then [null, list] else [e]
+      # # invokes async iterator callback
+      # cB()
+    # ), (e)=>
+    ex = []
+    # filters out existing collections
+    for val in list
+      ex.push val if 0 <= @getNames().indexOf val.name
+    # finds removed collections
+    for item in (rm = _.difference @getNames(), _.pluck list, 'name' )
+      @__collection.removeItemAt @getNames().indexOf item
+    # resets with new collections added to the list
+    @__collection.setSource list if (list = _.difference list, ex).length
+    callback? @, unless e? then [null, list] else [e]
 module.exports = CollectionMonitor
 DSManager = require '../datasource/DataSourceManager'

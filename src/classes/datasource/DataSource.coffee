@@ -1,10 +1,11 @@
 {_}               = require 'lodash'
 {EventEmitter}    = require 'events'
 # SyncService       = require '../services/SyncService'
+APIOptions        = require '../config/APIOptions'
 CollectionManager = require '../collections/CollectionManager'
 class DataSource extends EventEmitter
   constructor:(name, ds)->
-    _.extend @, _.clone ds
+    _.extend @, ds
     @sourceName = name
     if typeof ds.buildModelFromInstance is 'function'
       @canBuildModelFromInstance = -> 
@@ -15,20 +16,45 @@ class DataSource extends EventEmitter
       @connector.relational || false
     @isNoSQL = ->
       @connector.nosql || (@name.match /^(mongodb|Memory)+$/)? || false
+    @connected = ->
+      @connector.connected
+    @connect = (callback)->
+      console.log 'connect'
+      return throw 'callback required as arguments[0]' unless typeof arguments[0] is 'function'
+      return @connector.connect.apply @, arguments unless @connected()
   buildModelFromInstance:(name, json, options)->
     throw 'dynamic collection creation not supported by this adapter'
   canBuildModelFromInstance:->
     false
   getDAO:->
     @connector.dataSource.DataAccessObject
-  connected:->
-    @connector.connected
-  connect:(callback)->
-    return throw 'callback required as arguments[0]' unless typeof arguments[0] is 'function'
-    return @connect.apply @, arguments unless @connected()
-    callback? null, @
+
+    callback? "unable to connect to DataSource: #{@sourceName}", @
+  listModels:->
+    builtins = [ 'Model',
+      'PersistedModel',
+      'Email',
+      'Application',
+      'AnonymousModel_0',
+      'AnonymousModel_1',
+      'AnonymousModel_2',
+      'AnonymousModel_3',
+      'AnonymousModel_4',
+      'AnonymousModel_5',
+      'AccessToken',
+      'RoleMapping',
+      'Role',
+      'ACL',
+      'Scope',
+      'User',
+      'Change',
+      'Checkpoint' ]
+    l = _.filter @models, (model, name)=>
+      (0 > builtins.indexOf name) and (model != undefined) and (model.getDataSource()?.settings.name == @sourceName)
+    _.compact _.map l, (m)-> m.definition.name
   listCollections:->
-    _.keys @models
+    []
+    # console.log @ #connector.db.collectionNames
     # @adapter.db.collections (e,res)->
       # return callback? e, null if e?
       # callback? null, _.compact _.map _.values(res), (v)->
@@ -38,8 +64,8 @@ class DataSource extends EventEmitter
       # callback? null, _.compact _.map data, (col)->
         # unless 0 <= col.s.name.indexOf '.' then col.s.name else null
    createCollection:(name, json, opts)->
-     @modelBuilder.on 'initialize', => console.log 'initialized model'
-     console.log (@createModel.apply @, arguments).definition.rawProperties
+     # @modelBuilder.on 'initialize', => console.log 'initialized model'
+     @createModel.apply @, arguments #).definition.rawProperties
      
    buildCollection:(name, json, opts)->
      if typeof opts is 'function'
@@ -53,4 +79,7 @@ class DataSource extends EventEmitter
    getCollection:(name)->
      console.log @models
    removeCollection:(name)->
+DataSource.getDataSource = (name)=>
+  DataSourceManager = require './DataSourceManager'
+  DataSourceManager.getInstance().getDataSource name
 module.exports = DataSource

@@ -44,14 +44,16 @@ class SyncService extends Singleton
       setTimeout (=>
         _.each _.keys( data ), (operation)=>
           _.each data[operation], (collection)=>
+            # console.log "collection#{Util.String.capitalize operation} :: #{collection.name}"
             @["collection#{Util.String.capitalize operation}"] collection.name
             @__opCache.push new SyncOperation collection.name, operation
       ), 500
   collectionAdded:(name)->
     unless 0 <= (idx = @getOpIndex name, 'added')
       @collectionManager.getCollection name, (e,col)=>
-        return logger.log e if e?
+        return logger.log "collectionAdded: #{e}" if e?
         col.getTree (e,tree)=>
+          console.log tree
           @schemaTreeManager.createTree name, tree, (e)=>
             return logger.log "could not create SchemaTree file for '#{name}'\n\t#{e}" if e?
             @schemaManager.createSchema name, (e)=>

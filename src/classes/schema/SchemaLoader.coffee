@@ -102,8 +102,8 @@ class SchemaLoader extends AbstractLoader
         callback? (if e? then "Schema.destroy failed\r\t#{e}" else null),s
   save:(callback)->
     return callback? "path was not defined" unless @__path?
-    Fleek = require '../..'
-    model = Fleek.model @name, new Schema @__data
+    ApiHero = require '../..'
+    model = ApiHero.model @name, new Schema @__data
     Util.File.writeFile @__path, model.toAPISchema().toSource(), null, callback
 SchemaLoader.createPath = (name)->
   "#{APIOptions.get 'schema_path'}#{path.sep}#{name}.js" 

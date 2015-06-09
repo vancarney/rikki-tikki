@@ -6,14 +6,7 @@
   "mongo": {
     "database": "ezcake",
     "name": "mongo",
-    "connector": "mongodb"
-  },
-  "pgsql": {
-    "database": "rikki-tikki",
-    "username": "rt-test",
-    "password": "<%qI=dozA95W#(o",
-    "name": "pgsql",
-    "connector": "postgresql"
+    "connector": "apihero-mongodb"
   },
   "mysql": {
     "database": "rikki-tikki",

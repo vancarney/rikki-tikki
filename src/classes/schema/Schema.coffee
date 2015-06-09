@@ -21,7 +21,7 @@ class Schema extends Object
       # return @paths[path] if @paths[path]
       # return @subpaths[path] if @subpaths[path]
       # return if /\.\d+\.?.*$/.test path then getPositionalPath @, path else undefined
-    # throw "'#{path}' may not be used as a schema pathname" if Fleek.Schema.reserved[path]
+    # throw "'#{path}' may not be used as a schema pathname" if ApiHero.Schema.reserved[path]
 #    
     # last = (subpaths = path.split /\./).pop()
     # branch = @tree
@@ -45,9 +45,9 @@ class Schema extends Object
     # virtuals = @virtuals
     # parts    = name.split( '.' )
     # name.split( '.' ).reduce ((mem, part, i, arr)-> console.log arguments), @tree
-    # mem[part] || mem[part] = if (i == parts.length-1) then new Fleek.VirtualType options, name else {}
+    # mem[part] || mem[part] = if (i == parts.length-1) then new ApiHero.VirtualType options, name else {}
     @virtuals[name] = name.split( '.' ).reduce ((mem, part, i, arr)->
-      mem[part] || mem[part] = if (i == arr.length-1) then new Fleek.VirtualType options, name else {}
+      mem[part] || mem[part] = if (i == arr.length-1) then new ApiHero.VirtualType options, name else {}
     ), @tree
   ## virtualpath
   virtualpath: (name)->
@@ -69,7 +69,7 @@ class Schema extends Object
     @_indexedpaths = null
     @add obj if obj? and !Util.Object.isOfType obj, Schema
   toModel: (name)->
-    Fleek.model name, @
+    ApiHero.model name, @
 Schema.nativeTypes =
   ['Object','Number','String','Boolean','Array']
 ## Schema.reserved

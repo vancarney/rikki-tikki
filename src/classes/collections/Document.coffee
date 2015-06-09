@@ -36,4 +36,4 @@ class Document extends Object
     serialize @__data, '', maxDepth
     branch
 module.exports = Document
-Fleek = require '../..'
+ApiHero = require '../..'
