@@ -1,35 +1,24 @@
 {_}               = require 'lodash'
 {EventEmitter}    = require 'events'
 # SyncService       = require '../services/SyncService'
+{DataSource}      = require 'loopback-datasource-juggler'
 APIOptions        = require '../config/APIOptions'
 CollectionManager = require '../collections/CollectionManager'
-class DataSource extends EventEmitter
-  constructor:(name, ds)->
-    _.extend @, ds
-    @sourceName = name
-    if typeof ds.buildModelFromInstance is 'function'
-      @canBuildModelFromInstance = -> 
-        true
-      @buildModelFromInstance = ds.buildModelFromInstance #(name, json, options)=>
-        # ds.buildModelFromInstance.apply @, arguments
+
+class DataSourceWrapper extends DataSource
+  constructor:(NameOrDS, options)->
+    DataSourceWrapper.__super__.constructor.call @, NameOrDS, options
+    _.extend @, EventEmitter
+    # @sourceName = name
+    @canBuildModelFromInstance = => 
+      typeof @buildModelFromInstance is 'function'
     @isRelational = ->
       @connector.relational || false
     @isNoSQL = ->
       @connector.nosql || (@name.match /^(mongodb|Memory)+$/)? || false
-    @connected = ->
-      @connector.connected
-    @connect = (callback)->
-      console.log 'connect'
-      return throw 'callback required as arguments[0]' unless typeof arguments[0] is 'function'
-      return @connector.connect.apply @, arguments unless @connected()
-  buildModelFromInstance:(name, json, options)->
-    throw 'dynamic collection creation not supported by this adapter'
-  canBuildModelFromInstance:->
-    false
-  getDAO:->
-    @connector.dataSource.DataAccessObject
-
-    callback? "unable to connect to DataSource: #{@sourceName}", @
+  # getDAO:->
+    # @connector.dataSource.DataAccessObject
+    # callback? "unable to connect to DataSource: #{@name}", @
   listModels:->
     builtins = [ 'Model',
       'PersistedModel',
@@ -79,7 +68,7 @@ class DataSource extends EventEmitter
    getCollection:(name)->
      console.log @models
    removeCollection:(name)->
-DataSource.getDataSource = (name)=>
+DataSourceWrapper.getDataSource = (name)=>
   DataSourceManager = require './DataSourceManager'
   DataSourceManager.getInstance().getDataSource name
-module.exports = DataSource
+module.exports = DataSourceWrapper

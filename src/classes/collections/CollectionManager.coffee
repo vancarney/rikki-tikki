@@ -24,10 +24,21 @@ class CollectionManager extends Singleton
       collection.drop (e, res)=>
         @refresh()
         callback? e, collection
-  listCollections:(dsNames=null)->
+  listCollections:(dsNames=null, callback)->
+    throw 'callsback required as argument[1]' unless callback? and typeof callback is 'function'
+    cols = []
     dsNames = dsNames.split ',' if dsNames? and typeof dsNames is 'string'
-    _.uniq _.flatten _.map dsNames || @__ds.getDSNames(), (name)=>
-      @__ds.getDataSource( name ).listCollections()
+    names   = _.uniq _.flatten _.map dsNames || @__ds.getDSNames()
+    done    = _.after names.length, => callback null, _.flatten cols
+    for name in names
+      if (ds = @__ds.getDataSource name ).hasOwnProperty 'ApiHero'
+        ds.ApiHero.listCollections (e,cols)=>
+          cols.concat cols
+          done()
+      else
+        process.nextTick =>
+          cols.concat ds.models
+          done()
   renameCollection:(oldName, newName, callback)->
     @getCollection oldName, (e,collection)=> 
       collection.rename newName, dropTarget:true, (e, res)=>

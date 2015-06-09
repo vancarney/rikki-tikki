@@ -1,7 +1,7 @@
 {_}         = require 'lodash'
 Singleton   = require '../base_class/Singleton'
 APIOptions  = require '../config/APIOptions'
-{DataSource}= require 'loopback-datasource-juggler'
+DataSource  = require './DataSource'
 class DSManager extends Singleton
   __ds:{}
   constructor:->
