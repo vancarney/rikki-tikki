@@ -1,6 +1,5 @@
 {_}               = require 'lodash'
 {EventEmitter}    = require 'events'
-# SyncService       = require '../services/SyncService'
 {DataSource}      = require 'loopback-datasource-juggler'
 APIOptions        = require '../config/APIOptions'
 CollectionManager = require '../collections/CollectionManager'
@@ -42,10 +41,11 @@ class DataSourceWrapper extends DataSource
       (0 > builtins.indexOf name) and (model != undefined) and (model.getDataSource()?.settings.name == @sourceName)
     _.compact _.map l, (m)-> m.definition.name
   listCollections:(callback)->
+    throw 'callback function required at argument[0]' unless callback? and typeof callback is 'function'
     if @hasOwnProperty 'ApiHero'
-      ds.ApiHero.listCollections (e,cols)=> callback null cols
+      @ApiHero.listCollections (e,cols)=> callback null, cols
     else
-      process.nextTick => callback null, ds.models
+      process.nextTick => callback null, _.keys @models
     # console.log @ #connector.db.collectionNames
     # @adapter.db.collections (e,res)->
       # return callback? e, null if e?

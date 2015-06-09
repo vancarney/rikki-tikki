@@ -11,7 +11,7 @@ describe 'CollectionManager Test Suite', ->
   it 'should List existing Collections by Datasource Name', (done)=>
     _done = _.after 2, done
     @cm.listCollections 'mongo', (e,cols)=>
-      cols.length.should.equal 0
+      cols.length.should.equal 4
       _done.apply @, arguments
     @cm.listCollections 'db', (e,cols)=>
       cols.length.should.equal 0
@@ -20,9 +20,9 @@ describe 'CollectionManager Test Suite', ->
   it 'should maintain List after Collection refresh', (done)=>
     _done = _.after 2, done
     CollectionMonitor.getInstance().refresh =>
-      @cm.listCollections 'mongo', (e,cols)=>
-        cols.length.should.equal 0
-        _done.apply @, arguments
       @cm.listCollections 'db', (e,cols)=>
         cols.length.should.equal 0
+        _done.apply @, arguments
+      @cm.listCollections 'mongo', (e,cols)=>
+        cols.length.should.equal 4
         _done.apply @, arguments

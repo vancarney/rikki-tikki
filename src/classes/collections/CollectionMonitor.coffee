@@ -17,25 +17,27 @@ class CollectionMonitor extends AbstractMonitor
     ), 600
   refresh:(callback)->
     dsm = DataSourceManager.getInstance()
+    names = dsm.getDSNames()
     list = []
-    # async.forEachOf dsm.getDSNames(), ((dsName, k, cB)=>
-    for dsName in dsm.getDSNames()
+    done = _.after names.length, =>
+      ex = []
+      # filters out existing collections
+      for val in list
+        ex.push val if 0 <= @getNames().indexOf val.name
+      # finds removed collections
+      for item in (rm = _.difference @getNames(), _.pluck list, 'name' )
+        @__collection.removeItemAt @getNames().indexOf item
+      # resets with new collections added to the list
+      @__collection.setSource list if (list = _.difference list, ex).length
+      callback? @, unless e? then [null, list] else [e]
+    for dsName in names
       if (ds = dsm.getDataSource dsName)?
-        # maps list with objects derived from our collection info
-        list = _.flatten list.concat _.compact _.map ds.listCollections(), (n)=> 
-          name:name, dsName:dsName, dataSource: ds if @filter (name = n.split('.').pop())
-      # # invokes async iterator callback
-      # cB()
-    # ), (e)=>
-    ex = []
-    # filters out existing collections
-    for val in list
-      ex.push val if 0 <= @getNames().indexOf val.name
-    # finds removed collections
-    for item in (rm = _.difference @getNames(), _.pluck list, 'name' )
-      @__collection.removeItemAt @getNames().indexOf item
-    # resets with new collections added to the list
-    @__collection.setSource list if (list = _.difference list, ex).length
-    callback? @, unless e? then [null, list] else [e]
+        ds.listCollections (e,cols)=>
+          return callback e if e?
+          # maps list with objects derived from our collection info
+          list = _.flatten list.concat _.compact _.map cols, (n)=> 
+            name:name, dsName:dsName, dataSource: ds if @filter (name = n.split('.').pop())
+          done()
+
 module.exports = CollectionMonitor
 DSManager = require '../datasource/DataSourceManager'

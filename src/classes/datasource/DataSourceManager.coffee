@@ -18,7 +18,7 @@ class DSManager extends Singleton
     done        = _.after names.length, => callback null, 'ok'
     for dsName in names
       ds = @__ds[dsName] = new DataSource datasources[dsName].name, {} unless (ds = @__ds[dsName])?
-      return callback "unable to allocate datasrouce #{dsName}" unless ds?
+      return callback "unable to allocate datasource #{dsName}" unless ds?
       process.nextTick done if ds.connected || ds.connecting
       ds.connect (e,db)=>
         return callback e if e?

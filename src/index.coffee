@@ -47,7 +47,7 @@ class ApiHero extends EventEmitter
     app.ApiHero = ApiHero
     # registers handler for 'ahero-initialized' event
     app.on 'ahero-initialized', =>
-      # SyncService.getInstance() unless Util.Env.isProduction()
+      SyncService.getInstance() unless Util.Env.isProduction()
     # initialize DataSource Manager instance
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
       unless e?

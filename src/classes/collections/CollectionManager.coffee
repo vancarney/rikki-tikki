@@ -31,11 +31,11 @@ class CollectionManager extends Singleton
     names   = _.uniq _.flatten _.map dsNames || @__ds.getDSNames()
     done    = _.after names.length, => callback null, _.flatten cols
     for name in names
-      if (ds = @__ds.getDataSource name )?
-        ds.listCollections (e,cols)=>
-          cols.concat cols
-          done()
-      return callback "datasource #{name} is not defined"
+      return callback "datasource #{name} is not defined" unless (ds = @__ds.getDataSource name)?
+      ds.listCollections (e,res)=>
+        cols.splice cols.length, 0, res
+        done()
+        
   renameCollection:(oldName, newName, callback)->
     @getCollection oldName, (e,collection)=> 
       collection.rename newName, dropTarget:true, (e, res)=>
