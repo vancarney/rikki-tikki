@@ -24,5 +24,13 @@ describe 'DataSource Test Suite', ->
 
   it 'should list mongo collections',(done)=>
     @mongo.ApiHero.listCollections (e,cols)=>
-      cols.length.should.equal 4
+      cols.length.should.equal 3
       done.apply @, arguments
+      
+  it 'should drop a collection', (done)=>
+    console.log @mongo.connector.collection 'FooModel' #, 'drop', (e,ok)->
+       # console.log arguments
+       # done.apply @, arguments
+    # @mongo.collections 'FooModel', =>
+      # console.log arguments
+      # done()

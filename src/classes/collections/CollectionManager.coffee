@@ -1,58 +1,70 @@
 {_}               = require 'lodash'
 Util              = require '../utils'
 Singleton         = require '../base_class/Singleton'
-class CollectionManager extends Singleton
-  __cache:{}
-  constructor:->
-    @__ds = DSManager.getInstance()
-    # collectionMonitor = new CollectionMonitor ds
-    @refresh = =>
-      CollectionMonitor.refresh()
-  createCollection:(name, ds, json, opts, callback)->
-    if typeof opts == 'function'
-      callback ?= opts
-      opts = {}
-    Collection.create name, ds || @__ds.getDataSource(), json, opts, (e,collection)=>
-      return callback? e, null if e?
-      @__cache[name] = if collection instanceof Collection then collection else new Collection name
-      @refresh()
-      callback? e, collection
-  dropCollection:(name, callback)->
-    @getCollection name, (e,collection)=>
-      return callback? e if e?
-      return callback? 'collection undefined' unless collection?
-      collection.drop (e, res)=>
-        @refresh()
-        callback? e, collection
-  listCollections:(dsNames=null, callback)->
-    throw 'callsback required as argument[1]' unless callback? and typeof callback is 'function'
-    cols = []
-    dsNames = dsNames.split ',' if dsNames? and typeof dsNames is 'string'
-    names   = _.uniq _.flatten _.map dsNames || @__ds.getDSNames()
-    done    = _.after names.length, => callback null, _.flatten cols
-    for name in names
-      return callback "datasource #{name} is not defined" unless (ds = @__ds.getDataSource name)?
-      ds.listCollections (e,res)=>
-        cols.splice cols.length, 0, res
-        done()
-        
-  renameCollection:(oldName, newName, callback)->
-    @getCollection oldName, (e,collection)=> 
-      collection.rename newName, dropTarget:true, (e, res)=>
-        @refresh()
-        callback? e, res
-  getCollection:(name, callback)->
-    # tests for existence of Collection name in Collection Cache
-    if (collection = @__cache[name])? and collection instanceof Collection
-      return callback? null, collection
-    else
-      cm = CollectionMonitor.getInstance()
-      # checks for Collection existence in Monitor and adds it to Collection Cache
-      if 0 <= (idx = cm.__collection.getItemIndex name)
-        return callback? null, (@__cache[name] = new Collection name).getCollection()
-    # reports failure to find collection in cache
-    callback? 'collection not found', null
-module.exports = CollectionManager
+APIOptions        = require '../config/APIOptions'
+# DSManager         = require '../datasource/DataSourceManager'
 Collection        = require './Collection'
 CollectionMonitor = require './CollectionMonitor'
-DSManager         = require '../datasource/DataSourceManager'
+class CollectionManager extends Singleton
+  constructor:->
+    # @__ds = DSManager.getInstance()
+    @__monitor = CollectionMonitor.getInstance()
+    
+  # _obtainDataSource:(name,callback)->
+    # if name? and typeof name is 'function'
+      # callback = arguments[0]
+      # name = null
+    # throw 'callback is required' unless callback? and typeof callback is 'function'
+    # if (ds = @__ds.getDataSource name || null)?
+      # return callback null, ds
+    # callback "unable to obtain datasource '#{opts.datasource}"
+    
+  createCollection:(name, json, opts, callback)->
+    Collection.create.apply @, arguments
+       
+  dropCollection:(name, callback)->
+    throw 'callback required' unless arguments.length and typeof arguments[arguments.length - 1] is 'function'
+    _cB = arguments[arguments.length - 1]
+    return _cB 'name is required' unless name? and typeof name is 'string'
+    arguments[arguments.length - 1] = =>
+      _args = arguments
+      CollectionMonitor.getInstance().refresh =>
+        _cB.apply @, _args
+    @getCollection name, (e,col)=>
+      return _cB.apply @, arguments if e?
+      col.drop (e,c)=>
+        return callbak e if e?
+        @__monitor.refresh =>
+          callback e, true
+          
+  listCollections:(dsNames, callback)->
+    throw 'callback required' unless arguments.length and typeof arguments[arguments.length - 1] is 'function'
+    if typeof dsNames is 'function'
+      callback = arguments[0]
+      dsNames = [APIOptions.get 'default_datasource']
+    dsNames = dsNames.split ',' if dsNames? and typeof dsNames is 'string'
+    list = _.filter CollectionMonitor.getInstance().getCollection(), (v)=>
+      0 <= dsNames.indexOf v.dsName
+    callback null, list
+    
+  renameCollection:(name, newName, opts, callback)->
+    throw 'callback required' unless arguments.length and typeof arguments[arguments.length - 1] is 'function'
+    _cB = arguments[arguments.length - 1]
+    return _cB 'name is required' unless name? and typeof name is 'string'
+    if typeof opts is 'function'
+      opts = {}
+    callback = =>
+      _args = arguments
+      CollectionMonitor.getInstance().refresh =>
+        _cB.apply @, _args
+    @getCollection name, (e,col)=>
+      col.rename newName, opts || {}, (e, res)=>
+        return _cB.apply @, arguments if e?
+        callback.apply @, arguments
+        
+  getCollection:(name, callback)->
+    throw "callback required" unless callback? and typeof callback is 'function'
+    return callback null, col[0] if (col = _.where @__monitor.getCollection(), name:name).length
+    callback 'collection not found'
+    
+module.exports = CollectionManager

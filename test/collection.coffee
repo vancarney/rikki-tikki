@@ -1,37 +1,34 @@
 {should,expect}   = require 'chai'
 {_}               = require 'lodash'
-DataSourceManager = require '../lib/classes/datasource/DataSourceManager'
-CollectionMonitor = require '../lib/classes/collections/CollectionMonitor'
+Collection        = require '../lib/classes/collections/Collection'
 CollectionManager = require '../lib/classes/collections/CollectionManager'
-describe 'CollectionManager Test Suite', ->
+describe 'Collection Test Suite', ->
   before =>
     should()
-    # CollectionMonitor.getInstance().refresh =>
-      # cols =  CollectionMonitor.getInstance().getCollection()
-      # _done = _.after cols.length, done
-      # return _done() unless cols.length
-      # _.each _.pluck(cols, 'name'), (name)=>
-        # CollectionManager.getInstance().dropCollection name, _done
-
-  it 'should be a Singleton', =>
     @cm = CollectionManager.getInstance()
-    (@cm instanceof CollectionManager).should.eq true
     
   it 'should add a collection to the default datasource', (done)=>
-    @cm.createCollection 'FooModel', =>
-      @cm.getCollection 'FooModel', (e,col)=>
+    Collection.create 'FooModel', =>
+      @cm.getCollection 'FooModel', (e,@col)=>
+        expect(@col).to.exist
+        done.apply @, arguments
+ 
+  it 'should rename a collection', (done)=>
+    @col.rename 'RenamedModel', =>
+      @cm.getCollection 'RenamedModel', (e,col)=>
         expect(col).to.exist
         done.apply @, arguments
-
-  it 'should List Collections in default Datasource', (done)=>
-    @cm.listCollections (e,cols)=>
-      cols.length.should.equal 1
-      done.apply @, arguments
-                
+        
   it 'should remove a collection from the default datasource', (done)=>
-    @cm.dropCollection 'FooModel', done
-      
-    
+    @col.drop =>
+      @cm.getCollection 'RenamedModel', (e,col)=>
+        expect(col).to.not.exist
+        e.should.eq 'collection not found'
+        done()
+        
+  after (done)=>
+    process.nextTick done
+
   # it 'should List existing Collections by Datasource Name', (done)=>
     # _done = _.after 2, done
     # @cm.listCollections 'mongo', (e,cols)=>

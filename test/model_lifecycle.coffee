@@ -1,6 +1,6 @@
 {_}     = require 'lodash'
 client  = require 'supertest'
-
+CollectonManager = require '../lib/classes/collections/CollectionManager'
 describe 'Model Life Cycle', =>
   it 'should respond to an undefined Model', (done)=>
     client app
@@ -20,3 +20,7 @@ describe 'Model Life Cycle', =>
       throw e if e
       # console.log arguments
       done() #if res.body instanceof Array and res.body.length is 0    
+
+  after (done)=>
+    # CollectonManager.getInstance().dropCollection 'FooModel', done
+    done()

@@ -8,16 +8,12 @@ class DataSourceWrapper extends DataSource
   constructor:(NameOrDS, options)->
     DataSourceWrapper.__super__.constructor.call @, NameOrDS, options
     _.extend @, EventEmitter
-    # @sourceName = name
     @canBuildModelFromInstance = => 
       typeof @buildModelFromInstance is 'function'
     @isRelational = ->
       @connector.relational || false
     @isNoSQL = ->
       @connector.nosql || (@name.match /^(mongodb|Memory)+$/)? || false
-  # getDAO:->
-    # @connector.dataSource.DataAccessObject
-    # callback? "unable to connect to DataSource: #{@name}", @
   listModels:->
     builtins = [ 'Model',
       'PersistedModel',
@@ -43,7 +39,10 @@ class DataSourceWrapper extends DataSource
   listCollections:(callback)->
     throw 'callback function required at argument[0]' unless callback? and typeof callback is 'function'
     if @hasOwnProperty 'ApiHero'
-      @ApiHero.listCollections (e,cols)=> callback null, cols
+      @ApiHero.listCollections (e,cols)=>
+        callback null, _.compact _.map cols, (v)=>
+          return v unless (ex = @ApiHero.exclude) and ex.length
+          return v unless v.match new RegExp "^(#{ex.join '|'})$"
     else
       process.nextTick => callback null, _.keys @models
     # console.log @ #connector.db.collectionNames
@@ -58,7 +57,12 @@ class DataSourceWrapper extends DataSource
    createCollection:(name, json, opts)->
      # @modelBuilder.on 'initialize', => console.log 'initialized model'
      @createModel.apply @, arguments #).definition.rawProperties
-     
+   
+   dropCollection:(name, callback)->
+     return @dropTable name, callback if @isRelational
+     @collection name, (e,col)=>
+       col.drop callback
+      
    buildCollection:(name, json, opts)->
      if typeof opts is 'function'
        callback = arguments[2]

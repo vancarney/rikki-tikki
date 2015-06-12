@@ -23,6 +23,7 @@ describe 'SyncService Class Test Suite', ->
         fs.exists (p = "#{api_options.get 'schema_path'}#{path.sep}#{name}.js"), (exists)=> 
           done() if exists
       ), 1500
+      
   it 'should tear down our testing env', (done)=>
     setTimeout (=>
       f = "#{api_options.get 'schema_path'}/_#{name}.js"

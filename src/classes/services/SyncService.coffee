@@ -18,8 +18,8 @@ class SyncService extends Singleton
       _.each _schemas, (v,k)=>
         @collectionManager.getCollection v.name, (e,col)=>
           unless col?
-            @__opCache.push new SyncOperation v.name, 'added'
-            @collectionManager.createCollection v.name
+            @collectionManager.createCollection v.name, =>
+               @__opCache.push new SyncOperation v.name, 'added'
       _.each _collections, (v,k)=>
         @schemaManager.getSchema v.name, (e,col)=>
           unless col?
@@ -44,7 +44,6 @@ class SyncService extends Singleton
       setTimeout (=>
         _.each _.keys( data ), (operation)=>
           _.each data[operation], (collection)=>
-            # console.log "collection#{Util.String.capitalize operation} :: #{collection.name}"
             @["collection#{Util.String.capitalize operation}"] collection.name
             @__opCache.push new SyncOperation collection.name, operation
       ), 500
@@ -53,7 +52,6 @@ class SyncService extends Singleton
       @collectionManager.getCollection name, (e,col)=>
         return logger.log "collectionAdded: #{e}" if e?
         col.getTree (e,tree)=>
-          console.log tree
           @schemaTreeManager.createTree name, tree, (e)=>
             return logger.log "could not create SchemaTree file for '#{name}'\n\t#{e}" if e?
             @schemaManager.createSchema name, (e)=>
@@ -76,7 +74,8 @@ class SyncService extends Singleton
         return logger.log "could not create SchemaTree file for '#{name}'\n\t#{e}" if e?
         # attempts to rename the Collection from the Database
         @collectionManager.createCollection name, (e)=>
-          logger.log "could not create Collection '#{name}'\n\t#{e}" if e?
+          return logger.log "could not create Collection '#{name}'\n\t#{e}" if e?
+          # @__opCache.push new SyncOperation v.name, 'added'
     else
       @__opCache.splice idx, 1
   schemaRemoved:(name)->
