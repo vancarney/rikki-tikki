@@ -21,14 +21,24 @@ describe 'DataSource Test Suite', ->
     
   it 'should obtain the MySQL datasource',=>
     (@mysql = @dsMan.getDataSource 'mysql').should.not.eq null
+    
+  it 'should create a collection', (done)=>
+    @mongo.ApiHero.createCollection 'FooModel', =>
+      setTimeout done, 600
 
   it 'should list mongo collections',(done)=>
     @mongo.ApiHero.listCollections (e,cols)=>
-      cols.length.should.equal 3
+      cols.length.should.equal 2
       done.apply @, arguments
-      
+
+
   it 'should drop a collection', (done)=>
-    console.log @mongo.connector.collection 'FooModel' #, 'drop', (e,ok)->
+    @mongo.ApiHero.dropCollection 'FooModel', =>
+      setTimeout (=>
+        @mongo.ApiHero.listCollections (e,cols)=>
+          (0 <= cols.indexOf 'FooModel').should.eq false
+          done.apply @, arguments
+        ), 600
        # console.log arguments
        # done.apply @, arguments
     # @mongo.collections 'FooModel', =>

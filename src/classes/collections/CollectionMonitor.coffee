@@ -3,7 +3,6 @@
 Util              = require '../utils'
 AbstractMonitor   = require '../base_class/AbstractMonitor'
 Collection        = require './Collection'
-DataSourceManager = require '../datasource/DataSourceManager'
 class CollectionMonitor extends AbstractMonitor
   # sets polling at 10s intervals
   __polling_interval:10000
@@ -43,3 +42,4 @@ class CollectionMonitor extends AbstractMonitor
           list = _.flatten list.concat cols
           done()
 module.exports = CollectionMonitor
+DataSourceManager = require '../datasource/DataSourceManager'

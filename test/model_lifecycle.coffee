@@ -1,6 +1,7 @@
 {_}     = require 'lodash'
 client  = require 'supertest'
 CollectonManager = require '../lib/classes/collections/CollectionManager'
+
 describe 'Model Life Cycle', =>
   it 'should respond to an undefined Model', (done)=>
     client app

@@ -1,8 +1,8 @@
 {_}               = require 'lodash'
 {EventEmitter}    = require 'events'
 {DataSource}      = require 'loopback-datasource-juggler'
+{BuiltIns}        = require '../types'
 APIOptions        = require '../config/APIOptions'
-CollectionManager = require '../collections/CollectionManager'
 
 class DataSourceWrapper extends DataSource
   constructor:(NameOrDS, options)->
@@ -14,30 +14,20 @@ class DataSourceWrapper extends DataSource
       @connector.relational || false
     @isNoSQL = ->
       @connector.nosql || (@name.match /^(mongodb|Memory)+$/)? || false
+  isApiHeroEnabled:->
+    @hasOwnProperty 'ApiHero'
+  getCollection:(name,callback)->
+    throw 'callback required' unless typeof arguments[arguments.length - 1] is 'function'
+    return callback "APIHero enabled DataSource for '#{@name}' required" unless @isApiHeroEnabled()
+    @ApiHero.getCollection.apply @, arguments
+  # lists data models loaded into LoopBack
   listModels:->
-    builtins = [ 'Model',
-      'PersistedModel',
-      'Email',
-      'Application',
-      'AnonymousModel_0',
-      'AnonymousModel_1',
-      'AnonymousModel_2',
-      'AnonymousModel_3',
-      'AnonymousModel_4',
-      'AnonymousModel_5',
-      'AccessToken',
-      'RoleMapping',
-      'Role',
-      'ACL',
-      'Scope',
-      'User',
-      'Change',
-      'Checkpoint' ]
     l = _.filter @models, (model, name)=>
-      (0 > builtins.indexOf name) and (model != undefined) and (model.getDataSource()?.settings.name == @sourceName)
+      (0 > BuiltIns.indexOf name) and (model != undefined) and (model.getDataSource()?.settings.name == @sourceName)
     _.compact _.map l, (m)-> m.definition.name
+  # lists actual collections/tables on Data Source
   listCollections:(callback)->
-    throw 'callback function required at argument[0]' unless callback? and typeof callback is 'function'
+    throw 'callback required' unless typeof arguments[arguments.length - 1] is 'function'
     if @hasOwnProperty 'ApiHero'
       @ApiHero.listCollections (e,cols)=>
         callback null, _.compact _.map cols, (v)=>
@@ -45,37 +35,59 @@ class DataSourceWrapper extends DataSource
           return v unless v.match new RegExp "^(#{ex.join '|'})$"
     else
       process.nextTick => callback null, _.keys @models
-    # console.log @ #connector.db.collectionNames
-    # @adapter.db.collections (e,res)->
-      # return callback? e, null if e?
-      # callback? null, _.compact _.map _.values(res), (v)->
-        # if (v.s.name.match /\.+/)? then null else name:v.s.name
-    # @collections.listCollections (e,data)->
-      # return callback? e, null if e
-      # callback? null, _.compact _.map data, (col)->
-        # unless 0 <= col.s.name.indexOf '.' then col.s.name else null
-   createCollection:(name, json, opts)->
-     # @modelBuilder.on 'initialize', => console.log 'initialized model'
-     @createModel.apply @, arguments #).definition.rawProperties
-   
-   dropCollection:(name, callback)->
-     return @dropTable name, callback if @isRelational
-     @collection name, (e,col)=>
-       col.drop callback
-      
-   buildCollection:(name, json, opts)->
-     if typeof opts is 'function'
-       callback = arguments[2]
-       opts = {}
-     @modelBuilder.on 'initialize', => console.log 'initialized model'
-     throw "cannot create collections on SQL connection" unless @canBuildModelFromInstance()
-     throw 'could not create model' unless typeof (o = @buildModelFromInstance.apply @, arguments) is 'function'
-     o
-     
-   getCollection:(name)->
-     console.log @models
-   removeCollection:(name)->
+  # creates a Collection on ApiHero Enabled DataSource
+  createCollection:(name, json, opts, callback)->
+    _cB = arguments[arguments.length - 1]
+    throw 'callback required' unless typeof _cB is 'function'
+    # passes error message to callback if ApiHero not enabled
+    return callback "APIHero enabled DataSource for '#{@name}' required" unless @isApiHeroEnabled()
+    arguments[arguments.length - 1] = (e,ref)=>
+      _args = arguments
+      CollectionMonitor.getInstance().refresh =>
+        _cB.apply @, _args
+    # invokes createCollection with supplied arguments
+    @ApiHero.createCollection.apply @ApiHero, arguments
+  dropCollection:(name, callback)->
+    _cB = arguments[arguments.length - 1]
+    throw 'callback required' unless typeof _cB is 'function'
+    # passes error message to callback if ApiHero not enabled
+    return _cB "APIHero enabled DataSource for '#{@name}' required" unless @isApiHeroEnabled()
+    arguments[arguments.length - 1] = (e,ref)=>
+      (cm = CollectionMonitor.getInstance()).refresh (e,list)=>
+        return _cB e if e?
+        if 0 <= _.pluck( cm.getCollection(), 'name').indexOf @name
+          return _cB "collection '#{@name}' not dropped" if col?
+        _cB null, true
+    @ApiHero.dropCollection.apply @ApiHero, arguments
+  removeCollection:->
+    @dropCollection.apply @, arguments
+  renameCollection:(name, newName, opts, callback)->
+    _cB = arguments[arguments.length - 1]
+    throw 'callback required' unless typeof _cB is 'function'
+    return callback "new name is required" unless newName? and typeof newName is 'string'
+    arguments[arguments.length - 1] = (e,ref)=>
+      _args = arguments
+      CollectionMonitor.getInstance().refresh =>
+        _cB.apply @, _args
+    @ApiHero.renameCollection.apply @ApiHero, arguments
+  buildModel:(name, json, opts, callback)->
+    _cB = arguments[arguments.length - 1]
+    throw 'callback required' unless typeof _cB is 'function'
+    # passes error message to callback if ApiHero not enabled
+    return callback "APIHero enabled DataSource for '#{@name}' required" unless @isApiHeroEnabled()
+    return callback "buildModel not supported for '#{@name}'" unless @buildModelFromInstance
+    arguments[arguments.length - 1] = (e,col)=>
+      _args = arguments
+      CollectionMonitor.getInstance().refresh =>
+        _cB.apply @, _args
+    # throw "cannot create collections on SQL connection" unless @canBuildModelFromInstance()
+    throw 'could not create model' unless typeof (o = @buildModelFromInstance.apply @, arguments) is 'function'
+    o
+  deriveSchema:(nameOrCollection,callback)->
+    @ApiHero.deriveSchema.apply @ApiHero, arguments
 DataSourceWrapper.getDataSource = (name)=>
   DataSourceManager = require './DataSourceManager'
   DataSourceManager.getInstance().getDataSource name
 module.exports = DataSourceWrapper
+CollectionMonitor = require '../collections/CollectionMonitor'
+CollectionManager = require '../collections/CollectionManager'

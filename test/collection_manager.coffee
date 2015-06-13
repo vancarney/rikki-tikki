@@ -18,13 +18,14 @@ describe 'CollectionManager Test Suite', ->
     (@cm instanceof CollectionManager).should.eq true
     
   it 'should add a collection to the default datasource', (done)=>
-    @cm.createCollection 'FooModel', =>
-      @cm.getCollection 'FooModel', (e,col)=>
-        expect(col).to.exist
-        done.apply @, arguments
+    @cm.createCollection 'FooModel', (e,col)=>
+      expect(e).to.eq null
+      expect(col).to.exist
+      done.apply @, arguments
 
   it 'should List Collections in default Datasource', (done)=>
     @cm.listCollections (e,cols)=>
+      expect(e).to.eq null
       cols.length.should.equal 1
       done.apply @, arguments
                 

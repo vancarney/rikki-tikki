@@ -2,56 +2,50 @@
 Util              = require '../utils'
 Document          = require './Document'
 APIOptions        = require '../config/APIOptions'
-DataSourceManager = require '../datasource/DataSourceManager'
 class Collection extends Object
+  'use strict'
   constructor:(ref)->
     throw "collection reference must be defined" unless ref?
     _.extend @, ref
     @getCollection = (callback)=>
+      throw 'callback required' unless typeof arguments[arguments.length - 1] is 'function'
       return callback? 'Database is not connected', null unless @dataSource.connected
-      @dataSource.ApiHero.getCollection @name, =>
-        console.log arguments
-        callback
+      @dataSource.getCollection @name, callback
     @
   # renames the referenced collection
   rename:(newName, opts, callback)->
-    if typeof opts is 'function'
-      callback = arguments[arguments.length - 1]
-      opts = {}
-    return callback "new name is required" unless newName? and typeof newName is 'string'
-    @dataSource.ApiHero.renameCollection @name, newName, opts || {}, (e,ref)=>
-      _.extend @, ref.s
-      _args = arguments
-      CollectionMonitor.getInstance().refresh =>
-        callback.apply @, _args
+    _cB = arguments[arguments.length - 1] 
+    throw 'callback required' unless typeof _cB is 'function'
+    callback = (e,col)=>
+      _.extend @, col.s
+      _cB.apply @, arguments
+    opts = {} if typeof opts is 'function'
+    @dataSource.renameCollection @name, newName, opts, callback
   # drops the reference collection from the database
   drop:(callback)->
-    @dataSource.ApiHero.dropCollection @name, =>
-      (cm = CollectionMonitor.getInstance()).refresh (e,list)=>
-        return callback e if e?
-        if 0 <= _.pluck( cm.getCollection(), 'name').indexOf @name
-          return callback "collection '#{@name}' not dropped" if col?
-        callback null, true
+    @dataSource.dropCollection @name, callback
   # scans the collection and derives a Schema Tree   
   getTree:(callback)->
-    @dataSource.ApiHero.deriveSchema callback
-    
+    @dataSource.deriveSchema @, callback
+# creates new Collection on DataSource
 Collection.create = (name, json, opts, callback)->
-  throw 'callback required' unless arguments.length and typeof arguments[arguments.length - 1] is 'function'
   _cB = arguments[arguments.length - 1] 
+  throw 'callback required' unless typeof _cB is 'function'
   return _cB 'name is required' unless name? and typeof name is 'string'
-  callback = =>
-    _args = arguments
-    CollectionMonitor.getInstance().refresh =>
-      _cB.apply @, _args
+  # callback = =>
+    # _args = arguments
+    # CollectionMonitor.getInstance().refresh =>
+      # _cB.apply @, _args
   dsM = DataSourceManager.getInstance()
   dsName = if opts?.hasOwnProperty 'datasource' then opts.datasource else APIOptions.get('default_datasource') || null
   ds = dsM.getDataSource dsName
   return _cB "datasource '#{ds.name}' does not exist" unless ds?
-  return _cB "datasource '#{ds.name}' is not configured for Api Hero" unless ds.ApiHero?
-  ds.ApiHero.createCollection name, json, opts, (e,collection)=>
-    return _cB "unable to create collection #{name}", null if e? or !collection
-    callback.apply @, arguments
-          
+  return _cB "datasource '#{ds.name}' is not configured for Api Hero" unless ds.isApiHeroEnabled()?
+  # arguments[arguments.length - 1] = (e,collection)=>
+    # return _cB "unable to create collection #{name}", null if e? or !collection
+    # callback.apply @, arguments
+  ds.createCollection.apply ds, arguments 
+# exports Collection Class         
 module.exports = Collection
 CollectionMonitor = require './CollectionMonitor'
+DataSourceManager = require '../datasource/DataSourceManager'
