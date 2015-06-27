@@ -1,7 +1,3 @@
-{_}             = require 'lodash'
-path            = require 'path'
-(chai           = require 'chai').should()
-expect          = chai.expect
 Hash            = require 'strictly-hash'
 describe 'APIOptions Test Suite', ->
   it 'should get APIOptions instance',=>

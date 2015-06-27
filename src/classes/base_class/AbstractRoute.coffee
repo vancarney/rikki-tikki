@@ -26,17 +26,19 @@ class AbstractRoute extends Object
       throw 'AbstractRoute can not be directly instatiated\nhint: use a subclass instead.'
     # _db               = DSManager.getInstance().getDataSource()
     _getDS = (dsname)=>
+      dsname = null unless typeof dsname is 'string'
       dsname ?= APIOptions.get 'default_datasource'
       ds = dsm.getDataSource dsname
     _collections      = CollectionManager.getInstance()
-    _createCollection = (name, dsname, json, opts, callback)=>
+    _createCollection = (dsname, name, json, opts, callback)=>
       ds = _getDS dsname 
-      if (model = ds.buildCollection name, json, opts)
-        # m = new model json
-        return model.create json, callback
-      callback 'unable to create model'
+      ds.buildModel name, json, opts, (e, model)=>
+        return callback e if e
+        return callback 'unable to create model' unless model?
+        model.create json || {}, opts || {}, arguments[arguments - 1]
     # ## Handler Object
     return (req,res)=>
+      dsname = _getDS req.headers['DSNAME'] || null
       # references the colleciton name from the request params
       name = req.params.collection
       # wraps the passed callback into a handler
@@ -107,8 +109,9 @@ class AbstractRoute extends Object
             callback? null, { status: (if doc? then 200 else 404), content: doc }
           # tests if in Development Environment
           if Util.Env.isDevelopment()
+            console.log 'about to create collection'
             # attempts to create collection <name>
-            _createCollection name, (e,res)=>
+            _createCollection dsname, name, (e,res)=>
               # invokes callback and returns if error is set
               return callback?.apply @, if e? then [{status:400, reason:e}, null] else [null, {status:404, content:{}}] 
           # invokes an error callback and return if above conditions were not met
@@ -132,7 +135,7 @@ class AbstractRoute extends Object
                 # console.log b.toString 'utf8'
                 data = JSON.parse b.toString 'utf8'
                 if data? and (data = @sanitize data )?
-                   _createCollection name, null, data, {idInjection: true}, (e,res)=>
+                   _createCollection dsname, name, data, {idInjection: true}, (e,res)=>
                      # console.log res
                      return callback?.apply @, [null, {status:200, content:res}]
               # creates collection

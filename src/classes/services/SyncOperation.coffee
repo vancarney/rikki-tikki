@@ -1,3 +1,3 @@
 class SyncOperation extends Object
-  constructor:(@name, @operation)-> Object.freeze @
+  constructor:(@kind, @data, @operation)-> Object.freeze @
 module.exports = SyncOperation

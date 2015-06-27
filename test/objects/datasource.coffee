@@ -1,6 +1,4 @@
-{_}               = require 'lodash'
-{should,expect}   = require 'chai'
-DataSourceManager = require '../lib/classes/datasource/DataSourceManager'
+DataSourceManager = require '../../lib/classes/datasource/DataSourceManager'
 
 describe 'DataSource Test Suite', ->
   before =>

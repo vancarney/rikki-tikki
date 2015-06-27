@@ -20,13 +20,15 @@ class Collection extends Object
       _.extend @, col.s
       _cB.apply @, arguments
     opts = {} if typeof opts is 'function'
+    @__renamedFrom = @name
     @dataSource.renameCollection @name, newName, opts, callback
+    @name = newName
   # drops the reference collection from the database
   drop:(callback)->
     @dataSource.dropCollection @name, callback
   # scans the collection and derives a Schema Tree   
   getTree:(callback)->
-    @dataSource.deriveSchema @, callback
+    @dataSource.deriveSchema @name, callback
 # creates new Collection on DataSource
 Collection.create = (name, json, opts, callback)->
   _cB = arguments[arguments.length - 1] 

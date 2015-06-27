@@ -1,8 +1,6 @@
-{should,expect}   = require 'chai'
-{_}               = require 'lodash'
-DataSourceManager = require '../lib/classes/datasource/DataSourceManager'
-CollectionMonitor = require '../lib/classes/collections/CollectionMonitor'
-CollectionManager = require '../lib/classes/collections/CollectionManager'
+DataSourceManager = require '../../lib/classes/datasource/DataSourceManager'
+CollectionMonitor = require '../../lib/classes/collections/CollectionMonitor'
+CollectionManager = require '../../lib/classes/collections/CollectionManager'
 describe 'CollectionManager Test Suite', ->
   before =>
     should()

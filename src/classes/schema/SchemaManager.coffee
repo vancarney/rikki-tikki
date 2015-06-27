@@ -95,6 +95,7 @@ class SchemaManager extends Singleton
   ## renameSchema(name, newName, callback)
   #> renames schema in hash and attempts to rename file
   renameSchema:(name, newName, callback)->
+    console.log "SchemaManager.renameSchema: #{name} -> #{newName}"
     # attempts to get existing schema
     @getSchema name, (e,schema)=>
       # invokes callback if schema not found

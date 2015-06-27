@@ -1,3 +1,2 @@
-exports =
-  BuiltIns: require './BuiltIns'
-  OperationTypes: require './OperationTypes'
+module.exports.BuiltIns = require './BuiltIns'
+module.exports.OperationTypes = require './OperationTypes'

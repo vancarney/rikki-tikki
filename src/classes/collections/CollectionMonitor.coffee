@@ -27,11 +27,23 @@ class CollectionMonitor extends AbstractMonitor
     list = []
     done = _.after names.length, =>
       ex = []
+      # renamed = _.filter list, (col)=>
+        # col.getCollection =>
+          # console.log arguments  
+        # col.hasOwnProperty '__renamedFrom'
+      # for ref in renamed
+        # if (idx = @__collection.getItemIdx ref.__renamedFrom)
+          # console.log "idx #{idx}"
+          # @__collection.removeItemAt idx
       # filters out existing collections
       for val in list
+        # console.log val
         ex.push val if 0 <= @getNames().indexOf val.name
       # finds removed collections
+      # console.log _.pluck list, 'name'
       for item in (rm = _.difference @getNames(), _.pluck list, 'name' )
+        # console.log "removeing:"
+        # console.log item
         @__collection.removeItemAt @getNames().indexOf item
       # resets with new collections added to the list
       @__collection.setSource list if (list = _.difference list, ex).length
@@ -39,6 +51,7 @@ class CollectionMonitor extends AbstractMonitor
     for dsName in names
       if (ds = dsm.getDataSource dsName)?
         @createCollections dsName, ds, (e, cols)=>
+          # console.log cols
           list = _.flatten list.concat cols
           done()
 module.exports = CollectionMonitor

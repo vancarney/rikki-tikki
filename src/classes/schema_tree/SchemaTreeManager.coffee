@@ -1,10 +1,10 @@
 {_}           = require 'lodash'
 fs            = require 'fs'
 path          = require 'path'
-{EventEmitter}= require 'events'
+Singleton     = require '../base_class/Singleton'
 SchemaTree    = require './SchemaTree'
 APIOptions    = require '../config/APIOptions'
-class SchemaTreeManager extends EventEmitter
+class SchemaTreeManager extends Singleton
   constructor:->
     @__trees  = {}
     @__path   = APIOptions.get 'trees_path'

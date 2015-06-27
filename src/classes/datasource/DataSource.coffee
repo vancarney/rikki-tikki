@@ -71,18 +71,15 @@ class DataSourceWrapper extends DataSource
         _cB.apply @, _args
     @ApiHero.renameCollection.apply @ApiHero, arguments
   buildModel:(name, json, opts, callback)->
-    _cB = arguments[arguments.length - 1]
-    throw 'callback required' unless typeof _cB is 'function'
+    throw 'callback required' unless typeof arguments[arguments.length - 1] is 'function'
     # passes error message to callback if ApiHero not enabled
     return callback "APIHero enabled DataSource for '#{@name}' required" unless @isApiHeroEnabled()
     return callback "buildModel not supported for '#{@name}'" unless @buildModelFromInstance
-    arguments[arguments.length - 1] = (e,col)=>
-      _args = arguments
-      CollectionMonitor.getInstance().refresh =>
-        _cB.apply @, _args
     # throw "cannot create collections on SQL connection" unless @canBuildModelFromInstance()
-    throw 'could not create model' unless typeof (o = @buildModelFromInstance.apply @, arguments) is 'function'
-    o
+    throw 'could not create model' unless typeof (o = @buildModelFromInstance.apply @, _.initial arguments) is 'function'
+    callback null, o
+    # CollectionMonitor.getInstance().refresh =>
+      # callback.apply @, arguments
   deriveSchema:(nameOrCollection,callback)->
     @ApiHero.deriveSchema.apply @ApiHero, arguments
 DataSourceWrapper.getDataSource = (name)=>

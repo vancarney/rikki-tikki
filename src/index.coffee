@@ -47,7 +47,7 @@ class ApiHero extends EventEmitter
     app.ApiHero = ApiHero
     # registers handler for 'ahero-initialized' event
     app.on 'ahero-initialized', =>
-      SyncService.getInstance() unless Util.Env.isProduction()
+      SyncInitializer.init ApiHero unless Util.Env.isProduction()
     # initialize DataSource Manager instance
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
       unless e?
@@ -77,9 +77,18 @@ _.extend ApiHero, require './classes/router'
 # sets Util classes onto main object
 ApiHero.Util = require './classes/utils'
 # ApiHero.SchemaManager = require './classes/schema/SchemaManager'
-SyncService       = require './classes/services/SyncService'
+ApiHero.SyncService = require './classes/services/SyncService'
 Document          = require './classes/collections/Document'
 ApiHero.DSManager = require './classes/datasource/DataSourceManager'
+# SyncInstance     = require './classes/services/SyncInstance'
+SyncInitializer     = require './classes/services/SyncInitializer'
+  
+ApiHero.createSyncInstance = (name,clazz)=>
+  ApiHero.SyncService.getInstance().registerSyncInstance name, new ApiHero.SyncService.SyncInstance name, clazz
+ApiHero.destroySyncInstance = (name)=>
+  ApiHero.SyncService.getInstance().removeSyncInstance name  
+  
+
 # ApiHero.APISchema       = require './classes/schema/APISchema'
 # ApiHero.ClientSchema    = require './classes/schema/ClientSchema'
 ## ApiHero.model

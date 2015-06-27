@@ -65,6 +65,7 @@ class SchemaLoader extends AbstractLoader
   # reload(callback)
   #> reloads Schema file
   reload:(callback)->
+    console.log 'SchemaLoader.reload'
     # deletes loaded schema from `module cache`
     delete require.cache[@__path]
     @load @__path, callback
@@ -81,6 +82,7 @@ class SchemaLoader extends AbstractLoader
   # renameSchema(name, newName, callback)
   #> renames Schema file on filesystem
   rename:(newName, callback)->
+    console.log SchemaLoader.createPath(@name = newName)
     # invokes rename on __super__
     SchemaLoader.__super__.rename.call @, SchemaLoader.createPath(@name = newName), (e,s)=>
       # invokes callback if defined
