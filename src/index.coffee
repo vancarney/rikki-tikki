@@ -55,9 +55,9 @@ class ApiHero extends EventEmitter
         console.log e
         process.exit 1
       (new ModuleManager app)
-      .on 'modules-loaded', (e,ok)=>
+      .on 'modules-loaded', =>
         # emits 'ahero-initialized' event upon success
-        return app.emit 'ahero-initialized' if ok
+        app.emit 'ahero-initialized'
       
 # defines STATIC init method
 ApiHero.init = (app, options)->
