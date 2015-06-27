@@ -48,12 +48,17 @@ class ApiHero extends EventEmitter
     # registers handler for 'ahero-initialized' event
     app.on 'ahero-initialized', =>
       SyncInitializer.init ApiHero unless Util.Env.isProduction()
+      
     # initialize DataSource Manager instance
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
-      unless e?
+      if e?
+        console.log e
+        process.exit 1
+      (new ModuleManager app)
+      .on 'modules-loaded', (e,ok)=>
         # emits 'ahero-initialized' event upon success
-        return app.emit 'ahero-initialized'
-      console.log e
+        return app.emit 'ahero-initialized' if ok
+      
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
@@ -82,6 +87,9 @@ Document          = require './classes/collections/Document'
 ApiHero.DSManager = require './classes/datasource/DataSourceManager'
 # SyncInstance     = require './classes/services/SyncInstance'
 SyncInitializer     = require './classes/services/SyncInitializer'
+# requires Module Manager
+ModuleManager = require './classes/module/ModuleManager'
+  
   
 ApiHero.createSyncInstance = (name,clazz)=>
   ApiHero.SyncService.getInstance().registerSyncInstance name, new ApiHero.SyncService.SyncInstance name, clazz
