@@ -9,6 +9,11 @@ var ds = loopback.createDataSource("mysql", {
   
 // Discover and build models from INVENTORY table
 ds.discoverModelDefinitions({views: true, schema:'rikki-tikki'}, function (err, res) {
-  console.log(res);
-  process.exit();
+  console.log(arguments);
+  // process.exit();
+  ds.discoverAndBuildModels('coffeeshop', null, function (err, res) {
+	  console.log( res.Coffeeshop.definition.properties);
+	  process.exit();
+  });
 });
+
