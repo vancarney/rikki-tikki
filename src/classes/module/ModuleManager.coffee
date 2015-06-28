@@ -16,15 +16,15 @@ class ModuleManager extends EventEmitter
       return callback null, false unless ok
       return callback 'unable to obtain package' unless (pkg = require pkg_path) and pkg.hasOwnProperty 'dependencies'
       
-      modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (npm)=>
-        if (m = npm.match /^apihero+\-+module+\-([a-z0-9\-_])$/)? then m[1] else null
+      modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
+        if (name.match /^apihero+\-+module+\-([a-z0-9\-_])$/)? then name else null
       done = _.after modules.length, => callback null, true
-      _.each modules, (module)=>
+      _.each modules, (m)=>
         try
-          module = require "#{m[1]}"
+          module = require "#{m}"
         catch e
-          callback "unable to load module #{module}"
-        return callback 'module malformed. Is exports defined?' unless module is {}
+          callback "unable to load module #{m}"
+        return callback 'module malformed. Is exports defined?' if module is {}
         return callback 'module malformed. Is exports.init defined?' unless typeof module.init is 'function'
         try
           module.init @app
