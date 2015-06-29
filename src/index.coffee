@@ -55,14 +55,15 @@ class ApiHero extends EventEmitter
         console.log e
         process.exit 1
       (new ModuleManager app)
-      .on 'modules-loaded', =>
+      .on 'modules-loaded', (e,modules)=>
+        @loadedModules = modules
         # emits 'ahero-initialized' event upon success
         app.emit 'ahero-initialized'
       
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
-
+ApiHero.loadedModules = null
 #### Static API Methods
 
 ApiHero.addRoute = (path, operation, handler)=>
