@@ -8,7 +8,11 @@ class ModuleManager extends EventEmitter
       if e?
         console.log e
         process.exit 1
-      @emit 'modules-loaded'
+      @emit 'modules-loaded', @__modules
+  getModules:->
+    @__modules
+  saveModules:->
+    # no yet imoplements -- should make this work like a singleton manager in base_class
   load:(callback)->
     throw 'callback required' unless callback and typeof callback is 'function'
     pkg_path = "#{process.cwd()}#{path.sep}package.json"
@@ -16,10 +20,10 @@ class ModuleManager extends EventEmitter
       return callback null, false unless ok
       return callback 'unable to obtain package' unless (pkg = require pkg_path) and pkg.hasOwnProperty 'dependencies'
       
-      modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
+      @__modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
         if (name.match /^apihero+\-+module+\-([a-z0-9\-_])$/)? then name else null
-      done = _.after modules.length, => callback null, true
-      _.each modules, (m)=>
+      done = _.after @__modules.length, => callback null, true
+      _.each @__modules, (m)=>
         try
           module = require "#{m}"
         catch e
