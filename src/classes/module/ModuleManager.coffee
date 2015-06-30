@@ -15,7 +15,6 @@ class ModuleManager extends EventEmitter
     # no yet imoplements -- should make this work like a singleton manager in base_class
   load:(callback)->
     throw 'callback required' unless callback and typeof callback is 'function'
-    
     try
       pkg = require "#{process.cwd()}#{path.sep}package.json"
     catch e
@@ -24,7 +23,7 @@ class ModuleManager extends EventEmitter
     return callback 'unable to obtain package' unless pkg?.hasOwnProperty 'dependencies'
     
     @__modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
-      if (name.match /^apihero+\-+module+\-([a-z0-9\-_])$/)? then name else null
+      if (name.match /^apihero+\-+module+\-[a-z0-9\-_]+$/)? then name else null
     # creates done callback
     done = _.after @__modules.length, => callback.apply @, arguments
     # loops on module dependancies
@@ -32,7 +31,7 @@ class ModuleManager extends EventEmitter
       try
         module = require "#{m}"
       catch e
-        done "unable to load module #{m}"
+        done "unable to load module '#{m}'"
       return done 'module malformed. Is exports defined?' if module is {}
       return done 'module malformed. Is exports.init defined?' unless typeof module.init is 'function'
       try

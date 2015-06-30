@@ -56,7 +56,7 @@ class ApiHero extends EventEmitter
         process.exit 1
       (new ModuleManager app)
       .on 'modules-loaded', (e,modules)=>
-        @loadedModules = modules
+        ApiHero.loadedModules = modules
         # emits 'ahero-initialized' event upon success
         app.emit 'ahero-initialized'
       
