@@ -19,6 +19,7 @@ class ModuleManager extends EventEmitter
     
     @__modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
       if (name.match /^apihero+\-+module+\-[a-z0-9\-_]+$/)? then name else null
+    return callback null,[] unless @.__modules.length
     # creates done callback
     done = _.after @__modules.length, => callback.apply @, arguments
     # loops on module dependancies
