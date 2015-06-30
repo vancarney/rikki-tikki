@@ -46,7 +46,7 @@ class ApiHero extends EventEmitter
     # sets reference of API Hero on Loopback App for convenience
     app.ApiHero = ApiHero
     # registers handler for 'ahero-initialized' event
-    app.on 'ahero-initialized', =>
+    app.once 'ahero-initialized', =>
       SyncInitializer.init ApiHero unless Util.Env.isProduction()
       
     # initialize DataSource Manager instance
