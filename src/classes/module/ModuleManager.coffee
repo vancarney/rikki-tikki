@@ -4,11 +4,6 @@ path = require 'path'
 {EventEmitter} = require 'events'
 class ModuleManager extends EventEmitter
   constructor:(@app)->
-    @load (e,ok)=>
-      if e?
-        console.log e
-        process.exit 1
-      @emit 'modules-loaded', @__modules
   getModules:->
     @__modules
   saveModules:->
