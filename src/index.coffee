@@ -96,8 +96,8 @@ SyncInitializer     = require './classes/services/SyncInitializer'
 # requires Module Manager
 ModuleManager = require './classes/module/ModuleManager'
   
-ApiHero.AbstractMonitor = require 'base_class/AbstractMonitor'
-ApiHero.AbstractLoader = require 'base_class/AbstractLoader'
+ApiHero.AbstractMonitor = require './classes/base_class/AbstractMonitor'
+ApiHero.AbstractLoader  = require './classes/base_class/AbstractLoader'
   
 ApiHero.createSyncInstance = (name,clazz)=>
   ApiHero.SyncService.getInstance().registerSyncInstance name, new ApiHero.SyncService.SyncInstance name, clazz
