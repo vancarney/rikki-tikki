@@ -86,7 +86,9 @@ _.extend ApiHero, require './classes/router'
 # sets Util classes onto main object
 ApiHero.Util = require './classes/utils'
 # ApiHero.SchemaManager = require './classes/schema/SchemaManager'
-ApiHero.SyncService = require './classes/services/SyncService'
+ApiHero.SyncService   = require './classes/services/SyncService'
+ApiHero.SyncInstance  = require './classes/services/SyncInstance'
+ApiHero.SyncOperation = require './classes/services/SyncOperation'
 Document          = require './classes/collections/Document'
 ApiHero.DSManager = require './classes/datasource/DataSourceManager'
 # SyncInstance     = require './classes/services/SyncInstance'
@@ -94,6 +96,8 @@ SyncInitializer     = require './classes/services/SyncInitializer'
 # requires Module Manager
 ModuleManager = require './classes/module/ModuleManager'
   
+ApiHero.AbstractMonitor = require 'base_class/AbstractMonitor'
+ApiHero.AbstractLoader = require 'base_class/AbstractLoader'
   
 ApiHero.createSyncInstance = (name,clazz)=>
   ApiHero.SyncService.getInstance().registerSyncInstance name, new ApiHero.SyncService.SyncInstance name, clazz
