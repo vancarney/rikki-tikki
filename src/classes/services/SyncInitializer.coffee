@@ -4,8 +4,10 @@ CollectionMonitor = require '../collections/CollectionMonitor'
 SchemaManager     = require '../schema/SchemaManager'
 SchemaMonitor     = require '../schema/SchemaMonitor'
 SchemaTreeManager = require '../schema_tree/SchemaTreeManager'
+APIOptions        = require '../config/APIOptions'
 
 module.exports.init = (ApiHero)->
+  return unless APIOptions.get 'monitoring_enabled'
   # initialized sync instance for SchemaMonitor
   ApiHero.createSyncInstance 'schema', SchemaMonitor 
   .addSyncHandler 'schema', 'added', (op)=>

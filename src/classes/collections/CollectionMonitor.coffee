@@ -1,8 +1,9 @@
-{_}               = require 'lodash'
+{_}             = require 'lodash'
 # async             = require 'async'
-Util              = require '../utils'
-AbstractMonitor   = require '../base_class/AbstractMonitor'
-Collection        = require './Collection'
+Util            = require '../utils'
+AbstractMonitor = require '../base_class/AbstractMonitor'
+Collection      = require './Collection'
+APIOptions      = require '../config/APIOptions'
 class CollectionMonitor extends AbstractMonitor
   # sets polling at 10s intervals
   __polling_interval:10000
@@ -10,6 +11,7 @@ class CollectionMonitor extends AbstractMonitor
   __exclude:[/^_+.*$/, /^indexes+$/, /^migrations+$/]
   constructor:->
     CollectionMonitor.__super__.constructor.call @
+    return unless APIOptions.get 'monitoring_enabled'
     setTimeout (=>
       if !_initialized
         _initialized = true

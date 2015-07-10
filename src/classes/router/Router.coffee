@@ -6,7 +6,7 @@ Adapter               = require '../request_adapters/Adapter'
 Routes                = require './routes'
 RoutingParams         = require './RoutingParams'
 ClientRenderer        = require '../client/ClientRenderer'
-APIOpts               = require '../config/APIOptions'
+APIOptions               = require '../config/APIOptions'
 Adapter               = require '../request_adapters/Adapter'
 # SchemaManager         = (require '../schema/SchemaManager').getInstance()
 class Router extends Singleton
@@ -16,7 +16,7 @@ class Router extends Singleton
     @__api_path = @__adapter.params.app.get 'restApiRoot'
     client    = new ClientRenderer
     @__routes = new Routes @__adapter
-    @intializeRoutes()
+    @intializeRoutes() if APIOptions.get 'monitoring_enabled'
     setTimeout (=>
       @__client = client.toSource()
     ), 50
@@ -29,7 +29,7 @@ class Router extends Singleton
       # adds the route to the adapter
       @createRoute route = new RoutingParams "#{@__api_path}/:collection", operation
       # handles debug
-      logger.log 'debug', "#{route.method.toUpperCase()} #{route.path} -> #{route.operation}" if APIOpts.get 'debug'
+      logger.log 'debug', "#{route.method.toUpperCase()} #{route.path} -> #{route.operation}" if APIOptions.get 'debug'
   createRoute:(params)->
     # ensure params is cast to RikkiTikkiAPI.RoutingParams
     unless Util.Object.isOfType params, RoutingParams

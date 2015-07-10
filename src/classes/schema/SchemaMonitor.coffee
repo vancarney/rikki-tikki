@@ -10,6 +10,7 @@ class SchemaMonitor extends AbstractMonitor
   constructor:->
     Util.File.ensureDirExists @__path = APIOptions.get 'schema_path'
     SchemaMonitor.__super__.constructor.call @
+    return unless APIOptions.get 'monitoring_enabled'
     setTimeout (=>
       unless _initialized
         _initialized = true
