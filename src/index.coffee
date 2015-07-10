@@ -45,10 +45,12 @@ class ApiHero extends EventEmitter
     app.set 'legacyExplorer', false
     # sets reference of API Hero on Loopback App for convenience
     app.ApiHero = ApiHero
+    shouldManageRoutes = =>
+      return options.monitor_requests if options?.hasOwnProperty 'monitor_requests' 
+      return true unless Util.Env.isProduction()
     # registers handler for 'ahero-initialized' event
     app.once 'ahero-initialized', =>
-      SyncInitializer.init ApiHero unless Util.Env.isProduction()
-      
+      SyncInitializer.init ApiHero if shouldManageRoutes()
     # initialize DataSource Manager instance
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
       if e?

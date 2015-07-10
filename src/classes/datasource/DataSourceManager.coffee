@@ -17,6 +17,7 @@ class DSManager extends Singleton
     names       = _.uniq _.compact _.map (_.keys datasources), (key)-> key.toLowerCase()
     done        = _.after names.length, => callback null, 'ok'
     for dsName in names
+      return done() if datasources[dsName].settings.connector.hasOwnProperty 'mailer'
       ds = @__ds[dsName] = new DataSource datasources[dsName].name, {} unless (ds = @__ds[dsName])?
       return callback "unable to allocate datasource #{dsName}" unless ds?
       process.nextTick done if ds.connected || ds.connecting

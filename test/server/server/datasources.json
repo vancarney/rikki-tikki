@@ -14,5 +14,23 @@
     "password": "<%qI=dozA95W#(o",
     "name": "mysql",
     "connector": "mysql"
+  },
+  "mail": {
+  	"defaultForType": "mail",
+	"name": "mail",
+	"connector": "mail",
+	"transports": [{
+		"type": "smtp",
+		"host": "smtp.private.com",
+		"secure": false,
+		"port": 587,
+		"tls": {
+			"rejectUnauthorized": false
+		},
+		"auth": {
+			"user": "me@private.com",
+			"pass": "password"
+		}
+	}]
   }
 }
