@@ -14,10 +14,12 @@ path            = require 'path'
 Util            = require './classes/utils'
 APIOptions      = require './classes/config/APIOptions'
 global.logger   = console
+global.helpers  = {}
 # > Defines the `ApiHero` Class
 class ApiHero extends EventEmitter
   constructor:(app, options)->
     throw 'argument[0] must be App reference' unless app? and typeof app is 'function'
+    global.app_root ?= process.cwd()
     # extends Loopback App with NoeJS EventEmitter
     _.extend app.prototype, EventEmitter
     # exports getApp helper method
@@ -62,9 +64,29 @@ class ApiHero extends EventEmitter
           throw e
           process.exit 1
         ApiHero.loadedModules = modules
-        # emits 'ahero-initialized' event upon success
-        app.emit 'ahero-initialized'
-      
+        loadHelpers (e)=>
+          if e?
+            console.log e
+            process.exit 1
+          # emits 'ahero-initialized' event upon success
+          app.emit 'ahero-initialized'
+          
+loadHelpers = (callback)->
+  handleFile = (path, cB)->
+    fs.stat path, (e, stat)=>
+      if (stat.isFile())
+        try
+          r = require path
+        catch e
+          return console.log e
+        _.extend helpers, r
+        cB? null
+       else
+        cB? null
+  fs.readdir path.join( app_root, 'helpers' ), (e,files)=>
+    done = _.after files.length, => callback null
+    _.each files, (file)=> handleFile path.join( app_root, 'helpers', file ), done
+
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
