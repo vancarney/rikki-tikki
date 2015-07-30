@@ -15,6 +15,7 @@ Util            = require './classes/utils'
 APIOptions      = require './classes/config/APIOptions'
 global.logger   = console
 global.helpers  = {}
+
 # > Defines the `ApiHero` Class
 class ApiHero extends EventEmitter
   constructor:(app, options)->
@@ -58,40 +59,34 @@ class ApiHero extends EventEmitter
       if e?
         console.log e
         process.exit 1
+      app.emit 'ahero-initialized'
       (new ModuleManager app)
       .load (e,modules)=>
         if e?
           throw e
           process.exit 1
-        ApiHero.loadedModules = modules
-        loadHelpers (e)=>
-          if e?
-            console.log e
-            process.exit 1
-          # emits 'ahero-initialized' event upon success
-          app.emit 'ahero-initialized'
+        app.emit 'ahero-ready'
+        # loadHelpers (e)=>
+          # if e?
+            # console.log e
+            # process.exit 1
+          # # emits 'ahero-initialized' event upon success
+          # app.emit 'ahero-initialized'
           
-loadHelpers = (callback)->
-  handleFile = (path, cB)->
-    fs.stat path, (e, stat)=>
-      if (stat.isFile())
-        try
-          r = require path
-        catch e
-          return console.log e
-        _.extend helpers, r
-        cB? null
-       else
-        cB? null
-  fs.readdir path.join( app_root, 'helpers' ), (e,files)=>
-    done = _.after files.length, => callback null
-    _.each files, (file)=> handleFile path.join( app_root, 'helpers', file ), done
+
 
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
 ApiHero.loadedModules = null
 #### Static API Methods
+
+
+ApiHero.proxyEvent = (name, delegator)->
+  throw "ApiHero.proxyEvent: delegator not defined" unless delegator
+  throw "ApiHero.proxyEvent: delegator.on is not a function" unless typeof delegator.on is 'function'
+  delegator.on? name, (evt,data)=> 
+    module.exports.getApp().emit name, evt, data
 
 ApiHero.addRoute = (path, operation, handler)=>
   throw new Error 'Adapter is not defined' unless (router = ApiHero.Router.getInstance())?
@@ -125,6 +120,7 @@ ApiHero.AbstractLoader  = require './classes/base_class/AbstractLoader'
   
 ApiHero.createSyncInstance = (name,clazz)=>
   ApiHero.SyncService.getInstance().registerSyncInstance name, new ApiHero.SyncService.SyncInstance name, clazz
+
 ApiHero.destroySyncInstance = (name)=>
   ApiHero.SyncService.getInstance().removeSyncInstance name  
   
