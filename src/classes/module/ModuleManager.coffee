@@ -3,12 +3,29 @@ fs = require 'fs'
 path = require 'path'
 {EventEmitter} = require 'events'
 class ModuleManager extends EventEmitter
+  __modules:{}
   constructor:(@app, @options={})->
     @app.ApiHero.proxyEvent 'ahero-modules-loaded', @
-  getModules:->
-    @__modules
-  saveModules:->
-    # no yet imoplements -- should make this work like a singleton manager in base_class
+  listModules:->
+    _.keys @__modules
+  getModuleConfigs:->
+    _.map @__modules, (m, name)-> 
+      (o = {})[name] = m.config || {}
+      o
+  getModule: (name)->
+    if @__modules.hasOwnProperty 'name' then @__modules[name] else null
+    
+  saveModules:(callback)->
+    package_path = path.join "#{app_root}", 'package.json'
+    try
+      pkg = require package_path
+    catch e
+      return callback e
+    config = if pkg.hasOwnProperty 'apihero' then pkg.apihero else {}
+    config.modules = @getModuleConfigs()
+    _.extend pkg, apihero:config
+    fs.writeFile package_path, (JSON.stringify pkg, null, 2), callback
+    
   getModuleOptions:(name)->
     return null unless (opts = @options.moduleOptions)?
     return opts[moduleName] if opts.hasOwnProperty name
@@ -16,6 +33,7 @@ class ModuleManager extends EventEmitter
     if opts.hasOwnProperty name then opts[moduleName] else null
   load:(callback)->
     throw 'callback required' unless callback and typeof callback is 'function'
+    @__modules = {}
     try
       pkg = require path.join app_root || process.cwd(), 'package.json'
     catch e
@@ -23,31 +41,35 @@ class ModuleManager extends EventEmitter
 
     return callback 'unable to obtain package' unless pkg?.hasOwnProperty 'dependencies'
 
-    @__modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
+    _modules = _.compact _.uniq _.map _.keys( pkg.dependencies ), (name)=>
       if (name.match /^apihero\-module\-[a-z0-9\-_]+$/)? then name else null
-    return callback null,[] unless @.__modules.length
-    init = _.after @__modules.length, =>
-      console.log 'init callback executing'
-      @app.ApiHero.loadedModules = @__modules
-      @emit 'ahero-modules-loaded', @__modules
+    return callback null,[] unless _modules.length
+    init = _.after _modules.length, =>
+      @emit 'ahero-modules-loaded', @app.ApiHero.loadedModules = _modules
     # creates done callback
-    done = _.after @__modules.length, => callback.apply @, arguments
+    done = _.after _modules.length, =>
+      args = arguments
+      @saveModules =>
+        callback.apply @, args 
     # loops on module dependancies
-    _.each @__modules, (moduleName)=>
-      # moduleName = path.basename m
+    _.each _modules, (moduleName)=>
       try
-        console.log "requiring module #{moduleName}"
         module = require "#{moduleName}"
       catch e
-        done "unable to load module '#{moduleName}'"
-      return done "module '#{moduleName}' is malformed. Is exports defined?" if module is {}
-      return done  "module '#{moduleName}' is malformed. Is exports.init defined?" unless typeof module.init is 'function'
-      try
-        module.init @app, @getModuleOptions( moduleName ), (e)=>
-          console.log 'module init callback'
-          done.apply @, if e? then [e] else [null]
-      catch e
-        return done e
-      init()
-    done() unless @__modules.length > 0
+        console.log e
+        return done "unable to load module '#{moduleName}'"
+      return done "module '#{moduleName}' is malformed. Is exports defined?" if typeof module is {}
+      return done "module '#{moduleName}' is malformed. Is exports.init defined?" unless typeof module.init is 'function'
+      ((moduleName, module)=>
+        try
+          module.init @app, @getModuleOptions( moduleName ), (e)=>
+            @__modules[moduleName] = module
+            delete @__modules[moduleName].init if @__modules[moduleName].init?
+            done.apply @, if e? then [e] else [null]
+        catch e
+          console.log e
+          return done e
+        init()
+      ) moduleName, module
+    done() unless _modules.length > 0
 module.exports = ModuleManager

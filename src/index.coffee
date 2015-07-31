@@ -60,8 +60,14 @@ class ApiHero extends EventEmitter
         console.log e
         process.exit 1
       app.emit 'ahero-initialized'
-      (new ModuleManager app)
-      .load (e,modules)=>
+      moduleManager = new ModuleManager app
+      # virtualizes listModules
+      @listModules = => moduleManager.listModules()
+      # virtualizes getModuleConfigs
+      @getModuleConfigs = => moduleManager.getModuleConfigs()
+      # virtualizes getModule
+      @getModule = (name)=> moduleManager.getModule name
+      moduleManager.load (e,modules)=>
         if e?
           throw e
           process.exit 1
@@ -72,8 +78,6 @@ class ApiHero extends EventEmitter
             # process.exit 1
           # # emits 'ahero-initialized' event upon success
           # app.emit 'ahero-initialized'
-          
-
 
 # defines STATIC init method
 ApiHero.init = (app, options)->
