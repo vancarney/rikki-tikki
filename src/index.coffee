@@ -61,11 +61,11 @@ class ApiHero extends EventEmitter
         process.exit 1
       moduleManager = new ModuleManager app
       # virtualizes listModules
-      @listModules = => moduleManager.listModules()
+      app.ApiHero.listModules = => moduleManager.listModules()
       # virtualizes getModuleConfigs
-      @getModuleConfigs = => moduleManager.getModuleConfigs()
+      app.ApiHero.getModuleConfigs = => moduleManager.getModuleConfigs()
       # virtualizes getModule
-      @getModule = (name)=> moduleManager.getModule name
+      app.ApiHero.getModule = (name)=> moduleManager.getModule name
       app.emit 'ahero-initialized'
       moduleManager.load (e,modules)=>
         if e?
