@@ -59,7 +59,6 @@ class ApiHero extends EventEmitter
       if e?
         console.log e
         process.exit 1
-      app.emit 'ahero-initialized'
       moduleManager = new ModuleManager app
       # virtualizes listModules
       @listModules = => moduleManager.listModules()
@@ -67,6 +66,7 @@ class ApiHero extends EventEmitter
       @getModuleConfigs = => moduleManager.getModuleConfigs()
       # virtualizes getModule
       @getModule = (name)=> moduleManager.getModule name
+      app.emit 'ahero-initialized'
       moduleManager.load (e,modules)=>
         if e?
           throw e
