@@ -9,9 +9,9 @@ class ModuleManager extends EventEmitter
   listModules:->
     _.keys @__modules
   getModuleConfigs:->
-    _.map @__modules, (m, name)-> 
-      (o = {})[name] = m.config || {}
-      o
+    o = {}
+    _.each @__modules, (m, name)-> o[name] = m.config || {}
+    o
   getModule: (name)->
     if @__modules.hasOwnProperty 'name' then @__modules[name] else null
     
