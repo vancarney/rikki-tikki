@@ -34,7 +34,10 @@ class APIOptions extends Hash
       # defines `default_datasource`: name of datasource to use by default
       default_datasource : 'mongo'
       server_dir: './server'
+      monitor_requests: true
       monitoring_enabled: true
+      # configs for individual modules
+      moduleOptions: {}
       ), params),
       # passes array of keys to restrict Hash access
       _.keys o

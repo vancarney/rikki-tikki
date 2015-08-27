@@ -28,10 +28,10 @@ class ModuleManager extends EventEmitter
     fs.writeFile package_path, (JSON.stringify pkg, null, 2), callback
     
   getModuleOptions:(name)->
-    return null unless (opts = @options.moduleOptions)?
-    return opts[moduleName] if opts.hasOwnProperty name
+    # return null unless (opts = @options.moduleOptions)?
+    return @options[name] if @options.hasOwnProperty name
     name = name.replace /^apihero\-module\-+/, ''
-    if opts.hasOwnProperty name then opts[moduleName] else null
+    if @options.hasOwnProperty name then @options[name] else null
   load:(callback)->
     throw 'callback required' unless callback and typeof callback is 'function'
     @__modules = {}

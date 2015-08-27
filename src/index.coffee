@@ -18,15 +18,23 @@ global.helpers  = {}
 
 # > Defines the `ApiHero` Class
 class ApiHero extends EventEmitter
-  constructor:(app, options)->
+  constructor:(app, options={})->
     throw 'argument[0] must be App reference' unless app? and typeof app is 'function'
     global.app_root ?= process.cwd()
     # extends Loopback App with NoeJS EventEmitter
     _.extend app.prototype, EventEmitter
+    
+    try
+      if fs.statSync "#{cnfPath = path.join app_root, 'apihero.json'}"
+        config = require cnfPath
+    catch e
+      config = moduleOptions:{}
+
+    @options = _.extend {}, config, options
     # exports getApp helper method
     module.exports.getApp = => app
     # applies user options to API Options object
-    _.each options, (v,k)=> APIOptions.set k,v
+    _.each @options, (v,k)=> APIOptions.set k,v
     # ensures existence of data dir path
     ApiHero.Util.File.ensureDirExists APIOptions.get 'data_path'
     # ensures existence of schema trees dir path
@@ -49,8 +57,9 @@ class ApiHero extends EventEmitter
     # sets reference of API Hero on Loopback App for convenience
     app.ApiHero = ApiHero
     shouldManageRoutes = =>
-      return options.monitor_requests if options?.hasOwnProperty 'monitor_requests' 
-      return true unless Util.Env.isProduction()
+      return false if Util.Env.isProduction()
+      return APIOptions.get "monitor_requests"
+
     # registers handler for 'ahero-initialized' event
     app.once 'ahero-initialized', =>
       SyncInitializer.init ApiHero if shouldManageRoutes()
@@ -59,7 +68,8 @@ class ApiHero extends EventEmitter
       if e?
         console.log e
         process.exit 1
-      moduleManager = new ModuleManager app
+
+      moduleManager = new ModuleManager app, APIOptions.get( "moduleOptions" ) || {}
       # virtualizes listModules
       app.ApiHero.listModules = => moduleManager.listModules()
       # virtualizes getModuleConfigs
@@ -68,9 +78,14 @@ class ApiHero extends EventEmitter
       app.ApiHero.getModule = (name)=> moduleManager.getModule name
       app.emit 'ahero-initialized'
       moduleManager.load (e,modules)=>
+        
         if e?
           throw e
           process.exit 1
+          
+        app.get '/foobar', (req,res)->
+          res.send {status:"foobar to you too bub"}
+          
         app.emit 'ahero-ready'
         # loadHelpers (e)=>
           # if e?
@@ -82,6 +97,7 @@ class ApiHero extends EventEmitter
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
+
 ApiHero.loadedModules = null
 #### Static API Methods
 
