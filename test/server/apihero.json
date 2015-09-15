@@ -1,0 +1,7 @@
+{
+	"moduleOptions": {
+		"just-testing":{
+			"foo":"bar"
+		}
+	}
+}
