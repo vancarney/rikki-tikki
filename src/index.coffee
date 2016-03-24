@@ -65,10 +65,10 @@ class ApiHero extends EventEmitter
       SyncInitializer.init ApiHero if shouldManageRoutes()
     # initialize DataSource Manager instance
     ApiHero.DSManager.getInstance().initialize (e,ok)=>
+      # throws error and exits if error param present
       if e?
         console.log e
         process.exit 1
-
       moduleManager = new ModuleManager app, APIOptions.get( "moduleOptions" ) || {}
       # virtualizes listModules
       app.ApiHero.listModules = => moduleManager.listModules()
@@ -78,30 +78,20 @@ class ApiHero extends EventEmitter
       app.ApiHero.getModule = (name)=> moduleManager.getModule name
       app.emit 'ahero-initialized'
       moduleManager.load (e,modules)=>
-        
+        # throws error and exits if error param present
         if e?
           throw e
           process.exit 1
-          
-        app.get '/foobar', (req,res)->
-          res.send {status:"foobar to you too bub"}
-          
+        # emits ahero-ready event          
         app.emit 'ahero-ready'
-        # loadHelpers (e)=>
-          # if e?
-            # console.log e
-            # process.exit 1
-          # # emits 'ahero-initialized' event upon success
-          # app.emit 'ahero-initialized'
 
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
 
 ApiHero.loadedModules = null
+
 #### Static API Methods
-
-
 ApiHero.proxyEvent = (name, delegator)->
   throw "ApiHero.proxyEvent: delegator not defined" unless delegator
   throw "ApiHero.proxyEvent: delegator.on is not a function" unless typeof delegator.on is 'function'
@@ -143,7 +133,6 @@ ApiHero.createSyncInstance = (name,clazz)=>
 
 ApiHero.destroySyncInstance = (name)=>
   ApiHero.SyncService.getInstance().removeSyncInstance name  
-  
 
 # ApiHero.APISchema       = require './classes/schema/APISchema'
 # ApiHero.ClientSchema    = require './classes/schema/ClientSchema'

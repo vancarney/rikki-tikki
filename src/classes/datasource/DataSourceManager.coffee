@@ -21,6 +21,9 @@ class DSManager extends Singleton
       if datasources[dsName].settings.connector.hasOwnProperty 'mailer'
         done()
         continue
+      if typeof datasources[dsName].settings.connector.match != 'function'
+        done()
+        continue
       if datasources[dsName].settings.connector.match ///^loopback\-component\-storage///
         done()
         continue
