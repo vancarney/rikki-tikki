@@ -11,7 +11,6 @@ class ModuleManager extends EventEmitter
   getModule: (name)->
     if @__modules.hasOwnProperty name then @__modules[name] else null
   saveModules:(callback)->
-    # return callback(null, false);
     package_path = path.join "#{app_root}", 'package.json'
     try
       pkg = require package_path
@@ -19,14 +18,11 @@ class ModuleManager extends EventEmitter
       return callback e
     config = if pkg.hasOwnProperty 'apihero' then pkg.apihero else apihero: modules: {}
     config = if config.hasOwnProperty 'modules' then pkg.apihero.modules else apihero: modules: {}
-    # config.modules =
-    # console.log @getModuleOptions()
     _.each (_.difference @listModules(), _.keys config), (name)=>
       console.log "getting: #{name}"
       mod = {}
       mod[name] = @getModuleOptions name
       _.extend pkg, apihero: modules: mod
-    
     fs.writeFile package_path, (JSON.stringify pkg, null, 2), callback
   getModuleOptions:(name)->
     if @options.modules.hasOwnProperty name then @options.modules[name] else null
