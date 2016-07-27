@@ -1,0 +1,27 @@
+{
+  "author": "Van Carney <carney.van@gmail.com>",
+  "name": "apihero-test-package",
+  "description": "Mocked Package for test cases",
+  "keywords": [
+    "module",
+    "test",
+    "mock"
+  ],
+  "version": "0.0.1",
+  "main": "./index.js",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "github.com/vancarney/rikki-tikki.git"
+  },
+  "dependencies": {
+    "apihero-module-mock": "*"
+  },
+  "devDependencies": {},
+  "homepage": "http://vancarney.github.io/rikki-tikki"
+}

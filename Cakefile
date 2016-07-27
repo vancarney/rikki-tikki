@@ -86,6 +86,7 @@ test = (options=[],callback)->
       options = []
 
     # add coffee directive
+    options.push 'test-classes'
     options.push '--compilers'
     options.push 'coffee:coffee-script/register'
     options.push '--reporter'
