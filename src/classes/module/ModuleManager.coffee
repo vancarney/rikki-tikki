@@ -9,7 +9,7 @@ class ModuleManager extends EventEmitter
   listModules:->
     _.keys @__modules
   getModule: (name)->
-    if @__modules.hasOwnProperty 'name' then @__modules[name] else null
+    if @__modules.hasOwnProperty name then @__modules[name] else null
   saveModules:(callback)->
     # return callback(null, false);
     package_path = path.join "#{app_root}", 'package.json'

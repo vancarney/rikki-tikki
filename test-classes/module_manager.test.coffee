@@ -33,8 +33,9 @@ describe 'ModuleManager Test Suite', ->
     list.length.should.be.above 0
     
   it 'should retrieve a module', =>
-    list = @modMan.getModule 
-    list.length.should.be.above 0
+    modName = _.keys(moduleConfig.modules)[0]
+    mod     = @modMan.getModule modName
+    mod.getApp.should.be.a 'function'
     
   it 'should get module options', =>
     modName = _.keys(moduleConfig.modules)[0]
