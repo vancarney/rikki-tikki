@@ -61,7 +61,8 @@
     "loopback-testing": "1.1.0",
     "loopback-connector-postgresql": "^2.1.0",
     "loopback-connector-mysql": "^2.1.1",
-    "apihero-module-mock": "git+https://github.com/vancarney/apihero-module-mock.git"
+    "apihero-module-mock": "git+https://github.com/vancarney/apihero-module-mock.git",
+    "apihero-module-submock": "git+https://github.com/vancarney/apihero-module-submock.git"
   },
   "homepage": "http://vancarney.github.io/rikki-tikki",
   "scripts": {

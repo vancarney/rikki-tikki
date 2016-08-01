@@ -24,6 +24,8 @@ class ModuleManager extends EventEmitter
       mod[name] = @getModuleOptions name
       _.extend pkg, apihero: modules: mod
     fs.writeFile package_path, (JSON.stringify pkg, null, 2), callback
+  getModuleConfigs:->
+    _.values @options.modules
   getModuleOptions:(name)->
     if @options.modules.hasOwnProperty name then @options.modules[name] else null
   load:(callback)->
