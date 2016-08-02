@@ -28,6 +28,9 @@ class ModuleManager extends EventEmitter
     configs = []
     _.each _.keys(@options.modules) || [], (key)=>
       configs.push @options.modules[key]
+    console.log 'configs:'
+    console.log configs
+    configs
   getModuleOptions:(name)->
     if @options.modules.hasOwnProperty name then @options.modules[name] else null
   load:(callback)->
