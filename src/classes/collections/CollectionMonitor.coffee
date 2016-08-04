@@ -1,9 +1,9 @@
 {_}             = require 'lodash'
 # async             = require 'async'
 Util            = require '../utils'
-AbstractMonitor = require '../base_class/AbstractMonitor'
 Collection      = require './Collection'
 APIOptions      = require '../config/APIOptions'
+AbstractMonitor = require '../base_class/AbstractMonitor'
 class CollectionMonitor extends AbstractMonitor
   # sets polling at 10s intervals
   __polling_interval:10000
@@ -56,5 +56,5 @@ class CollectionMonitor extends AbstractMonitor
           # console.log cols
           list = _.flatten list.concat cols
           done()
-module.exports = CollectionMonitor
 DataSourceManager = require '../datasource/DataSourceManager'
+module.exports = CollectionMonitor

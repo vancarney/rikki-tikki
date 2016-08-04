@@ -1,7 +1,7 @@
 {_} = require 'lodash'
 {EventEmitter}  = require 'events'
 class SyncInstance extends EventEmitter
-  constructor:(@kind,clazz)->
+  constructor:(@kind, clazz)->
     throw 'kind is required' unless @kind
     throw "kind was required to be string type was #{_t}" unless (_t = typeof @kind) is 'string'
     throw 'clazz is required' unless clazz
@@ -11,8 +11,7 @@ class SyncInstance extends EventEmitter
     .on 'changed', => @onChanged.apply @, arguments
   # hanles `init` events
   onInit:(data)->
-    # _added = arguments['0'].added
-    # _syncInit() if ((_schemaInit = true) and _collectionInit) 
+    @emit 'init', data
   # handles `changed` events  
   onChanged:(data)->
     _ops = []

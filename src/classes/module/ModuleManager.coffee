@@ -19,7 +19,6 @@ class ModuleManager extends EventEmitter
     config = if pkg.hasOwnProperty 'apihero' then pkg.apihero else apihero: modules: {}
     config = if config.hasOwnProperty 'modules' then pkg.apihero.modules else apihero: modules: {}
     _.each (_.difference @listModules(), _.keys config), (name)=>
-      console.log "getting: #{name}"
       mod = {}
       mod[name] = @getModuleOptions name
       _.extend pkg, apihero: modules: mod
@@ -28,11 +27,9 @@ class ModuleManager extends EventEmitter
     configs = []
     _.each _.keys(@options.modules) || [], (key)=>
       configs.push @options.modules[key]
-    console.log 'configs:'
-    console.log configs
     configs
   getModuleOptions:(name)->
-    if @options.modules.hasOwnProperty name then @options.modules[name] else null
+    if @options.modules?.hasOwnProperty name then @options.modules[name] else null
   load:(callback)->
     throw 'callback required' unless callback and typeof callback is 'function'
     @__modules = {}

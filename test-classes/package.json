@@ -23,5 +23,10 @@
     "apihero-module-mock": "*"
   },
   "devDependencies": {},
-  "homepage": "http://vancarney.github.io/rikki-tikki"
+  "homepage": "http://vancarney.github.io/rikki-tikki",
+  "apihero": {
+    "modules": {
+      "apihero-module-mock": null
+    }
+  }
 }

@@ -18,7 +18,7 @@ class SyncService extends Singleton
       @ 
     @removeSyncInstance = (kind)=>
       return unless @hasKind kind
-      __syncItems[kind].off 'changed', __changeHandler
+      __syncItems[kind].off? 'changed', __changeHandler
       delete __syncItems[kind]
       __typeDelegates[kind].removeAllListeners()
       @
@@ -26,7 +26,7 @@ class SyncService extends Singleton
       __typeDelegates[kind]?.on type, handler
       @
     @removeSyncHandler = (kind,type,handler)=>
-      __typeDelegates[kind]?.off type, handler
+      __typeDelegates[kind]?.off? type, handler
       @
     @listSyncKinds = =>
       _.keys __syncItems

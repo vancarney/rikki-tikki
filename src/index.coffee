@@ -15,7 +15,6 @@ Util            = require './classes/utils'
 APIOptions      = require './classes/config/APIOptions'
 global.logger   = console
 global.helpers  = {}
-
 # > Defines the `ApiHero` Class
 class ApiHero extends EventEmitter
   constructor:(app, options={})->
@@ -23,13 +22,15 @@ class ApiHero extends EventEmitter
     global.app_root ?= process.cwd()
     # extends Loopback App with NoeJS EventEmitter
     _.extend app.prototype, EventEmitter
-    
     try
+      # tries to stat the apihero.json config
       if fs.statSync "#{cnfPath = path.join app_root, 'apihero.json'}"
+        # loads config if exists
         config = require cnfPath
     catch e
+      # creates a default config if none present
       config = moduleOptions:{}
-
+    # combines saved config with run-time options
     @options = _.extend {}, config, options
     # exports getApp helper method
     module.exports.getApp = => app
@@ -56,10 +57,10 @@ class ApiHero extends EventEmitter
     app.set 'legacyExplorer', false
     # sets reference of API Hero on Loopback App for convenience
     app.ApiHero = ApiHero
+    # closure shouldManageRoutes -- helps determines if API-Hero is managing API Routes
     shouldManageRoutes = =>
       return false if Util.Env.isProduction()
       return APIOptions.get "monitor_requests"
-
     # registers handler for 'ahero-initialized' event
     app.once 'ahero-initialized', =>
       SyncInitializer.init ApiHero if shouldManageRoutes()
@@ -84,13 +85,11 @@ class ApiHero extends EventEmitter
           process.exit 1
         # emits ahero-ready event          
         app.emit 'ahero-ready'
-
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options
-
+# defines STATIC loadedModules value
 ApiHero.loadedModules = null
-
 #### Static API Methods
 ApiHero.proxyEvent = (name, delegator)->
   throw "ApiHero.proxyEvent: delegator not defined" unless delegator
@@ -101,7 +100,6 @@ ApiHero.proxyEvent = (name, delegator)->
 ApiHero.addRoute = (path, operation, handler)=>
   throw new Error 'Adapter is not defined' unless (router = ApiHero.Router.getInstance())?
   router.addRoute path, operation, handler
-
 #### Included Classes
 try
   # puts the client lib into the cache
@@ -124,18 +122,18 @@ ApiHero.DSManager = require './classes/datasource/DataSourceManager'
 SyncInitializer     = require './classes/services/SyncInitializer'
 # requires Module Manager
 ModuleManager = require './classes/module/ModuleManager'
-  
+# require AbstractMonitor
 ApiHero.AbstractMonitor = require './classes/base_class/AbstractMonitor'
+# require AbstractLoader
 ApiHero.AbstractLoader  = require './classes/base_class/AbstractLoader'
-  
+## ApiHero.createSyncInstance
+#> Helper Method to define a SyncInstance and register it with the SyncService
 ApiHero.createSyncInstance = (name,clazz)=>
   ApiHero.SyncService.getInstance().registerSyncInstance name, new ApiHero.SyncService.SyncInstance name, clazz
-
+## ApiHero.createSyncInstance
+#> Helper Method to remove a registered SyncInstance from SyncService
 ApiHero.destroySyncInstance = (name)=>
   ApiHero.SyncService.getInstance().removeSyncInstance name  
-
-# ApiHero.APISchema       = require './classes/schema/APISchema'
-# ApiHero.ClientSchema    = require './classes/schema/ClientSchema'
 ## ApiHero.model
 #> Defines an insertable document reference
 ApiHero.model = (name,schema={})->

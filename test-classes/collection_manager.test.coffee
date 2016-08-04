@@ -1,6 +1,6 @@
-DataSourceManager = require '../../lib/classes/datasource/DataSourceManager'
-CollectionMonitor = require '../../lib/classes/collections/CollectionMonitor'
-CollectionManager = require '../../lib/classes/collections/CollectionManager'
+DataSourceManager = require '../src/classes/datasource/DataSourceManager'
+CollectionMonitor = require '../src/classes/collections/CollectionMonitor'
+CollectionManager = require '../src/classes/collections/CollectionManager'
 describe 'CollectionManager Test Suite', ->
   before =>
     should()

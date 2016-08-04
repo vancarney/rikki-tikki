@@ -1,14 +1,12 @@
 DataSourceManager = require '../datasource/DataSourceManager'
-CollectionManager = require '../collections/CollectionManager'
-CollectionMonitor = require '../collections/CollectionMonitor'
-SchemaManager     = require '../schema/SchemaManager'
-SchemaMonitor     = require '../schema/SchemaMonitor'
 SchemaTreeManager = require '../schema_tree/SchemaTreeManager'
 APIOptions        = require '../config/APIOptions'
 
 module.exports.init = (ApiHero)->
   return unless APIOptions.get 'monitoring_enabled'
-  # initialized sync instance for SchemaMonitor
+  # initializes sync instance for SchemaMonitor
+  SchemaManager     = require '../schema/SchemaManager'
+  SchemaMonitor     = require '../schema/SchemaMonitor'
   ApiHero.createSyncInstance 'schema', SchemaMonitor 
   .addSyncHandler 'schema', 'added', (op)=>
     tree = {}
@@ -29,6 +27,8 @@ module.exports.init = (ApiHero)->
       CollectionManager.getInstance().dropCollection op.data.name, (e)=>
         logger.log "could not destroy Collection '#{name}'\n\t#{e}" if e?
   # initialized sync instance for CollectionMonitor
+  CollectionManager = require '../collections/CollectionManager'
+  CollectionMonitor = require '../collections/CollectionMonitor'
   ApiHero.createSyncInstance 'collection', CollectionMonitor
   .addSyncHandler 'collection', 'added', (collection)=>
       SchemaManager.getInstance().createSchema collection.name, (e)=>

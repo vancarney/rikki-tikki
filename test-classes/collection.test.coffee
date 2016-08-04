@@ -1,8 +1,7 @@
-Collection        = require '../../lib/classes/collections/Collection'
-CollectionManager = require '../../lib/classes/collections/CollectionManager'
+Collection        = require '../src/classes/collections/Collection'
+CollectionManager = require '../src/classes/collections/CollectionManager'
 describe 'Collection Test Suite', ->
   before =>
-    should()
     @cm = CollectionManager.getInstance()
     
   it 'should add a collection to the default datasource', (done)=>
