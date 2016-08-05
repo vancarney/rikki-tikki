@@ -1,32 +1,22 @@
-{_}             = require 'lodash'
-fs              = require 'fs'
-path            = require 'path'
-{should,expect} = require 'chai'
-global._        = _
-global.should   = should
-global.expect   = expect
-global.app_root = __dirname
-should()
-
-app = 
-  ApiHero:
-    proxyEvent: (name, delegator)->
-      true
-
 moduleConfig = modules:
   "apihero-module-mock":
     name:"something",
-    boolValue: true 
-ModuleManager = require '../src/classes/module/ModuleManager'
-  
+    boolValue: true
+
 describe 'ModuleManager Test Suite', ->
-  @modMan = new ModuleManager app, moduleConfig
+  before =>
+    _.each _.keys(require.cache), (name)=>
+      delete require.cache[name] if name.match /apihero\-module\-mock/
+      
+    ModuleManager = require '../src/classes/module/ModuleManager'
+    @modMan = new ModuleManager app, moduleConfig
     
   it 'should load modules', (done)=>
     @modMan.on 'ahero-modules-loaded', (modules)=>
       modules.length.should.be.above 0
       done()
     @modMan.load (e, res)=>
+      expect(e).to.be.null
       
   it 'should list modules', =>
     list = @modMan.listModules()

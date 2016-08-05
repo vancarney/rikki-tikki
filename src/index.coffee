@@ -55,8 +55,6 @@ class ApiHero extends EventEmitter
       ), 'Content-Type':'text/javascript'
     # disables Loopback's LegacyExplorer UI 
     app.set 'legacyExplorer', false
-    # sets reference of API Hero on Loopback App for convenience
-    app.ApiHero = ApiHero
     # closure shouldManageRoutes -- helps determines if API-Hero is managing API Routes
     shouldManageRoutes = =>
       return false if Util.Env.isProduction()
@@ -85,6 +83,8 @@ class ApiHero extends EventEmitter
           process.exit 1
         # emits ahero-ready event          
         app.emit 'ahero-ready'
+    # sets reference of API Hero on Loopback App for convenience
+    app.ApiHero = ApiHero
 # defines STATIC init method
 ApiHero.init = (app, options)->
   new ApiHero app, options

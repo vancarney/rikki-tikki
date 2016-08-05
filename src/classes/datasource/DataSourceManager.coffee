@@ -22,12 +22,15 @@ class DSManager extends Singleton
     done = _.after names.length, =>
       callback null, 'ok'
     for dsName in names
-      if datasources[dsName].settings?.connector.hasOwnProperty 'mailer'
-        done()
-        continue
+      # tests if connector is invalid or misconfigured
       if datasources[dsName].connector != 'memory' and typeof datasources[dsName].settings?.connector.match != 'function'
         done()
         continue
+      # tests if connector is for mailer
+      if datasources[dsName].settings?.connector.hasOwnProperty 'mailer'
+        done()
+        continue
+      # tests if connector is for loopback storage component
       if datasources[dsName].settings?.connector.match ///^loopback\-component\-storage///
         done()
         continue

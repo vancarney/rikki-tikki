@@ -20,7 +20,7 @@ class ModuleManager extends EventEmitter
     config = if config.hasOwnProperty 'modules' then pkg.apihero.modules else apihero: modules: {}
     _.each (_.difference @listModules(), _.keys config), (name)=>
       mod = {}
-      mod[name] = @getModuleOptions name
+      mod[name] = (@getModuleOptions name) || {}
       _.extend pkg, apihero: modules: mod
     fs.writeFile package_path, (JSON.stringify pkg, null, 2), callback
   getModuleConfigs:->
@@ -55,7 +55,7 @@ class ModuleManager extends EventEmitter
       catch e
         console.log e
         return done "unable to load module '#{moduleName}'"
-      return done "module '#{moduleName}' is malformed. Is exports defined?" if typeof module is {}
+      return done "module '#{moduleName}' is malformed. Is exports defined?" if module is {}
       return done "module '#{moduleName}' is malformed. Is exports.init defined?" unless typeof module.init is 'function'
       ((moduleName, module)=>
         try
@@ -63,10 +63,10 @@ class ModuleManager extends EventEmitter
             @__modules[moduleName] = module
             delete @__modules[moduleName].init if @__modules[moduleName].init?
             done.apply @, if e? then [e] else [null]
-            init()
         catch e
           console.log e
           return done e
+        init()
       ) moduleName, module
     done() unless _modules.length > 0
 module.exports = ModuleManager

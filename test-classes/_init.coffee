@@ -1,32 +1,16 @@
+{should,expect} = require 'chai'
+global._        = require( 'lodash' )._
+global.fs       = require 'fs'
+global.path     = require 'path'
+global.should   = should
+global.expect   = expect
+global.app_root = __dirname
+should()
+
+
 EventEmitter        = require 'events'
-SyncService         = require '../src/classes/services/SyncService'
 global.api_options  = require '../src/classes/config/APIOptions'
 
-  
-class MockApp extends EventEmitter
-  listModules: -> []
-  SyncService: SyncService
-  options:
-    moduleOptions:{}
-  getModuleConfigs: ->
-      [
-        setting: 'blah'
-      ]
-  createSyncInstance: (name,clazz)=>
-    SyncService.getInstance().registerSyncInstance name, new SyncService.SyncInstance name, clazz
-  destroySyncInstance: (name)=>
-    SyncService.getInstance().removeSyncInstance name
-global.app =
-  set: ->
-  get: -> true
-  use: ->
-  engine: -> {}
-  datasources: 
-    db:
-      connector: 'memory'
-  once: (name, callback)->
-    callback(null, true)
-  # ApiHero: new MockApp
 mockApp = ->
 mockApp.set  = ->
 mockApp.get  = ->
@@ -48,4 +32,17 @@ mockApp.datasources =
     connector: 'apihero-mongodb'
     settings:
       connector: 'apihero-mongodb'
-require('../src').init mockApp
+global.app = require('../src').init mockApp, monitor_requests: false
+global.app.ApiHero = 
+  proxyEvent: (name, delegator)-> true
+setTimeout (=>
+    SyncService = require '../src/classes/services/SyncService'
+    global.app.ApiHero.SyncService = SyncService
+    global.app.ApiHero.createSyncInstance =  (name,clazz)=>
+      SyncService = require '../src/classes/services/SyncService'
+      SyncService.getInstance().registerSyncInstance.apply @, [name, new SyncService.SyncInstance( name, clazz )]
+    global.app.ApiHero.destroySyncInstance = (name)=>
+      SyncService = require '../src/classes/services/SyncService'
+      SyncService.getInstance().removeSyncInstance name
+  ), 120
+      

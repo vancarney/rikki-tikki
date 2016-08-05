@@ -1,6 +1,6 @@
 DataSourceManager = require '../src/classes/datasource/DataSourceManager'
 
-describe.only 'DataSource Test Suite', ->
+describe 'DataSource Test Suite', ->
   before (done)=>
     should()
     @dsMan = DataSourceManager.getInstance().initialize _.once => done()
@@ -30,7 +30,6 @@ describe.only 'DataSource Test Suite', ->
       cols.length.should.equal 2
       done.apply @, arguments
 
-
   it 'should drop a collection', (done)=>
     @mongo.ApiHero.dropCollection 'FooModel', =>
       setTimeout (=>
@@ -38,8 +37,3 @@ describe.only 'DataSource Test Suite', ->
           (0 <= cols.indexOf 'FooModel').should.eq false
           done.apply @, arguments
         ), 600
-       # console.log arguments
-       # done.apply @, arguments
-    # @mongo.collections 'FooModel', =>
-      # console.log arguments
-      # done()

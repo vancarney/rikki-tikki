@@ -1,13 +1,12 @@
 DataSourceManager = require '../datasource/DataSourceManager'
 SchemaTreeManager = require '../schema_tree/SchemaTreeManager'
 APIOptions        = require '../config/APIOptions'
-
 module.exports.init = (ApiHero)->
   return unless APIOptions.get 'monitoring_enabled'
   # initializes sync instance for SchemaMonitor
   SchemaManager     = require '../schema/SchemaManager'
   SchemaMonitor     = require '../schema/SchemaMonitor'
-  ApiHero.createSyncInstance 'schema', SchemaMonitor 
+  ApiHero.createSyncInstance 'schema', SchemaMonitor
   .addSyncHandler 'schema', 'added', (op)=>
     tree = {}
     # attempts to rename the Collection from the Database
