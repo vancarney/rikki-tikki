@@ -55,7 +55,7 @@ class DataSourceWrapper extends DataSource
     arguments[arguments.length - 1] = (e,ref)=>
       (cm = CollectionMonitor.getInstance()).refresh (e,list)=>
         return _cB e if e?
-        if 0 <= _.pluck( cm.getCollection(), 'name').indexOf @name
+        if 0 <= _.map( cm.getCollection(), 'name').indexOf @name
           return _cB "collection '#{@name}' not dropped" if col?
         _cB null, true
     @ApiHero.dropCollection.apply @ApiHero, arguments

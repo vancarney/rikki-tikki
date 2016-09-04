@@ -27,6 +27,8 @@ describe 'Collection Test Suite', ->
         expect(col).to.not.exist
         e.should.eq 'collection not found'
         done()
+        
+        
   ## maybe reinstate this later...   
   # it 'should maintain List after Collection refresh', (done)=>
     # _done = _.after 2, done

@@ -26,7 +26,8 @@ examples/node_modules/*
 # Scratch Dir #
 ################
 _scratch
-
+# Mongoos Schema Managers (Defunct)
+src/classes/schema_old/*
 
 # Environment settings #
 ########################

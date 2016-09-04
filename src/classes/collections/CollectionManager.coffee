@@ -58,7 +58,7 @@ class CollectionManager extends Singleton
   getCollection:(name, callback)->
     throw "CollectionManager.getCollection: callback required" unless callback? and typeof callback is 'function'
     return callback "name required" unless name? and typeof name is 'string'
-    return callback null, col[0] if (col = _.where @__monitor.getCollection(), name:name).length
+    return callback null, col[0] if (col = _.filter @__monitor.getCollection(), name:name).length
     callback 'collection not found', null
     
 module.exports = CollectionManager

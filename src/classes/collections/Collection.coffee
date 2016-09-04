@@ -17,6 +17,7 @@ class Collection extends Object
     _cB = arguments[arguments.length - 1] 
     throw 'callback required' unless typeof _cB is 'function'
     callback = (e,col)=>
+      _cB.apply @, e if e?
       _.extend @, col.s
       _cB.apply @, arguments
     opts = {} if typeof opts is 'function'

@@ -36,7 +36,7 @@ class AbstractMonitor extends Singleton
   stopPolling:->
     clearInterval @__iVal if @__iVal?
   getNames:->
-    _.pluck @getCollection(), 'name'
+    _.map @getCollection(), 'name'
   getCollection:->
     @__collection.__list
   getItemIdx:(name)->

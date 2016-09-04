@@ -42,8 +42,8 @@ class CollectionMonitor extends AbstractMonitor
         # console.log val
         ex.push val if 0 <= @getNames().indexOf val.name
       # finds removed collections
-      # console.log _.pluck list, 'name'
-      for item in (rm = _.difference @getNames(), _.pluck list, 'name' )
+      # console.log _.map list, 'name'
+      for item in (rm = _.difference @getNames(), _.map list, 'name' )
         # console.log "removeing:"
         # console.log item
         @__collection.removeItemAt @getNames().indexOf item

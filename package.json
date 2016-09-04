@@ -22,7 +22,7 @@
     "coffeescript"
   ],
   "version": "0.1.3-alpha",
-  "main":"./index.js",
+  "main": "./index.js",
   "licenses": [
     {
       "type": "MIT",
@@ -34,15 +34,16 @@
     "url": "github.com/vancarney/rikki-tikki.git"
   },
   "dependencies": {
+    "async": "1.1.0",
     "fun-utils": ">=0.0.2",
     "js-arraycollection": ">=0.0.1",
-    "lodash": "3.6.0",
-    "async":"1.1.0",
+    "lodash": "^4.14.1",
+    "loopback-connector": "^2.2.1",
+    "loopback-connector-apihero-mongodb": "git+https://github.com/vancarney/loopback-connector-apihero-mongodb.git",
+    "loopback-datasource-juggler": "^2.29.2",
     "mongodb": "^2.0.25",
     "obj-utils": ">=0.0.2",
-    "loopback-datasource-juggler": "^2.29.2",
-    "loopback-connector": "^2.2.1",
-    "loopback-connector-apihero-mongodb":"git+https://github.com/vancarney/loopback-connector-apihero-mongodb.git",
+    "schemaroller": "git+https://github.com/vancarney/schemaroller.git",
     "rikki-tikki-client": "git+https://github.com/vancarney/rikki-tikki-client.git",
     "rikki-tikki-express": "git+https://github.com/vancarney/rikki-tikki-express.git",
     "strictly-hash": ">=0.0.2"

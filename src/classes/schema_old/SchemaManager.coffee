@@ -11,7 +11,7 @@ Singleton       = require '../base_class/Singleton'
 APIOptions      = require '../config/APIOptions'
 # requires: SchemaLoader
 SchemaLoader    = require './SchemaLoader'
-Schema= require './Schema'
+RenderableSchema= require './RenderableSchema'
 # defines `SchemaManager` as sub-class of `Singleton`
 class SchemaManager extends Singleton
   __meta:{}
@@ -141,6 +141,6 @@ class SchemaManager extends Singleton
   toString:(pretty)->
     s = {}
     _.each _.keys(@__schemas), (key)=> s[key] = if (schema = @__schemas[key].__data).toClientSchema then schema.toClientSchema() else schema
-    JSON.stringify {__meta__:@__meta, __schemas__:s}, Schema.replacer, if pretty then 2 else undefined
+    JSON.stringify {__meta__:@__meta, __schemas__:s}, RenderableSchema.replacer, if pretty then 2 else undefined
 # declares exports
 module.exports = SchemaManager

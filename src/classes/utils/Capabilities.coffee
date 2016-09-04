@@ -5,7 +5,7 @@ class Capabilities extends Object
   __loaded_modules: []
   constructor:->
     for name in ['mongoose','mongodb','rikki-tikki-client'] 
-      @__modules = _.union @__modules, name if _.map( _.pluck( require.cache, 'filename' ), (p)-> path.dirname(p).split(path.sep).pop()).indexOf( "#{name}" ) > -1
+      @__modules = _.union @__modules, name if _.map( _.map( require.cache, 'filename' ), (p)-> path.dirname(p).split(path.sep).pop()).indexOf( "#{name}" ) > -1
       @__loaded_modules.push name if Util.detectModule name
   detectedModules: ->
     @__modules
